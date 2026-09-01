@@ -1,0 +1,84 @@
+{
+ "audio": "/Users/vatsalshah/Downloads/music-rf/aura_ref_147.m4a",
+ "audio_ss": 0,
+ "skull": "/Users/vatsalshah/Code/video-edits/receipts/skull.png",
+ "out": "/Users/vatsalshah/Downloads/reel-exports/aura_transform.mp4",
+ "segments": [
+  {
+   "kind": "photo",
+   "src": "/Users/vatsalshah/Downloads/photos-broll/before-jpg/20180615_180529_IMG_3171.jpg",
+   "ss": 0,
+   "start": 0.0,
+   "end": 4.087,
+   "caption": "/Users/vatsalshah/Code/video-edits/receipts/c_lose.png",
+   "skull_at": 0.05
+  },
+  {
+   "kind": "photo",
+   "src": "/Users/vatsalshah/Code/video-edits/receipts/weightloss_card.jpg",
+   "ss": 0,
+   "start": 4.087,
+   "end": 5.596,
+   "skull_at": 0.05,
+   "caption": "/Users/vatsalshah/Code/video-edits/receipts/y2022.png"
+  },
+  {
+   "kind": "freeze",
+   "src": "/Users/vatsalshah/Code/video-edits/receipts/weightloss_card.jpg",
+   "ss": 0,
+   "start": 5.596,
+   "end": 6.78,
+   "skull_at": 0.05
+  },
+  {
+   "kind": "photo",
+   "src": "/Users/vatsalshah/Code/video-edits/receipts/top10_card.jpg",
+   "ss": 0,
+   "start": 6.78,
+   "end": 8.29,
+   "skull_at": 0.05,
+   "caption": "/Users/vatsalshah/Code/video-edits/receipts/y2024.png"
+  },
+  {
+   "kind": "freeze",
+   "src": "/Users/vatsalshah/Code/video-edits/receipts/top10_card.jpg",
+   "ss": 0,
+   "start": 8.29,
+   "end": 9.474,
+   "skull_at": 0.05
+  },
+  {
+   "kind": "photo",
+   "src": "/Users/vatsalshah/Code/video-edits/receipts/yc_fullbleed.jpg",
+   "ss": 0,
+   "start": 9.474,
+   "end": 11.285,
+   "skull_at": 0.05,
+   "caption": "/Users/vatsalshah/Code/video-edits/receipts/y2026.png"
+  },
+  {
+   "kind": "freeze",
+   "src": "/Users/vatsalshah/Code/video-edits/receipts/yc_fullbleed.jpg",
+   "ss": 0,
+   "start": 11.285,
+   "end": 12.492,
+   "skull_at": 0.05
+  },
+  {
+   "kind": "video",
+   "src": "/Users/vatsalshah/Downloads/IMG_3773.MOV",
+   "ss": 44.0,
+   "start": 12.492,
+   "end": 13.978,
+   "skull_at": 0.05
+  },
+  {
+   "kind": "freeze",
+   "src": "/Users/vatsalshah/Downloads/IMG_3773.MOV",
+   "ss": 44.0,
+   "start": 13.978,
+   "end": 14.67,
+   "skull_at": 0.05
+  }
+ ]
+}

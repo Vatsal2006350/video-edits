@@ -1,0 +1,65 @@
+{
+ "audio": "/Users/vatsalshah/Downloads/music-rf/aura_aura_quiet.m4a",
+ "audio_ss": 0,
+ "skull": "/Users/vatsalshah/Code/video-edits/receipts/skull.png",
+ "out": "/Users/vatsalshah/Downloads/reel-exports/aura_quiet.mp4",
+ "segments": [
+  {
+   "kind": "video",
+   "src": "/Users/vatsalshah/Downloads/photos-broll/kerala-scenic/0820_171934_IMG_4332.MOV.MOV",
+   "ss": 2.0,
+   "start": 0.0,
+   "end": 2.949,
+   "caption": "/Users/vatsalshah/Code/video-edits/receipts/n_quiet.png",
+   "skull_at": 0.05
+  },
+  {
+   "kind": "photo",
+   "src": "/Users/vatsalshah/Code/video-edits/receipts/yc_fullbleed.jpg",
+   "ss": 0,
+   "start": 2.949,
+   "end": 4.528,
+   "skull_at": 0.05
+  },
+  {
+   "kind": "freeze",
+   "src": "/Users/vatsalshah/Code/video-edits/receipts/yc_fullbleed.jpg",
+   "ss": 0,
+   "start": 4.528,
+   "end": 5.503,
+   "skull_at": 0.05
+  },
+  {
+   "kind": "video",
+   "src": "/Users/vatsalshah/Downloads/IMG_3773.MOV",
+   "ss": 44.0,
+   "start": 5.503,
+   "end": 7.105,
+   "skull_at": 0.05
+  },
+  {
+   "kind": "freeze",
+   "src": "/Users/vatsalshah/Downloads/IMG_3773.MOV",
+   "ss": 44.0,
+   "start": 7.105,
+   "end": 8.057,
+   "skull_at": 0.05
+  },
+  {
+   "kind": "photo",
+   "src": "/Users/vatsalshah/Code/video-edits/receipts/press_card.png",
+   "ss": 0,
+   "start": 8.057,
+   "end": 9.66,
+   "skull_at": 0.05
+  },
+  {
+   "kind": "freeze",
+   "src": "/Users/vatsalshah/Code/video-edits/receipts/press_card.png",
+   "ss": 0,
+   "start": 9.66,
+   "end": 13.012,
+   "skull_at": 0.05
+  }
+ ]
+}

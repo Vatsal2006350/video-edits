@@ -1,0 +1,65 @@
+{
+ "audio": "/Users/vatsalshah/Downloads/music-rf/aura_aura_year.m4a",
+ "audio_ss": 0,
+ "skull": "/Users/vatsalshah/Code/video-edits/receipts/skull.png",
+ "out": "/Users/vatsalshah/Downloads/reel-exports/aura_year.mp4",
+ "segments": [
+  {
+   "kind": "video",
+   "src": "/Users/vatsalshah/Downloads/photos-broll/maldives-sunset/174919_IMG_1854.MOV.MOV",
+   "ss": 1.0,
+   "start": 0.0,
+   "end": 2.949,
+   "caption": "/Users/vatsalshah/Code/video-edits/receipts/n_year.png",
+   "skull_at": 0.05
+  },
+  {
+   "kind": "photo",
+   "src": "/Users/vatsalshah/Code/video-edits/receipts/yc_fullbleed.jpg",
+   "ss": 0,
+   "start": 2.949,
+   "end": 4.876,
+   "skull_at": 0.05
+  },
+  {
+   "kind": "freeze",
+   "src": "/Users/vatsalshah/Code/video-edits/receipts/yc_fullbleed.jpg",
+   "ss": 0,
+   "start": 4.876,
+   "end": 5.828,
+   "skull_at": 0.05
+  },
+  {
+   "kind": "photo",
+   "src": "/Users/vatsalshah/Code/video-edits/receipts/top10_card.jpg",
+   "ss": 0,
+   "start": 5.828,
+   "end": 7.5,
+   "skull_at": 0.05
+  },
+  {
+   "kind": "freeze",
+   "src": "/Users/vatsalshah/Code/video-edits/receipts/top10_card.jpg",
+   "ss": 0,
+   "start": 7.5,
+   "end": 8.452,
+   "skull_at": 0.05
+  },
+  {
+   "kind": "video",
+   "src": "/Users/vatsalshah/Downloads/IMG_3773.MOV",
+   "ss": 44.0,
+   "start": 8.452,
+   "end": 10.124,
+   "skull_at": 0.05
+  },
+  {
+   "kind": "freeze",
+   "src": "/Users/vatsalshah/Downloads/IMG_3773.MOV",
+   "ss": 44.0,
+   "start": 10.124,
+   "end": 13.476,
+   "skull_at": 0.05
+  }
+ ]
+}

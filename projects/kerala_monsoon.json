@@ -1,0 +1,40 @@
+{
+ "audio": "/Users/vatsalshah/Downloads/music-rf/travel-softhouse.mp3",
+ "segments": [
+  {
+   "kind": "video",
+   "src": "/Users/vatsalshah/Downloads/photos-broll/kerala-scenic/0820_184511_IMG_4398.MOV.MOV",
+   "start": 0,
+   "end": 2.0,
+   "ss": 1.0,
+   "skull_at": 0.05,
+   "caption": "/Users/vatsalshah/Code/video-edits/receipts/c_drive.png"
+  },
+  {
+   "kind": "video",
+   "src": "/Users/vatsalshah/Downloads/photos-broll/kerala-scenic/0819_202553_IMG_4239.MOV.MOV",
+   "start": 2.0,
+   "end": 4.0,
+   "ss": 1.0,
+   "skull_at": 0.05
+  },
+  {
+   "kind": "video",
+   "src": "/Users/vatsalshah/Downloads/photos-broll/kerala-scenic/0820_174214_IMG_4367.MOV.MOV",
+   "start": 4.0,
+   "end": 6.0,
+   "ss": 4.0,
+   "skull_at": 0.05
+  },
+  {
+   "kind": "video",
+   "src": "/Users/vatsalshah/Downloads/photos-broll/kerala-scenic/0820_182543_IMG_4392.MOV.MOV",
+   "start": 6.0,
+   "end": 8.0,
+   "ss": 2.0,
+   "skull_at": 0.05
+  }
+ ],
+ "skull": "/Users/vatsalshah/Code/video-edits/receipts/skull.png",
+ "out": "/Users/vatsalshah/Code/video-edits/receipts/editor_out/kerala_monsoon.mp4"
+}

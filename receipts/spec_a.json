@@ -1,0 +1,62 @@
+{
+ "audio": "/Users/vatsalshah/Downloads/music-rf/cut_21977_from2.6.m4a",
+ "out": "/Users/vatsalshah/Code/video-edits/receipts/drop_story_a.mp4",
+ "skull": "/Users/vatsalshah/Code/video-edits/receipts/skull.png",
+ "segments": [
+  {
+   "kind": "photo",
+   "src": "/Users/vatsalshah/Downloads/photos-broll/before-jpg/20180615_180529_IMG_3171.jpg",
+   "start": 0.0,
+   "end": 2.206,
+   "caption": "/Users/vatsalshah/Code/video-edits/receipts/k1.png"
+  },
+  {
+   "kind": "photo",
+   "src": "/Users/vatsalshah/Downloads/photos-broll/before-jpg/20180415_171327_IMG_2168.jpg",
+   "start": 2.206,
+   "end": 3.785,
+   "caption": "/Users/vatsalshah/Code/video-edits/receipts/k2.png"
+  },
+  {
+   "kind": "photo",
+   "src": "/Users/vatsalshah/Code/video-edits/receipts/yc_fullbleed.jpg",
+   "start": 3.785,
+   "end": 4.969
+  },
+  {
+   "kind": "freeze",
+   "src": "/Users/vatsalshah/Code/video-edits/receipts/yc_fullbleed.jpg",
+   "start": 4.969,
+   "end": 5.782,
+   "skull_at": 0.05
+  },
+  {
+   "kind": "photo",
+   "src": "/Users/vatsalshah/Code/video-edits/receipts/top10_card.jpg",
+   "start": 5.782,
+   "end": 6.966
+  },
+  {
+   "kind": "freeze",
+   "src": "/Users/vatsalshah/Code/video-edits/receipts/top10_card.jpg",
+   "start": 6.966,
+   "end": 7.57,
+   "skull_at": 0.05
+  },
+  {
+   "kind": "video",
+   "src": "/Users/vatsalshah/Downloads/IMG_3773.MOV",
+   "ss": 44.0,
+   "start": 7.57,
+   "end": 8.963
+  },
+  {
+   "kind": "freeze",
+   "src": "/Users/vatsalshah/Downloads/IMG_3773.MOV",
+   "ss": 45.4,
+   "start": 8.963,
+   "end": 10.89,
+   "skull_at": 0.05
+  }
+ ]
+}

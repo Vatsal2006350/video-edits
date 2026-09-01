@@ -1,0 +1,65 @@
+{
+ "audio": "/Users/vatsalshah/Downloads/music-rf/aura_aura_building.m4a",
+ "audio_ss": 0,
+ "skull": "/Users/vatsalshah/Code/video-edits/receipts/skull.png",
+ "out": "/Users/vatsalshah/Downloads/reel-exports/aura_building.mp4",
+ "segments": [
+  {
+   "kind": "video",
+   "src": "/Users/vatsalshah/Downloads/IMG_2672.MOV",
+   "ss": 2.0,
+   "start": 0.0,
+   "end": 2.972,
+   "caption": "/Users/vatsalshah/Code/video-edits/receipts/n_building.png",
+   "skull_at": 0.05
+  },
+  {
+   "kind": "photo",
+   "src": "/Users/vatsalshah/Code/video-edits/receipts/yc_fullbleed.jpg",
+   "ss": 0,
+   "start": 2.972,
+   "end": 4.528,
+   "skull_at": 0.05
+  },
+  {
+   "kind": "freeze",
+   "src": "/Users/vatsalshah/Code/video-edits/receipts/yc_fullbleed.jpg",
+   "ss": 0,
+   "start": 4.528,
+   "end": 5.55,
+   "skull_at": 0.05
+  },
+  {
+   "kind": "photo",
+   "src": "/Users/vatsalshah/Code/video-edits/receipts/top10_card.jpg",
+   "ss": 0,
+   "start": 5.55,
+   "end": 7.105,
+   "skull_at": 0.05
+  },
+  {
+   "kind": "freeze",
+   "src": "/Users/vatsalshah/Code/video-edits/receipts/top10_card.jpg",
+   "ss": 0,
+   "start": 7.105,
+   "end": 8.15,
+   "skull_at": 0.05
+  },
+  {
+   "kind": "video",
+   "src": "/Users/vatsalshah/Downloads/IMG_3773.MOV",
+   "ss": 44.0,
+   "start": 8.15,
+   "end": 9.706,
+   "skull_at": 0.05
+  },
+  {
+   "kind": "freeze",
+   "src": "/Users/vatsalshah/Downloads/IMG_3773.MOV",
+   "ss": 44.0,
+   "start": 9.706,
+   "end": 13.128,
+   "skull_at": 0.05
+  }
+ ]
+}

@@ -1,0 +1,32 @@
+{
+ "audio": "/Users/vatsalshah/Downloads/music-rf/travel-adventure.mp3",
+ "segments": [
+  {
+   "kind": "video",
+   "src": "/Users/vatsalshah/Downloads/photos-broll/broll/0606_175048_IMG_1856.MOV.MOV",
+   "start": 0,
+   "end": 3.0,
+   "ss": 2.0,
+   "skull_at": 0.05,
+   "caption": "/Users/vatsalshah/Code/video-edits/receipts/serif_maldives.png"
+  },
+  {
+   "kind": "video",
+   "src": "/Users/vatsalshah/Downloads/photos-broll/maldives-sunset/174818_IMG_1850.MOV.MOV",
+   "start": 3.0,
+   "end": 6.0,
+   "ss": 0.5,
+   "skull_at": 0.05
+  },
+  {
+   "kind": "video",
+   "src": "/Users/vatsalshah/Downloads/photos-broll/broll/0606_175255_IMG_1864.MOV.MOV",
+   "start": 6.0,
+   "end": 9.5,
+   "ss": 4.0,
+   "skull_at": 0.05
+  }
+ ],
+ "skull": "/Users/vatsalshah/Code/video-edits/receipts/skull.png",
+ "out": "/Users/vatsalshah/Code/video-edits/receipts/editor_out/maldives_cinematic.mp4"
+}

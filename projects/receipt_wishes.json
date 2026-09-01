@@ -1,0 +1,39 @@
+{
+ "audio": "/Users/vatsalshah/Downloads/ReelAudio-29894.mp3",
+ "segments": [
+  {
+   "kind": "video",
+   "src": "/Users/vatsalshah/Downloads/content/IMG_8346.mov",
+   "start": 0,
+   "end": 2.728,
+   "ss": 0,
+   "skull_at": 0.05
+  },
+  {
+   "kind": "photo",
+   "src": "/Users/vatsalshah/Code/video-edits/receipts/yc_fullbleed.jpg",
+   "start": 2.728,
+   "end": 5.456,
+   "ss": 0,
+   "skull_at": 0.05
+  },
+  {
+   "kind": "video",
+   "src": "/Users/vatsalshah/Downloads/content/IMG_6946.MOV",
+   "start": 5.456,
+   "end": 8.184,
+   "ss": 2.0,
+   "skull_at": 0.05
+  },
+  {
+   "kind": "video",
+   "src": "/Users/vatsalshah/Downloads/content/IMG_7152.MOV",
+   "start": 8.184,
+   "end": 10.912,
+   "ss": 2.0,
+   "skull_at": 0.05
+  }
+ ],
+ "skull": "/Users/vatsalshah/Code/video-edits/receipts/skull.png",
+ "out": "/Users/vatsalshah/Code/video-edits/receipts/editor_out/receipt_wishes.mp4"
+}

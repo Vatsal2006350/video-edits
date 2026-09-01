@@ -1,0 +1,65 @@
+{
+ "audio": "/Users/vatsalshah/Downloads/BangersOnly-LOVIXX-STOSLIV-Dont-tell-your-dreams-Lyrics-dont-tell-your-dreams-to-everybody-around-(CeeNaija.com).mp3",
+ "segments": [
+  {
+   "kind": "photo",
+   "src": "/Users/vatsalshah/Downloads/photos-broll/before-jpg/20180615_180529_IMG_3171.jpg",
+   "start": 0,
+   "end": 3.0,
+   "ss": 0,
+   "skull_at": 0.05,
+   "caption": "/Users/vatsalshah/Code/video-edits/receipts/k1.png"
+  },
+  {
+   "kind": "photo",
+   "src": "/Users/vatsalshah/Downloads/photos-broll/before-jpg/20180415_171327_IMG_2168.jpg",
+   "start": 3.0,
+   "end": 6.0,
+   "ss": 0,
+   "skull_at": 0.05,
+   "caption": "/Users/vatsalshah/Code/video-edits/receipts/k2.png"
+  },
+  {
+   "kind": "photo",
+   "src": "/Users/vatsalshah/Code/video-edits/receipts/yc_fullbleed.jpg",
+   "start": 6.0,
+   "end": 9.0,
+   "ss": 0,
+   "skull_at": 0.05
+  },
+  {
+   "kind": "freeze",
+   "src": "/Users/vatsalshah/Code/video-edits/receipts/yc_fullbleed.jpg",
+   "start": 9.0,
+   "end": 10.5,
+   "ss": 0,
+   "skull_at": 0.05
+  },
+  {
+   "kind": "photo",
+   "src": "/Users/vatsalshah/Code/video-edits/receipts/top10_card.jpg",
+   "start": 10.5,
+   "end": 13.5,
+   "ss": 0,
+   "skull_at": 0.05
+  },
+  {
+   "kind": "freeze",
+   "src": "/Users/vatsalshah/Code/video-edits/receipts/top10_card.jpg",
+   "start": 13.5,
+   "end": 15.0,
+   "ss": 0,
+   "skull_at": 0.05
+  },
+  {
+   "kind": "video",
+   "src": "/Users/vatsalshah/Downloads/IMG_3773.MOV",
+   "start": 15.0,
+   "end": 18.0,
+   "ss": 44.0,
+   "skull_at": 0.05
+  }
+ ],
+ "skull": "/Users/vatsalshah/Code/video-edits/receipts/skull.png",
+ "out": "/Users/vatsalshah/Code/video-edits/receipts/editor_out/transformation_story.mp4"
+}

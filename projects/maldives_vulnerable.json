@@ -1,0 +1,32 @@
+{
+ "audio": "/Users/vatsalshah/Downloads/ReelAudio-29894.mp3",
+ "segments": [
+  {
+   "kind": "video",
+   "src": "/Users/vatsalshah/Downloads/photos-broll/maldives-sunset/174811_IMG_1849.MOV.MOV",
+   "start": 0,
+   "end": 3.5,
+   "ss": 0.5,
+   "skull_at": 0.05,
+   "caption": "/Users/vatsalshah/Code/video-edits/receipts/q_vuln.png"
+  },
+  {
+   "kind": "video",
+   "src": "/Users/vatsalshah/Downloads/photos-broll/maldives-sunset/174919_IMG_1854.MOV.MOV",
+   "start": 3.5,
+   "end": 6.5,
+   "ss": 1.0,
+   "skull_at": 0.05
+  },
+  {
+   "kind": "photo",
+   "src": "/Users/vatsalshah/Code/video-edits/receipts/yc_cine_card.jpg",
+   "start": 6.5,
+   "end": 9.0,
+   "ss": 0,
+   "skull_at": 0.05
+  }
+ ],
+ "skull": "/Users/vatsalshah/Code/video-edits/receipts/skull.png",
+ "out": "/Users/vatsalshah/Code/video-edits/receipts/editor_out/maldives_vulnerable.mp4"
+}

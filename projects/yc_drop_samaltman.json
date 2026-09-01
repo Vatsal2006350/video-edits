@@ -1,0 +1,32 @@
+{
+ "audio": "/Users/vatsalshah/Downloads/music-rf/phonk-brazilian.mp3",
+ "segments": [
+  {
+   "kind": "video",
+   "src": "/Users/vatsalshah/Downloads/IMG_3773.MOV",
+   "start": 0,
+   "end": 2.39,
+   "ss": 44.0,
+   "skull_at": 0.05,
+   "caption": "/Users/vatsalshah/Code/video-edits/receipts/g_pov.png"
+  },
+  {
+   "kind": "freeze",
+   "src": "/Users/vatsalshah/Downloads/IMG_3773.MOV",
+   "start": 2.39,
+   "end": 4.1,
+   "ss": 45.4,
+   "skull_at": 0.05
+  },
+  {
+   "kind": "photo",
+   "src": "/Users/vatsalshah/Code/video-edits/receipts/yc_fullbleed.jpg",
+   "start": 4.1,
+   "end": 6.4,
+   "ss": 0,
+   "skull_at": 0.05
+  }
+ ],
+ "skull": "/Users/vatsalshah/Code/video-edits/receipts/skull.png",
+ "out": "/Users/vatsalshah/Code/video-edits/receipts/editor_out/yc_drop_samaltman.mp4"
+}

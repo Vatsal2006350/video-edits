@@ -1,0 +1,32 @@
+{
+ "audio": "/Users/vatsalshah/Downloads/music-rf/phonk-gym.mp3",
+ "segments": [
+  {
+   "kind": "photo",
+   "src": "/Users/vatsalshah/Downloads/photos-broll/before-jpg/20180615_180529_IMG_3171.jpg",
+   "start": 0,
+   "end": 2.07,
+   "ss": 0,
+   "skull_at": 0.05,
+   "caption": "/Users/vatsalshah/Code/video-edits/receipts/g_kid.png"
+  },
+  {
+   "kind": "freeze",
+   "src": "/Users/vatsalshah/Downloads/photos-broll/before-jpg/20180615_180529_IMG_3171.jpg",
+   "start": 2.07,
+   "end": 3.8,
+   "ss": 0,
+   "skull_at": 0.05
+  },
+  {
+   "kind": "photo",
+   "src": "/Users/vatsalshah/Code/video-edits/receipts/yc_fullbleed.jpg",
+   "start": 3.8,
+   "end": 6.1,
+   "ss": 0,
+   "skull_at": 0.05
+  }
+ ],
+ "skull": "/Users/vatsalshah/Code/video-edits/receipts/skull.png",
+ "out": "/Users/vatsalshah/Code/video-edits/receipts/editor_out/yc_drop_fatkid.mp4"
+}

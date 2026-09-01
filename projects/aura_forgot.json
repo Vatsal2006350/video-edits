@@ -1,0 +1,81 @@
+{
+ "audio": "/Users/vatsalshah/Downloads/music-rf/aura_aura_forgot.m4a",
+ "audio_ss": 0,
+ "skull": "/Users/vatsalshah/Code/video-edits/receipts/skull.png",
+ "out": "/Users/vatsalshah/Downloads/reel-exports/aura_forgot.mp4",
+ "segments": [
+  {
+   "kind": "video",
+   "src": "/Users/vatsalshah/Downloads/photos-broll/broll/0606_175048_IMG_1856.MOV.MOV",
+   "ss": 2.0,
+   "start": 0.0,
+   "end": 2.949,
+   "caption": "/Users/vatsalshah/Code/video-edits/receipts/n_forgot.png",
+   "skull_at": 0.05
+  },
+  {
+   "kind": "photo",
+   "src": "/Users/vatsalshah/Code/video-edits/receipts/yc_fullbleed.jpg",
+   "ss": 0,
+   "start": 2.949,
+   "end": 4.807,
+   "skull_at": 0.05
+  },
+  {
+   "kind": "freeze",
+   "src": "/Users/vatsalshah/Code/video-edits/receipts/yc_fullbleed.jpg",
+   "ss": 0,
+   "start": 4.807,
+   "end": 5.968,
+   "skull_at": 0.05
+  },
+  {
+   "kind": "photo",
+   "src": "/Users/vatsalshah/Code/video-edits/receipts/top10_card.jpg",
+   "ss": 0,
+   "start": 5.968,
+   "end": 7.802,
+   "skull_at": 0.05
+  },
+  {
+   "kind": "freeze",
+   "src": "/Users/vatsalshah/Code/video-edits/receipts/top10_card.jpg",
+   "ss": 0,
+   "start": 7.802,
+   "end": 8.847,
+   "skull_at": 0.05
+  },
+  {
+   "kind": "video",
+   "src": "/Users/vatsalshah/Downloads/IMG_3773.MOV",
+   "ss": 44.0,
+   "start": 8.847,
+   "end": 10.333,
+   "skull_at": 0.05
+  },
+  {
+   "kind": "freeze",
+   "src": "/Users/vatsalshah/Downloads/IMG_3773.MOV",
+   "ss": 44.0,
+   "start": 10.333,
+   "end": 11.494,
+   "skull_at": 0.05
+  },
+  {
+   "kind": "video",
+   "src": "/Users/vatsalshah/Downloads/IMG_7152.MOV",
+   "ss": 2.5,
+   "start": 11.494,
+   "end": 13.351,
+   "skull_at": 0.05
+  },
+  {
+   "kind": "freeze",
+   "src": "/Users/vatsalshah/Downloads/IMG_7152.MOV",
+   "ss": 2.5,
+   "start": 13.351,
+   "end": 16.773,
+   "skull_at": 0.05
+  }
+ ]
+}

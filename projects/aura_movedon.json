@@ -1,0 +1,49 @@
+{
+ "audio": "/Users/vatsalshah/Downloads/music-rf/aura_aura_movedon.m4a",
+ "audio_ss": 0,
+ "skull": "/Users/vatsalshah/Code/video-edits/receipts/skull.png",
+ "out": "/Users/vatsalshah/Downloads/reel-exports/aura_movedon.mp4",
+ "segments": [
+  {
+   "kind": "video",
+   "src": "/Users/vatsalshah/Downloads/photos-broll/maldives-sunset/174837_IMG_1852.MOV.MOV",
+   "ss": 1.0,
+   "start": 0.0,
+   "end": 2.995,
+   "caption": "/Users/vatsalshah/Code/video-edits/receipts/n_movedon.png",
+   "skull_at": 0.05
+  },
+  {
+   "kind": "photo",
+   "src": "/Users/vatsalshah/Code/video-edits/receipts/yc_fullbleed.jpg",
+   "ss": 0,
+   "start": 2.995,
+   "end": 4.783,
+   "skull_at": 0.05
+  },
+  {
+   "kind": "freeze",
+   "src": "/Users/vatsalshah/Code/video-edits/receipts/yc_fullbleed.jpg",
+   "ss": 0,
+   "start": 4.783,
+   "end": 5.851,
+   "skull_at": 0.05
+  },
+  {
+   "kind": "video",
+   "src": "/Users/vatsalshah/Downloads/IMG_3773.MOV",
+   "ss": 44.0,
+   "start": 5.851,
+   "end": 7.639,
+   "skull_at": 0.05
+  },
+  {
+   "kind": "freeze",
+   "src": "/Users/vatsalshah/Downloads/IMG_3773.MOV",
+   "ss": 44.0,
+   "start": 7.639,
+   "end": 9.164,
+   "skull_at": 0.05
+  }
+ ]
+}
