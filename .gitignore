@@ -1,0 +1,28 @@
+# ---- media & build artifacts (never versioned) ----
+0820/
+kerala/
+receipts/*.mp4
+receipts/*.jpg
+receipts/*.png
+receipts/*.mov
+receipts/editor_out/
+receipts/frames_*/
+receipts/history/
+*.mp4
+*.mov
+*.MOV
+*.m4a
+*.mp3
+*.wav
+# ---- keep the small stuff that matters ----
+!projects/*.json
+!receipts/*.json
+!fonts/*.ttf
+__pycache__/
+*.pyc
+.DS_Store
+_prepare_*.log
+_matte*.log
+# vendored skill packs (reinstallable via npx skills add)
+.agents/
+.claude/
