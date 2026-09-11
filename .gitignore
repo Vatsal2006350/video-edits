@@ -25,6 +25,8 @@ uuids/
 *.m4a
 *.mp3
 *.wav
+.work/
+deliverables/
 # ---- keep the small stuff that matters ----
 !projects/*.json
 !receipts/*.json
