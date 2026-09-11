@@ -1,84 +1,77 @@
-# Reel pipeline workspace
+# video-edits — Vatsal's local reel factory
 
-Repeatable, fully-local (free) AI reel finishing for Vatsal's videos. No cloud,
-no API keys: mlx-whisper transcription, CoreML ONNX matte, Chromium render.
+Read this, then `TOOLS.md` (what every tool does), `FOOTAGE.md` (what every clip
+actually contains — folder names lie), and `formats/` (one file per proven reel
+format with the measured numbers). `research/` holds dated trend/strategy briefs (agent research, cited). Everything is local and free: ffmpeg,
+PIL/numpy, mlx-whisper via `uvx`, hyperframes for mattes. No API keys needed.
 
-## Division of labor — read this first
-Vatsal does the **raw edit** (scene cuts, sequencing, screenshots, audio mix,
-usually in CapCut). This pipeline does ONLY the finishing layer:
-**overlays, hero typography, captions, animations, transitions, CTA.**
-- NEVER re-cut, re-time, re-grade, or remix his footage/audio.
-- Audio: verify with bin/check-audio.sh and REPORT problems; don't fix.
-- If footage has a problem (clipped last word, loudness jump), tell him —
-  he re-exports; you re-apply (cheap: authoring carries over).
+## Two modes
+1. **Build from raw** (the current mode). Vatsal drops raw clips / a reference IG
+   reel / a track; you cut, time, grade, type and deliver. Builders live in `bin/`,
+   the master batch is `batch/build-all.sh`, output goes to
+   `~/Downloads/reel-batch/<theme>/` with a `phone/` mirror (608x1080).
+2. **Finish a CapCut edit** (older mode, hyperframes captions/hero): see
+   `formats/_old-CLAUDE-finishing-pipeline.md` + `HOUSE-STYLE.md`. In that mode
+   never re-cut or remix his audio.
 
-## Layout
-- `bin/` — driver scripts (see below)
-- `fonts/` — Anton (hero), Montserrat (captions)
-- `.agents/skills/` — hyperframes skill packs. PATCHED: make-theme.cjs has a
-  `lastOut` cap (final caption line vs trailing outro). Keep patches here;
-  re-check after `hyperframes skills update`.
-- `HOUSE-STYLE.md` — the validated look. Follow it.
-- `<NNNN>/` — one folder per reel (e.g. 0820). 0820 is the reference project:
-  its theme.json is the canonical example of the house style.
-- Engine: `~/Downloads/hyperframes` (HYPERFRAMES_ROOT; built with bun).
+## Non-negotiable rules (each one cost a rebuild)
+- Frame 1080x1920 @30. IG safe box **x 59–918, y 278–1536**. Centred text is
+  bounded by **724px** (2×(918−540)), not the box width. Verify on the rendered
+  layer PNGs (alpha bbox), never by eyeballing a composite. `bin/ig-safe.py view`
+  on every deliverable.
+- iPhone "HDR video" clips are HLG 10-bit (`color_transfer=arib-std-b67`): tonemap to Rec.709 BEFORE any grade or the
+  picture stays flat (`build-story-reel.sh` does it with TONEMAP=auto). For standalone work use `bin/color-normalize.sh raw`; use its explicit `retag` mode only when pixels are already tonemapped and merely carry the wrong tag.
+- Stills: `lib-still.sh` (`still_vf` letterbox / `still_cover_vf` / `still_black_vf`).
+  Never `scale:-1,zoompan s=` — it stretches.
+- Never write a caption you cannot verify from his footage or words (no invented
+  ages, heights, counts). Ask or use a neutral line.
+- Music from `~/Downloads/music-good/` (his tracks; README has drop times), never
+  the stock library. The payoff cut lands ON the drop; `bin/music-map.py` finds it.
+- Reference reels: `uvx yt-dlp <url>` is the only fetch that works. Then
+  `contact-sheet.py`, transcribe, and MEASURE the type with strict-colour pixel
+  bboxes (width + side-by-side; height gets contaminated by hair/skin).
+- Logos: `logos/` only, transparent, `*_w.png` for white wordmarks. Photos in
+  cards get a soft halo, never a white plate.
+- Whisper mishears proper nouns (JacHacks, UMich, Vatsal) and hallucinates after
+  the audio ends — fix `aligned.json` by hand before rendering captions.
+- macOS/zsh: no `timeout`, unquoted `$var` does not word-split (use arrays),
+  APFS is case-insensitive. `~/.cache/uv/archive-v0` grows unbounded — prune it
+  when disk is tight, but never while a `uvx` tool is running.
 
-## Workflow for a new video
-1. `bin/new-reel.sh <name> <raw.mov>` — normalize + probes + matte/transcribe/
-   safe-zones. (~5 min for 45s of video; matte dominates.)
-2. Review `sheet.png`, `scene-cuts.txt`, `transcript.json` (fix misheard
-   names — Whisper writes "Butso" for "Vatsal"), `safe-zones.json`.
-3. Author `theme.json` per HOUSE-STYLE.md (copy 0820/theme.json as base).
-4. `node .agents/skills/embedded-captions/scripts/make-theme.cjs <project>`
-5. Preview + QA per HOUSE-STYLE.md — including the head-edge zoom check;
-   run `bin/refine-matte.sh` if the subject is small (wide shot).
-6. `bash .agents/skills/embedded-captions/scripts/render-theme.sh <project>`
-7. CTA if wanted: `bin/cta-overlay.sh final_fx.mp4 FINAL_reel.mp4 <t> ...`
-8. `bin/check-audio.sh FINAL_reel.mp4 <segments around each cut>` + spot-check
-   frames, then deliver FINAL_reel.mp4 via SendUserFile.
+## Typographic systems that exist as tools (pick, don't reinvent)
+| look | tool | format file |
+|---|---|---|
+| Mumbai promo: Anton kinetic hero words behind the body, UMich blue/yellow, running Anton captions, logo cards | `kinetic-hook.py` + `promo-caption.py` | `formats/promo-reel-format.md` |
+| Kumar / chess-kid: flat red DM Serif, fixed cap height, X-compressed to ~90%, ×3 echo stack, hard cuts, 3-panel insert, two-layer grade | `kinetic-hook.py` (`cap_h squash_to echo from:cut`) | `formats/kumar-method-reel-format.md` |
+| Typewriter opener: Instrument Serif 103, 24 cps into a pre-centred line, hold, 0.13s fade, optional keystroke SFX | `typewriter.py` + `keystroke-track.py` | `formats/typewriter-hook-format.md` |
+| "X OR Y" gold fisheye hook | `fisheye-text.py` via `or-reel.sh` | `formats/or-choice-reel-format.md` |
+| "N things at N" list stickers | `list-reel.sh` + `list-label.py` | `formats/list-reel-format.md` |
+| Stacked light serif/Helvetica hero behind subject | `hero-type.py` | `formats/cinematic-hero-type.md` |
+| Word-by-word typed DM Serif hook on talking head | `typed-hook.py` via `build-story-reel.sh` | `formats/typed-serif-hook.md` |
+| Glow/bloom text | `glow-text.py` | `formats/reel-font-repo.md` |
+| Receipt / glow-up / diptych / card / travel-story | `receipt-reel.sh glowup-reel.sh diptych-reel.sh card-reel.sh travel-story-reel.sh` | `formats/*.md`, `VIRAL-FORMAT.md` |
+| Daily-routine bounce: typing open, then guitar/keyboard hard cuts, one italic caption | `bounce-reel.sh` | `formats/daily-routine-bounce.md` |
 
-## Hard-won gotchas (cost hours; don't rediscover)
-- Wide shots: segmentation runs at 320x320 — a distant head is ~18px to the
-  model and mattes as a blurry blob. bin/refine-matte.sh (crop→4x→re-matte)
-  is the fix; sharpening the low-res alpha is NOT (crisp blob still a blob).
-- Changing source video: if frames identical (re-export), all authoring
-  carries over; but a re-export may be REMIXED (different loudness) — then
-  the new file must become the single source; never splice audio across mixes.
-- frames_fg/bg are per-source: `rm -rf frames_bg frames_fg matte.fps` when
-  source.mp4 changes duration, else matte.cjs skips ("already complete").
-- Hero must exit before burned-in screenshots; scan dark-pixel fraction to
-  find their onset precisely (see 0820 session; ~0.05s resolution).
-- github.com git clone can die (early EOF) on this network — use codeload
-  tarballs: `curl codeload.github.com/<org>/<repo>/tar.gz/refs/heads/main`.
+## Workflow for "make me a reel like <reference>"
+1. `uvx yt-dlp` the reference → `bin/contact-sheet.py` → `uvx mlx-whisper` → measure type.
+2. Pick footage from `FOOTAGE.md` (verified seeks). Unknown folder → contact sheet first.
+3. Write a spec JSON, render layers (`k_/f_/t_` PNG sequences), check alpha bboxes.
+4. Composite (ffmpeg overlay, or PIL when a matte is involved), mix audio.
+   For a stem-based remix or a quiet opening, use `bin/remix-story-audio.sh`; keep the music audible from frame one and let its side-chain ducking protect the voice.
+5. `ig-safe.py view` + phone mirror → `SendUserFile` the phone mp4 with the view sheet.
+6. If it is a new look, make it a tool in `bin/`, add a row above, add `formats/<name>.md`
+   with the measured numbers, and a line in `TOOLS.md`. That is the product.
 
-## AI shot generation (Kerala reel workflow)
-Generate NEW scenes featuring Vatsal (identity-locked) to intercut with real footage:
-Real prices (ai.google.dev/gemini-api/docs/pricing, 2026-08-22): veo-3.1-lite
-$0.05/s, veo-3.1-fast $0.10/s @720p ($0.12 @1080p), veo-3.1 $0.40/s, sora-2
-$0.10/s. (amplify's lib/video/cost.ts says 2.5c/s — that is 4x LOW, do not trust.)
-Cheapest identity-capable routes, best first:
-1. UNTESTED ~$0.45/8s: gemini flash image edit (~$0.04) + veo-3.1-lite i2v
-   ($0.40) — docs conflict on whether lite takes an input image; test costs $0
-   if it 400s. Needs valid GEMINI_API_KEY (INVALID as of 2026-08-21).
-2. $0.80/8s: `bin/gen-veo.mjs` — veo-3.1-fast, his reference photos native, no
-   image step. Same key blocker. Use GA model id veo-3.1-fast-generate-001
-   (the -preview ids retire 2026-04-02… already past; verify on first run).
-3. $1.05/8s WORKS NOW: gpt-image-2 edit ($0.25 high / $0.06 medium) →
-   `bin/gen-sora.sh` sora-2 ($0.80). Uses amplify OPENAI_API_KEY.
-- Identity recipe: back-facing shots only (no face drift), the cream Goku/kanji
-  tee is the anchor — always name "same cream oversized t-shirt with orange-and-black
-  anime print, same dark wavy hair" in prompts. Crop refs to content band first
-  (his phone exports are letterboxed: content rows ~875-1684 of 2560).
-- His real Kerala shots: lake, boat shore, misty hills (Munnar area). Generated
-  spots to use: Alleppey backwaters (done, sample), Athirappilly falls, Varkala
-  cliffs, Fort Kochi fishing nets, Munnar tea gardens.
-- Cost-minimized Sora recipe (validated): still at quality=medium ($0.06, high
-  adds nothing at 720p) + sora-2 4s ($0.40) = ~$0.46/shot. Prompt stills for
-  "MEDIUM SHOT from mid-thigh up, camera close behind" — matches his real
-  framing and avoids post-zoom. Post-zoom trick (free, for wide gens): 2.1x
-  center crop + lanczos + light unsharp, e.g. crop=608:342:336:93 on 1280x720.
-  Medium stills can drift the shirt print — spot-check; redo at high if wrong.
-
-## Receipt-reel mass production (see VIRAL-FORMAT.md)
-The proven viral template: bin/receipt-reel.sh + manifest. Keep output
-silent; audio is attached in the IG composer ("Wishes" segment = 10.912s).
+## Deliverables
+Two exports per reel, always:
+- Master (archive): 1080x1920 30fps, libx264 crf 15 preset slow profile high, yuv420p, AAC 256k, faststart.
+- **Instagram upload copy** (`*_IG.mp4`): stereo 44.1 kHz AAC 160k, `loudnorm I=-14:TP=-2:linear=true` + `alimiter
+  0.79`, 30fps CFR, High 4.0, `-g 60 -keyint_min 60 -sc_threshold 0`, ~8 Mbps (`-b:v 8000k -maxrate 9000k -bufsize 18000k`),
+  `-movflags +faststart+negative_cts_offsets -use_editlist 0`. A mono/48k/-0.4 dBFS master played fine locally but
+  glitched after IG's transcode (reel 36, 2026-09-06). Verify: ebur128 peak <= -1.9, channels=2, sample_rate=44100,
+  `ffprobe -v trace | grep -c elst` == 0.
+  Create it with `bin/export-ig.sh <master.mp4> <name_IG.mp4>`; do not hand-roll the export. The tool also stamps Rec.709 metadata so an iPhone HLG tag cannot survive after tonemapping.
+The `phone/` copy (608x1080 crf 26) is only for previewing in chat; never hand that one over as final.
+`~/Downloads/reel-batch/README.md` lists every reel and what it is. Number files
+`NN_slug.mp4`; keep the phone mirror in sync. Nothing here is committed
+automatically — commit when Vatsal asks.

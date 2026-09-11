@@ -8,6 +8,16 @@ receipts/*.mov
 receipts/editor_out/
 receipts/frames_*/
 receipts/history/
+amplify/
+logos/
+fonts/*.ttf
+fonts/*.png
+analytics/*.csv
+!analytics/reel-performance-template.csv
+FOOTAGE.md
+talkhead_uuids.txt
+uuids/
+*.log
 *.mp4
 *.mov
 *.MOV
@@ -17,7 +27,6 @@ receipts/history/
 # ---- keep the small stuff that matters ----
 !projects/*.json
 !receipts/*.json
-!fonts/*.ttf
 __pycache__/
 *.pyc
 .DS_Store

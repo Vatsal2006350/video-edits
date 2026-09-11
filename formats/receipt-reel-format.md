@@ -1,0 +1,4 @@
+
+Vatsal's IG growth account `vatsal.returns` (2026-08: 5 posts, ~586 followers) runs a proven viral template, fully decoded in `~/Code/video-edits/VIRAL-FORMAT.md`: 4 scenes × 2.728s = 10.912s, matching one exact segment of "Wishes" (Hasan Raheem/Umair/Talwiinder, IG audio 838040817866845). Scene 1 = relatable meme hook over authentic lo-fi footage (desk webcam opener outperformed scenic 7.5×: 3,693 vs 488 likes); scenes 2–4 = flex receipts (YC at 18/$500k, 3 startups, Sam Altman). [[local-reel-pipeline]]
+
+**How to apply:** `bin/receipt-reel.sh <manifest> <out>` in ~/Code/video-edits (manifest: `type|src|focus|text`). Output is silent on purpose — Vatsal attaches the trending audio in the IG composer so cuts auto-land on beats and the reel joins the trend graph. Never burn music in; never rip tracks from IG/YT. Raw material lives in ~/Downloads/content.

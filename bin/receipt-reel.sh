@@ -12,6 +12,7 @@ WS="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 MF="${1:?manifest}"; OUT="${2:?out.mp4}"; TOTAL="${3:-10.912}"
 FONT="$WS/fonts/Montserrat-SemiBold.ttf"
 W=1080; H=1920; FPS=30
+source "$(dirname "${BASH_SOURCE[0]}")/lib-still.sh"
 N=$(grep -cv '^\s*$' "$MF")
 DUR=$(python3 -c "print(round($TOTAL/$N,3))")
 TMP="$(mktemp -d)"; trap 'rm -rf "$TMP"' EXIT
@@ -35,7 +36,7 @@ print(min(68,max(42,int(1650/max(L,1)))))" "$TXT")
       srcpng="$TMP/p$i.png";; esac
     DRAW=""; [ -n "$text" ] && DRAW=",drawtext=fontfile=$FONT:text='$TXT':fontsize=$((FS>64?64:FS)):fontcolor=white:line_spacing=14:text_align=center:x=(w-text_w)/2:y='h*0.16-14*min(1\,t/0.3)':alpha='min(1\,t/0.28)':box=1:boxcolor=black@0.35:boxborderw=16:shadowcolor=black@0.5:shadowx=0:shadowy=2"
     ffmpeg -nostdin -y -v error -framerate $FPS -loop 1 -t "$DUR" -i "$srcpng" -filter_complex \
-      "[0:v]scale=$W:-1,pad=$W:$H:(ow-iw)/2:(oh-ih)/2:black,zoompan=z='min(1.06\,1+0.0006*on)':x='iw/2-(iw/zoom/2)':y='ih/2-(ih/zoom/2)':d=1:s=${W}x${H}:fps=$FPS$DRAW,format=yuv420p,fps=$FPS" \
+      "[0:v]$(still_vf $W $H 0.0006 1.06)$DRAW,format=yuv420p" \
       -t "$DUR" -c:v libx264 -crf 17 -preset fast -an "$seg"
   else
     case "$focus" in left) X=0;; right) X="iw-ow";; *) X="(iw-ow)/2";; esac

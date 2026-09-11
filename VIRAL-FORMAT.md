@@ -67,3 +67,16 @@ Takeaways to apply:
 - Setup line is FIRST-PERSON identity ("Me: I'm a ___"), reaction is the
   dismissive quote, drop is the flex that contradicts it. Ours already does this.
 - Keep the burned setup/quote text; attach the sound in-app (never burned).
+
+## 2026-09-06 viral: "Forget her / or / Become a YC founder" (Dc8vZ0gOMF5, 5.4k likes)
+Same 10.912s Wishes template -- the segment is `wishes.mp3` @ **114.707s** (second drop, lands at 8.80), NOT the 31.56 first-drop cut; identify by cross-correlating the reel audio against the song, never by ear. Hook = 3-line OR over a Ladakh snow POV (feet), then YC sign photo ("Became a YC founder at 18
+and raised $500k"), stage clip IMG_6946 @0.5 ("Scaled 3 startups"), laptop Zoom clip IMG_3773 @44 ("Met Sam Altman").
+Caption "Priorities are set" #trend #fyp #yc. The "her vs the work" thread keeps working (studying-till-she-replies -> this).
+Variations shipped 2026-09-07 as reels 37-39 (receipts/her1-3.manifest): rotate hook line + hook footage + receipt order so
+IG sees new content; keep the YC sign + Sam Altman as anchors. White hook text needs darker ground (snow/rocks, lake, desk);
+over bright sand it disappears (shadow only, no scrim).
+
+Measured text (viral, YC-sign scene): 'Became a YC founder at 18' spans x 117-963 (846px), block top y=406 in the top
+black bar, ~11px stems -> Montserrat Bold 61px, line pitch ~73, white, shadow 0/3 @0.6, NO box. Photo fitted to width on
+black (band 656-1263). Hook text centred at 42% height over video. All of this is the default in `bin/receipt-reel2.sh`;
+Vatsal's rule: after the hook, beat 2 is ALWAYS the YC sign photo; other YC receipts come after it.
