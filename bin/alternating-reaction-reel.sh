@@ -15,9 +15,8 @@ BOTTOM2="${BOTTOM2:-website work on this}"
 FONT="${FONT:-$(cd "$(dirname "$0")/.." && pwd)/fonts/Montserrat-Bold.ttf}"
 mkdir -p "$(dirname "$OUT")"
 
-# The repo copy of the desk reaction is a prior clean render with one small line
-# of text. Crop past that line, then use a soft duplicate behind it. This keeps
-# the face and hands natural without carrying old copy into the new reel.
+# Reaction footage is supplied as clean creator footage; no product UI or prior
+# burned copy is carried into the composition.
 ffmpeg -nostdin -y -hide_banner -loglevel error \
   -i "$REACTION" -i "$PRODUCT" -i "$AUDIO" \
   -filter_complex "
@@ -35,8 +34,6 @@ ffmpeg -nostdin -y -hide_banner -loglevel error \
     [person]trim=start=0.20:end=0.874,setpts=PTS-STARTPTS[p6];
     [person]trim=start=0.90:end=2.274,setpts=PTS-STARTPTS[p7];
     [p0][p1][p2][p3][p4][p5][p6][p7]concat=n=8:v=1:a=0,trim=0:13.074,
-      drawbox=x=0:y=1460:w=1080:h=150:color=black:t=fill:
-        enable='between(t,0,1.14)+between(t,3.30,6.10)+between(t,9.00,11.00)+between(t,12.30,13.074)',
       drawtext=fontfile='${FONT}':text='${TOP1}':fontcolor=white:fontsize=52:
         borderw=3:bordercolor=black@0.65:x=(w-text_w)/2:y=325,
       drawtext=fontfile='${FONT}':text='${TOP2}':fontcolor=white:fontsize=52:
