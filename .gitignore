@@ -14,6 +14,7 @@ fonts/*.ttf
 fonts/*.png
 analytics/*.csv
 !analytics/reel-performance-template.csv
+analytics/account-*.md
 FOOTAGE.md
 talkhead_uuids.txt
 uuids/
