@@ -38,6 +38,9 @@ layer PNGs, never by eyeballing a still. Read `FOOTAGE.md` before using any clip
 - `story-qa.py --segs --cuts --tail` — pre-render gate wired into `build-story-reel.sh` (set `QA_FORCE=1` to override): flags speaker flashes (cutaway gaps < 0.6s), a cutaway from the take that is speaking under it, cuts landing inside a segment's first 0.4s / last 0.3s, seeks past the source end. After every story build also run a reviewer agent (the QA prompt in `formats/story-reel-qa.md`) before sending.
 
 ## Analysis
+- `ig-audio.py <reel-url...>` or `--input name-url.csv` — extract MP3 reference tracks
+  from public Instagram Reels with `uvx yt-dlp`, and write a provenance/hash ledger. Audio
+  stays local; attach licensed trend audio natively in Instagram when publishing.
 - `music-map.py <mp3…>` — drop time, loud-start, peaks → where the payoff must land. `beats.py <mp3> [n]` — beat grid.
 - `force-align.py` — whisperx alignment (whisper alone pins word 1 to 0.00 and jitters ±0.3s).
 - `contact-sheet.py <dir>` — look at a folder before using it; writes an index of tile→file+timestamp.
