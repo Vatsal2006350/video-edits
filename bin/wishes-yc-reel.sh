@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # wishes-yc-reel.sh <manifest> <out.mp4>
-# Wishes structure measured from the original reel audio. The hook holds until
-# the 4.00s surge; YC is scene two and lands exactly on that musical change.
+# Proven Wishes structure: four equal 2.728-second scenes. Keep this visual
+# grid unchanged and use the verified original reel audio.
 set -euo pipefail
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 MF="${1:?manifest}"; OUT="${2:?output}"
@@ -9,9 +9,7 @@ FONT="$ROOT/fonts/Montserrat-Bold.ttf"
 AUDIO="${AUDIO:-$ROOT/assets/audio/wishes.mp3}"
 AUDIO_SS="${AUDIO_SS:-0}"
 TOTAL=10.912
-# Boundaries: 0.00 / 4.00 / 6.41 / 8.82 / 10.912. These are measured
-# musical anchors, not equal visual slices.
-SCENES=(4.000 2.410 2.410 2.092)
+SCENE=2.728
 TMP="$(mktemp -d)"; trap 'rm -rf "$TMP"' EXIT
 mkdir -p "$(dirname "$OUT")"
 
@@ -20,7 +18,6 @@ i=0
 while IFS='|' read -r TYPE SRC SS TEXT; do
   [ -n "${TYPE// }" ] || continue
   i=$((i+1)); SEG="$TMP/seg-$i.mp4"; TXT="$(escape_text "$TEXT")"
-  SCENE="${SCENES[$((i-1))]}"
   FS=$(python3 - "$TEXT" "$FONT" <<'PY'
 import sys
 from PIL import ImageFont
@@ -54,4 +51,4 @@ ffmpeg -nostdin -y -v error -f concat -safe 0 -i "$TMP/list.txt" \
   -af "aresample=44100:async=1,loudnorm=I=-14:TP=-2:LRA=11" \
   -c:v libx264 -preset slow -crf 17 -profile:v high -level 4.0 -pix_fmt yuv420p -r 30 -g 60 \
   -c:a aac -b:a 160k -ar 44100 -ac 2 -movflags +faststart "$OUT"
-echo "[wishes-yc] cuts 0/4.00/6.41/8.82/10.912; Wishes @$AUDIO_SS -> $OUT"
+echo "[wishes-yc] cuts 0/2.728/5.456/8.184/10.912; verified Wishes audio -> $OUT"
