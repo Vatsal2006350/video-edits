@@ -5,7 +5,7 @@ ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 OUT="${1:-$ROOT/deliverables/yc-shirt-transition-2026-09-12/master/yc-shirt-transition.mp4}"
 CLIP_A="${CLIP_A:-/Users/vatsalshah/Downloads/IMG_5421.MOV}"
 CLIP_B="${CLIP_B:-/Users/vatsalshah/Downloads/IMG_5422.MOV}"
-YC="${YC:-$ROOT/receipts/yc_fullscreen.jpg}"
+YC="${YC:-$ROOT/receipts/yc_fullbleed.jpg}"
 AUDIO="${AUDIO:-$ROOT/.work/yc-shirt-transition/reference-audio.mp4}"
 FONT="$ROOT/fonts/DMSerifDisplay-Regular.ttf"
 TMP="$(mktemp -d)"; trap 'rm -rf "$TMP"' EXIT
@@ -16,7 +16,7 @@ mkdir -p "$(dirname "$OUT")"
 VF="zscale=transfer=linear:npl=100,format=gbrpf32le,zscale=primaries=bt709,tonemap=tonemap=mobius:param=0.3:desat=0,zscale=transfer=bt709:matrix=bt709:range=tv,format=yuv420p,scale=1080:1920:flags=lanczos,setsar=1,fps=30"
 
 ffmpeg -nostdin -y -v error -ss 0.75 -t 4.80 -i "$CLIP_A" \
-  -vf "$VF,drawtext=fontfile='$FONT':text='Y Combinator':fontsize=49:fontcolor=0xF2C94C:borderw=1:bordercolor=black@0.3:shadowcolor=black@0.45:shadowy=2:x=(w-text_w)/2:y=1000:enable='between(t,1.45,4.80)'" \
+  -vf "$VF,drawtext=fontfile='$FONT':text='Y Combinator':fontsize=60:fontcolor=0xF2C94C:borderw=1:bordercolor=black@0.3:shadowcolor=black@0.45:shadowy=2:x=(w-text_w)/2:y=1210:enable='between(t,1.45,4.80)'" \
   -an -c:v libx264 -crf 17 -preset fast "$TMP/a.mp4"
 
 ffmpeg -nostdin -y -v error -ss 3.40 -t 3.37 -i "$CLIP_B" \

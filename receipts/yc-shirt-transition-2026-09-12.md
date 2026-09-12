@@ -6,10 +6,10 @@ original-audio id `1318320516248798` by `bruna.conce`.
 
 Edit map:
 
-- 0.00–4.80: `IMG_5421.MOV` from 0.75s; gold “Y Combinator” copy.
+- 0.00–4.80: `IMG_5421.MOV` from 0.75s; larger gold “Y Combinator” copy placed over the shirt inside the IG-safe box.
 - 4.80: hand-cover match cut. Source-A cover 5.55s → source-B cover 3.40s.
 - 4.80–8.17: `IMG_5422.MOV`, revealing the YC “Make something people want” shirt.
-- 8.17–11.214: full-screen YC sign proof.
+- 8.17–11.214: original YC sign proof with plain black bars (no blurred backdrop).
 
 HLG sources are explicitly transformed to Rec.709 without an added contrast
 grade. Output is 1080×1920, 30fps, H.264 High 4.0, AAC 44.1kHz stereo.
