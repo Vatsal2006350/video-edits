@@ -15,48 +15,57 @@
     "follower_gap": 1828
   },
   "variants": {
-    "professional-but-also": {
+    "professional-outdoor": {
       "views_p10_p50_p90": [
-        14978,
-        87664,
-        285888
+        15379,
+        90012,
+        293546
       ],
-      "chance_over_100k": 0.46086,
-      "chance_over_300k": 0.09041
+      "chance_over_100k": 0.46939,
+      "chance_over_300k": 0.09558
     },
-    "two-best-friends": {
+    "bad-dream-origin": {
       "views_p10_p50_p90": [
-        13000,
-        76715,
-        246162
+        14896,
+        87903,
+        282061
       ],
-      "chance_over_100k": 0.41227,
-      "chance_over_300k": 0.0624
+      "chance_over_100k": 0.46044,
+      "chance_over_300k": 0.08745
     },
-    "the-push": {
+    "opportunity-calls": {
       "views_p10_p50_p90": [
-        14563,
-        84420,
-        273543
+        13754,
+        79730,
+        258347
       ],
-      "chance_over_100k": 0.44809,
-      "chance_over_300k": 0.08123
+      "chance_over_100k": 0.42824,
+      "chance_over_300k": 0.07082
+    },
+    "college-tradeoff": {
+      "views_p10_p50_p90": [
+        13246,
+        77669,
+        250782
+      ],
+      "chance_over_100k": 0.41882,
+      "chance_over_300k": 0.06561
     }
   },
   "batch": {
     "views_p10_p50_p90": [
-      121184,
-      310202,
-      617060
+      198536,
+      430388,
+      781748
     ],
-    "max_reel_p50": 182467,
-    "chance_total_views_at_least_528k": 0.16939,
+    "max_reel_p50": 214061,
+    "chance_total_views_at_least_528k": 0.34253,
     "follows_p10_p50_p90": [
-      448,
-      1158,
-      2322
+      736,
+      1604,
+      2960
     ],
-    "chance_closes_1828_follower_gap": 0.21166
+    "chance_closes_1828_follower_gap": 0.40206
   },
   "limitations": [
     "Only three first-party winning-reel view counts were available; non-winner history is approximated.",

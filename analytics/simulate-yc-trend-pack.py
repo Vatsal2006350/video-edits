@@ -21,9 +21,10 @@ states = (
     (0.10, 319_000, 0.34),
 )
 variants = {
-    "professional-but-also": 1.12,
-    "two-best-friends": 0.96,
-    "the-push": 1.08,
+    "professional-outdoor": 1.15,
+    "bad-dream-origin": 1.10,
+    "opportunity-calls": 1.02,
+    "college-tradeoff": 0.98,
 }
 
 def sample_views(score: float) -> int:
