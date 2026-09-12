@@ -12,7 +12,7 @@ mkdir -p "$(dirname "$OUT")"
 ffmpeg -nostdin -y -v error -i "$SRC" -i "$AUDIO" -filter_complex "
   [0:v]fps=60,scale=1080:1920,setsar=1,split=7[a][b][c][d][e][f][g];
   [a]trim=0:1.733333,setpts=(PTS-STARTPTS)*2.30769,
-    drawbox=x=0:y=0:w=1080:h=278:color=black:t=fill,
+    crop=1080:1642:0:278,scale=1263:1920,crop=1080:1920:91:0,setsar=1,
     drawtext=fontfile='$FONT':text='POV\\: you disappeared':fontsize=50:fontcolor=white:borderw=2:bordercolor=black@0.55:x=(w-text_w)/2:y=1020,
     drawtext=fontfile='$FONT':text='for a year':fontsize=50:fontcolor=white:borderw=2:bordercolor=black@0.55:x=(w-text_w)/2:y=1080[setup];
   [b]trim=1.733333:2.949,setpts=(PTS-STARTPTS)*0.52644,
