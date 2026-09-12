@@ -11,7 +11,7 @@ OUT="${4:?output mp4}"
 TOP1="${TOP1:-Me as a founder}"
 TOP2="${TOP2:-realizing I}"
 BOTTOM1="${BOTTOM1:-have to make my}"
-BOTTOM2="${BOTTOM2:-website work on this}"
+BOTTOM2="${BOTTOM2:-app work on this}"
 FONT="${FONT:-$(cd "$(dirname "$0")/.." && pwd)/fonts/Montserrat-Bold.ttf}"
 mkdir -p "$(dirname "$OUT")"
 
