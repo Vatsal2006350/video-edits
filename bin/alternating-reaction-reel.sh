@@ -34,7 +34,7 @@ ffmpeg -nostdin -y -hide_banner -loglevel error \
     [pC]trim=start=0.60:end=2.60,setpts=PTS-STARTPTS[p4];
     [dC]trim=start=10.00:end=11.30,setpts=PTS-STARTPTS[p5];
     [pD]trim=start=0.20:end=0.874,setpts=PTS-STARTPTS[p6];
-    [pD]trim=start=14.40:end=15.774,setpts=PTS-STARTPTS[p7];
+    [pD]trim=start=16.00:end=17.374,setpts=PTS-STARTPTS[p7];
     [p0][p1][p2][p3][p4][p5][p6][p7]concat=n=8:v=1:a=0,trim=0:13.074,
       drawtext=fontfile='${FONT}':text='${TOP1}':fontcolor=white:fontsize=52:
         borderw=3:bordercolor=black@0.65:x=(w-text_w)/2:y=325,
