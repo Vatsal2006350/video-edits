@@ -52,7 +52,20 @@ for row in "${SCENES[@]}"; do
   i=$((i+1)); SEG="$TMP/seg-$i.mp4"; TXT="$(escape_text "$TEXT")"
   DRAW=""
   if [ -n "$TEXT" ]; then
-    DRAW=",drawtext=fontfile='$FONT':text='$TXT':fontsize=58:fontcolor=white:borderw=3:bordercolor=black@0.74:shadowcolor=black@0.65:shadowy=4:x=(w-text_w)/2:y=285"
+    # Instagram's right-side action rail makes a centered line's real maximum
+    # width about 756px. Fit each line to 720px and keep it comfortably below
+    # the 278px header boundary.
+    FS=$(python3 - "$TEXT" "$FONT" <<'PY'
+import sys
+from PIL import ImageFont
+text, font = sys.argv[1:]
+size = 58
+while size > 34 and ImageFont.truetype(font, size).getlength(text) > 720:
+    size -= 2
+print(size)
+PY
+)
+    DRAW=",drawtext=fontfile='$FONT':text='$TXT':fontsize=$FS:fontcolor=white:borderw=3:bordercolor=black@0.74:shadowcolor=black@0.65:shadowy=4:x=(w-text_w)/2:y=360"
   fi
   if [ "$TYPE" = video ]; then
     ffmpeg -nostdin -y -v error -ss "$SS" -t "$DUR" -i "$SRC" \
@@ -60,7 +73,7 @@ for row in "${SCENES[@]}"; do
       -t "$DUR" -an -c:v libx264 -crf 17 -preset fast "$SEG"
   else
     ffmpeg -nostdin -y -v error -loop 1 -t "$DUR" -i "$SRC" \
-      -vf "scale=1080:1920:force_original_aspect_ratio=decrease,pad=1080:1920:(ow-iw)/2:(oh-ih)/2:black,fps=30${DRAW},format=yuv420p,setparams=color_primaries=bt709:color_trc=bt709:colorspace=bt709" \
+      -vf "scale=972:1728:force_original_aspect_ratio=decrease,pad=1080:1920:(ow-iw)/2:(oh-ih)/2:black,fps=30${DRAW},format=yuv420p,setparams=color_primaries=bt709:color_trc=bt709:colorspace=bt709" \
       -t "$DUR" -an -c:v libx264 -crf 17 -preset fast "$SEG"
   fi
   printf "file '%s'\n" "$SEG" >> "$TMP/list.txt"
