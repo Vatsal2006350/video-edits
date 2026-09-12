@@ -25,14 +25,15 @@ ffmpeg -nostdin -y -hide_banner -loglevel error \
     [1:v]fps=30,scale=1080:608:force_original_aspect_ratio=decrease,
       pad=1080:1920:(ow-iw)/2:(oh-ih)/2:black,setsar=1,setpts=PTS-STARTPTS[device];
     [device]split=3[dA][dB][dC];
-    [pA]trim=start=0.00:end=1.14,setpts=PTS-STARTPTS[p0];
+    [pA]trim=start=0.25:end=1.39,setpts=PTS-STARTPTS[p0];
     [dA]trim=start=4.00:end=6.16,setpts=PTS-STARTPTS[p1];
-    [pB]trim=start=0.10:end=2.90,setpts=PTS-STARTPTS[p2];
+    [pB]trim=start=2.30:end=5.10,setpts=PTS-STARTPTS[p2];
     [dB]trim=start=6.00:end=8.90,setpts=PTS-STARTPTS[p3];
-    [pC]trim=start=0.60:end=2.60,setpts=PTS-STARTPTS[p4];
+    [pC]trim=start=6.50:end=8.50,setpts=PTS-STARTPTS[p4];
     [dC]trim=start=10.00:end=11.30,setpts=PTS-STARTPTS[p5];
-    [pD]trim=start=0.20:end=0.874,setpts=PTS-STARTPTS[p6];
-    [pD]trim=start=16.00:end=17.374,setpts=PTS-STARTPTS[p7];
+    [pD]split=2[pD1][pD2];
+    [pD1]trim=start=10.50:end=11.174,setpts=PTS-STARTPTS[p6];
+    [pD2]trim=start=14.436:end=15.810,setpts=PTS-STARTPTS[p7];
     [p0][p1][p2][p3][p4][p5][p6][p7]concat=n=8:v=1:a=0,trim=0:13.074,
       drawtext=fontfile='${FONT}':text='${TOP1}':fontcolor=white:fontsize=52:
         borderw=3:bordercolor=black@0.65:x=(w-text_w)/2:y=325,
