@@ -20,9 +20,7 @@ mkdir -p "$(dirname "$OUT")"
 ffmpeg -nostdin -y -hide_banner -loglevel error \
   -i "$REACTION" -i "$PRODUCT" -i "$AUDIO" \
   -filter_complex "
-    [0:v]fps=30,scale=1080:1920,setsar=1,
-      eq=brightness=-0.14:contrast=0.90:saturation=0.82:gamma=0.84,
-      curves=all='0/0 0.25/0.18 0.50/0.46 0.75/0.70 1/0.90'[person];
+    [0:v]fps=30,scale=1080:1920,setsar=1[person];
     [person]split=4[pA][pB][pC][pD];
     [1:v]fps=30,scale=1080:608:force_original_aspect_ratio=decrease,
       pad=1080:1920:(ow-iw)/2:(oh-ih)/2:black,setsar=1,setpts=PTS-STARTPTS[device];
