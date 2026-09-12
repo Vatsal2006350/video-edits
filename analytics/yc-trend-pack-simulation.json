@@ -1,0 +1,66 @@
+{
+  "model": "three-state Monte Carlo scenario model (not a platform forecast)",
+  "seed": 20260911,
+  "runs": 100000,
+  "inputs": {
+    "known_top_reel_views": [
+      318999,
+      137168,
+      124563
+    ],
+    "known_follow_per_view_range": [
+      0.00302,
+      0.00477
+    ],
+    "follower_gap": 1828
+  },
+  "variants": {
+    "professional-but-also": {
+      "views_p10_p50_p90": [
+        14978,
+        87664,
+        285888
+      ],
+      "chance_over_100k": 0.46086,
+      "chance_over_300k": 0.09041
+    },
+    "two-best-friends": {
+      "views_p10_p50_p90": [
+        13000,
+        76715,
+        246162
+      ],
+      "chance_over_100k": 0.41227,
+      "chance_over_300k": 0.0624
+    },
+    "the-push": {
+      "views_p10_p50_p90": [
+        14563,
+        84420,
+        273543
+      ],
+      "chance_over_100k": 0.44809,
+      "chance_over_300k": 0.08123
+    }
+  },
+  "batch": {
+    "views_p10_p50_p90": [
+      121184,
+      310202,
+      617060
+    ],
+    "max_reel_p50": 182467,
+    "chance_total_views_at_least_528k": 0.16939,
+    "follows_p10_p50_p90": [
+      448,
+      1158,
+      2322
+    ],
+    "chance_closes_1828_follower_gap": 0.21166
+  },
+  "limitations": [
+    "Only three first-party winning-reel view counts were available; non-winner history is approximated.",
+    "Audio popularity, retention, posting time, distribution, and creative quality are not available from an Instagram prediction API.",
+    "Use Trial Reel retention and follows/view to replace these priors after each post."
+  ]
+}
