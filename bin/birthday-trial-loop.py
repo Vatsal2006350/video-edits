@@ -131,10 +131,10 @@ def publish(queue, authorized_extra_batch=False, authorized_birthday_six=False, 
         raise RuntimeError('Six reel authorization does not cover this queue or date')
     music_allowed = (authorized_music_refresh and
                      dt.datetime.now(dt.timezone.utc).date().isoformat() == '2026-09-14' and
-                     queue.name in {'birthday-indian-home-trial', 'birthday-flip-camera-trial'})
+                     queue.name in {'birthday-indian-home-trial', 'birthday-flip-camera-trial', 'birthday-indian-home-clean-trial'})
     if authorized_music_refresh and not music_allowed:
         raise RuntimeError('Music refresh authorization does not cover this queue or date')
-    if attempts_today >= (12 if music_allowed else 10 if six_allowed else 4 if extra_allowed else 2):
+    if attempts_today >= (13 if music_allowed else 10 if six_allowed else 4 if extra_allowed else 2):
         raise RuntimeError('Birthday experiment cap reached: two attempts per rolling 24 hours')
     path = folder / (queue.name + '.json')
     receipt = {'status': 'started', 'started_at': now(), 'queue': str(queue),
@@ -144,7 +144,7 @@ def publish(queue, authorized_extra_batch=False, authorized_birthday_six=False, 
     if six_allowed:
         receipt['authorization'] = '2026-09-14 explicit user request: corrected full bowling payoff plus five new variations, including birthday far from home; six named queues only'
     if music_allowed:
-        receipt['authorization'] = '2026-09-14 explicit user request: Indian music revision and new birthday music variants; two named queues only'
+        receipt['authorization'] = '2026-09-14 explicit user request: Indian music revision and camera flip variant, plus a named correction of the one frame seam defect; three named queues only'
     with path.open('x') as handle:
         json.dump(receipt, handle, indent=2)
     path.chmod(0o600)

@@ -1,5 +1,7 @@
 # Birthday audio refresh
 
+Late dense seam inspection caught one dark frame in the first home render after upload. Corrected locally by removing inherited fractional opacity handoff; nine frame final strip inspected clean. Prefer birthday-indian-home-clean-trial. The initial music replacement remains on Instagram and is a superseded test, not a recommendation to graduate it.
+
 Verified birthday reference: https://www.instagram.com/reel/Daibc7JSRsP/ by unfiltered.kid.sid, birthday friends and family theme, Koodappirannor credit. Profile grid showed 4.4M views; reel showed 225K likes, 403 comments and 1,545 reposts. Strong evidence for the people reveal premise, not proof that music alone causes reach.
 
 Visual inspection confirmed the explicit on screen camera flip premise, with the birthday subject seated behind a cake. New local edits retain natural footage and safe area captions. Home runs 10.4 seconds; flip runs 11 seconds. Both full checks passed, final contact sheets inspected. Decoded render audio correlation with intended source offset was 0.99915 for home and 0.99909 for flip. These verify correct track placement, not subjective listening quality or licensed attachment.
