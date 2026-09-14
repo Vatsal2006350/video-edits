@@ -92,7 +92,7 @@ def snapshot():
     print(json.dumps({'snapshot': str(dest), 'experiments': results}, indent=2))
 
 
-def publish(queue, authorized_extra_batch=False, authorized_birthday_six=False):
+def publish(queue, authorized_extra_batch=False, authorized_birthday_six=False, authorized_music_refresh=False):
     queue = Path(queue).resolve()
     queue.relative_to(ROOT / 'publishing/queue')
     meta = json.loads((queue / 'publish.json').read_text())
@@ -129,7 +129,12 @@ def publish(queue, authorized_extra_batch=False, authorized_birthday_six=False):
                                   'birthday-wish-list-trial', 'birthday-camera-roll-trial'})
     if authorized_birthday_six and not six_allowed:
         raise RuntimeError('Six reel authorization does not cover this queue or date')
-    if attempts_today >= (10 if six_allowed else 4 if extra_allowed else 2):
+    music_allowed = (authorized_music_refresh and
+                     dt.datetime.now(dt.timezone.utc).date().isoformat() == '2026-09-14' and
+                     queue.name in {'birthday-indian-home-trial', 'birthday-flip-camera-trial'})
+    if authorized_music_refresh and not music_allowed:
+        raise RuntimeError('Music refresh authorization does not cover this queue or date')
+    if attempts_today >= (12 if music_allowed else 10 if six_allowed else 4 if extra_allowed else 2):
         raise RuntimeError('Birthday experiment cap reached: two attempts per rolling 24 hours')
     path = folder / (queue.name + '.json')
     receipt = {'status': 'started', 'started_at': now(), 'queue': str(queue),
@@ -138,6 +143,8 @@ def publish(queue, authorized_extra_batch=False, authorized_birthday_six=False):
         receipt['authorization'] = '2026-09-14 explicit user request: make more variations and upload those too; two named variants only'
     if six_allowed:
         receipt['authorization'] = '2026-09-14 explicit user request: corrected full bowling payoff plus five new variations, including birthday far from home; six named queues only'
+    if music_allowed:
+        receipt['authorization'] = '2026-09-14 explicit user request: Indian music revision and new birthday music variants; two named queues only'
     with path.open('x') as handle:
         json.dump(receipt, handle, indent=2)
     path.chmod(0o600)
@@ -198,12 +205,13 @@ if __name__ == '__main__':
     parser.add_argument('queue', nargs='?')
     parser.add_argument('--authorized-extra-batch', action='store_true')
     parser.add_argument('--authorized-birthday-six', action='store_true')
+    parser.add_argument('--authorized-music-refresh', action='store_true')
     args = parser.parse_args()
     if args.action != 'snapshot' and not args.queue:
         parser.error('this action needs a queue directory')
     if args.action == 'snapshot':
         snapshot()
     elif args.action == 'publish':
-        publish(args.queue, args.authorized_extra_batch, args.authorized_birthday_six)
+        publish(args.queue, args.authorized_extra_batch, args.authorized_birthday_six, args.authorized_music_refresh)
     else:
         reconcile_pre_ingest(args.queue)

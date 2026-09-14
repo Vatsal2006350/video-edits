@@ -82,6 +82,11 @@ class GuardTests(unittest.TestCase):
             loop.publish(self.queue, authorized_birthday_six=True)
         self.assertEqual(self.run.call_count, 1)
 
+    def test_music_refresh_rejects_unlisted_queue(self):
+        with self.assertRaisesRegex(RuntimeError, 'Music refresh authorization'):
+            loop.publish(self.queue, authorized_music_refresh=True)
+        self.assertEqual(self.run.call_count, 1)
+
 
 if __name__ == '__main__':
     unittest.main()
