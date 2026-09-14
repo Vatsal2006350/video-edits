@@ -72,6 +72,11 @@ class GuardTests(unittest.TestCase):
         with self.assertRaisesRegex(RuntimeError, 'Not a proven'):
             loop.reconcile_pre_ingest(self.queue)
 
+    def test_extra_batch_rejects_unlisted_queue(self):
+        with self.assertRaisesRegex(RuntimeError, 'authorization does not cover'):
+            loop.publish(self.queue, authorized_extra_batch=True)
+        self.assertEqual(self.run.call_count, 1)
+
 
 if __name__ == '__main__':
     unittest.main()

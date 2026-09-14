@@ -92,7 +92,7 @@ def snapshot():
     print(json.dumps({'snapshot': str(dest), 'experiments': results}, indent=2))
 
 
-def publish(queue):
+def publish(queue, authorized_extra_batch=False):
     queue = Path(queue).resolve()
     queue.relative_to(ROOT / 'publishing/queue')
     meta = json.loads((queue / 'publish.json').read_text())
@@ -117,11 +117,18 @@ def publish(queue):
             raise RuntimeError('Prior attempt found; inspect its receipt and Instagram before retrying')
         if dt.datetime.fromisoformat(prior['started_at']) > cutoff:
             attempts_today += 1
-    if attempts_today >= 2:
+    extra_allowed = (authorized_extra_batch and
+                     dt.datetime.now(dt.timezone.utc).date().isoformat() == '2026-09-14' and
+                     queue.name in {'birthday-cake-priorities-trial', 'birthday-my-people-trial'})
+    if authorized_extra_batch and not extra_allowed:
+        raise RuntimeError('Extra batch authorization does not cover this queue or date')
+    if attempts_today >= (4 if extra_allowed else 2):
         raise RuntimeError('Birthday experiment cap reached: two attempts per rolling 24 hours')
     path = folder / (queue.name + '.json')
     receipt = {'status': 'started', 'started_at': now(), 'queue': str(queue),
                'sha256': digest, 'caption': caption, 'requested_trial_params': {'graduation_strategy': 'MANUAL'}}
+    if extra_allowed:
+        receipt['authorization'] = '2026-09-14 explicit user request: make more variations and upload those too; two named variants only'
     with path.open('x') as handle:
         json.dump(receipt, handle, indent=2)
     path.chmod(0o600)
@@ -180,12 +187,13 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('action', choices=['snapshot', 'publish', 'reconcile-pre-ingest'])
     parser.add_argument('queue', nargs='?')
+    parser.add_argument('--authorized-extra-batch', action='store_true')
     args = parser.parse_args()
     if args.action != 'snapshot' and not args.queue:
         parser.error('this action needs a queue directory')
     if args.action == 'snapshot':
         snapshot()
     elif args.action == 'publish':
-        publish(args.queue)
+        publish(args.queue, args.authorized_extra_batch)
     else:
         reconcile_pre_ingest(args.queue)
