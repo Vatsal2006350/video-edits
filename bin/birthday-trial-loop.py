@@ -92,7 +92,7 @@ def snapshot():
     print(json.dumps({'snapshot': str(dest), 'experiments': results}, indent=2))
 
 
-def publish(queue, authorized_extra_batch=False):
+def publish(queue, authorized_extra_batch=False, authorized_birthday_six=False):
     queue = Path(queue).resolve()
     queue.relative_to(ROOT / 'publishing/queue')
     meta = json.loads((queue / 'publish.json').read_text())
@@ -122,13 +122,22 @@ def publish(queue, authorized_extra_batch=False):
                      queue.name in {'birthday-cake-priorities-trial', 'birthday-my-people-trial'})
     if authorized_extra_batch and not extra_allowed:
         raise RuntimeError('Extra batch authorization does not cover this queue or date')
-    if attempts_today >= (4 if extra_allowed else 2):
+    six_allowed = (authorized_birthday_six and
+                   dt.datetime.now(dt.timezone.utc).date().isoformat() == '2026-09-14' and
+                   queue.name in {'birthday-full-roll-trial', 'birthday-main-character-trial',
+                                  'birthday-accessories-trial', 'birthday-cake-reveal-trial',
+                                  'birthday-wish-list-trial', 'birthday-camera-roll-trial'})
+    if authorized_birthday_six and not six_allowed:
+        raise RuntimeError('Six reel authorization does not cover this queue or date')
+    if attempts_today >= (10 if six_allowed else 4 if extra_allowed else 2):
         raise RuntimeError('Birthday experiment cap reached: two attempts per rolling 24 hours')
     path = folder / (queue.name + '.json')
     receipt = {'status': 'started', 'started_at': now(), 'queue': str(queue),
                'sha256': digest, 'caption': caption, 'requested_trial_params': {'graduation_strategy': 'MANUAL'}}
     if extra_allowed:
         receipt['authorization'] = '2026-09-14 explicit user request: make more variations and upload those too; two named variants only'
+    if six_allowed:
+        receipt['authorization'] = '2026-09-14 explicit user request: corrected full bowling payoff plus five new variations, including birthday far from home; six named queues only'
     with path.open('x') as handle:
         json.dump(receipt, handle, indent=2)
     path.chmod(0o600)
@@ -188,12 +197,13 @@ if __name__ == '__main__':
     parser.add_argument('action', choices=['snapshot', 'publish', 'reconcile-pre-ingest'])
     parser.add_argument('queue', nargs='?')
     parser.add_argument('--authorized-extra-batch', action='store_true')
+    parser.add_argument('--authorized-birthday-six', action='store_true')
     args = parser.parse_args()
     if args.action != 'snapshot' and not args.queue:
         parser.error('this action needs a queue directory')
     if args.action == 'snapshot':
         snapshot()
     elif args.action == 'publish':
-        publish(args.queue, args.authorized_extra_batch)
+        publish(args.queue, args.authorized_extra_batch, args.authorized_birthday_six)
     else:
         reconcile_pre_ingest(args.queue)

@@ -77,6 +77,11 @@ class GuardTests(unittest.TestCase):
             loop.publish(self.queue, authorized_extra_batch=True)
         self.assertEqual(self.run.call_count, 1)
 
+    def test_six_batch_rejects_unlisted_queue(self):
+        with self.assertRaisesRegex(RuntimeError, 'Six reel authorization'):
+            loop.publish(self.queue, authorized_birthday_six=True)
+        self.assertEqual(self.run.call_count, 1)
+
 
 if __name__ == '__main__':
     unittest.main()
