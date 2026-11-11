@@ -364,7 +364,7 @@ VIRAL-FORMAT.md format notes
 | 57-effect overlay library (`fx-extra`) | **no** | in a private workspace; planned |
 | Claude skill packs | **no** | local to the author's machine; planned |
 | Reel library server | **no** | planned |
-| Licence | **not yet chosen** | do not reuse the code until a licence file is added |
+| Licence | **MIT** (see `LICENSE`) |
 
 ---
 
