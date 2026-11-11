@@ -31,7 +31,7 @@ Grade the layers **before** compositing the hero text; grading after would tint 
 
 **What this format needs from the creator that cannot be faked:** a take scripted to the beat ("This is a message to all ___. My name is the creator. I'm ___. And I'm going to ___ by becoming the biggest ___ in the world." — ~11s, last word on 11.77), 3–4 stylised inserts (hackathon footage, JacHacks site images, a backlit silhouette, a full-body-on-plain closer), and optionally a second voice. The editing — captions, hero words, hard cuts, ×3 echo, beat-cut montage, closer — is all in `bin/kinetic-hook.py` (`leave_fade` 0.06 for hard cuts, `echo`/`echo_gap`) + `promo-caption.py` (`font`, `mute`) + `lib-still.sh`.
 
-## the creator's own take (2026-09-06, reel 36 `36_kumar_debut_vatsal.mp4`)
+## The creator's own take (2026-09-06, reel 36 `36_kumar_debut.mp4`)
 Source IMG_5217.MOV (4K60, white wall, JacHacks tee). Script: "This is a message to all hackathon
 organisers. My name is the creator. I'm a nineteen-year-old YC founder. And I'm going to make Ann
 Arbor the AI capital of hackathons and become the biggest student influencer in the world."
