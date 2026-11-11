@@ -11,11 +11,11 @@ FACE="$WORK/face-709.mp4"
 YC="$ROOT/receipts/yc_fullbleed.jpg"
 EVENT="$ROOT/logos/jachacks/photo_DSC06792.png"
 FONT="$ROOT/fonts/Montserrat-Bold.ttf"
-AUDIO_ROOT="/Users/you/Downloads/ig-trend-audio/2026-09-11"
+AUDIO_ROOT="${DOWNLOADS_DIR:-$HOME/Downloads}/ig-trend-audio/2026-09-11"
 mkdir -p "$WORK" "$(dirname "$OUT")"
 
 if [ ! -s "$FACE" ]; then
-  ffmpeg -nostdin -y -v error -i /Users/you/Downloads/IMG_5407.MOV \
+  ffmpeg -nostdin -y -v error -i ${DOWNLOADS_DIR:-$HOME/Downloads}/IMG_5407.MOV \
     -map 0:v:0 -map '0:a:0?' \
     -vf "zscale=t=linear:npl=100,format=gbrpf32le,zscale=p=bt709,tonemap=hable:desat=0,zscale=t=bt709:m=bt709:r=tv,format=yuv420p,setparams=color_primaries=bt709:color_trc=bt709:colorspace=bt709" \
     -c:v libx264 -crf 17 -preset medium -c:a aac -b:a 160k -movflags +faststart "$FACE"

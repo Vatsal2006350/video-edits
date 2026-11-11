@@ -3,8 +3,8 @@
 set -euo pipefail
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 OUT="${1:-$ROOT/deliverables/yc-shirt-transition-2026-09-12/master/yc-shirt-transition.mp4}"
-CLIP_A="${CLIP_A:-/Users/you/Downloads/IMG_5421.MOV}"
-CLIP_B="${CLIP_B:-/Users/you/Downloads/IMG_5422.MOV}"
+CLIP_A="${CLIP_A:-${DOWNLOADS_DIR:-$HOME/Downloads}/IMG_5421.MOV}"
+CLIP_B="${CLIP_B:-${DOWNLOADS_DIR:-$HOME/Downloads}/IMG_5422.MOV}"
 YC="${YC:-$ROOT/receipts/yc_fullbleed.jpg}"
 AUDIO="${AUDIO:-$ROOT/.work/yc-shirt-transition/reference-audio.mp4}"
 FONT="$ROOT/fonts/DMSerifDisplay-Regular.ttf"

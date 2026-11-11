@@ -13,8 +13,8 @@ import urllib.request
 
 ROOT = Path(__file__).resolve().parents[1]
 STATE = ROOT / '.work/birthday-bowling/loop'
-USER_ID = '${IG_USER_ID}'
-ACCOUNT = 'your_handle'
+USER_ID = os.environ['IG_USER_ID']
+ACCOUNT = os.environ.get('IG_ACCOUNT', 'your_handle')
 BASELINES = ['18006667874992265', '17873955555635617']
 METRICS = ['views', 'reach', 'likes', 'comments', 'saved', 'shares',
            'total_interactions', 'ig_reels_avg_watch_time']

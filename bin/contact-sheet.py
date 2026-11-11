@@ -16,7 +16,7 @@ from PIL import Image, ImageDraw, ImageFont
 
 VID = ('.mov', '.mp4', '.m4v')
 IMG = ('.jpg', '.jpeg', '.png', '.heic')
-FONTS = "/Users/you/Code/video-edits/fonts/Montserrat-Bold.ttf"
+FONTS = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'fonts', 'Montserrat-Bold.ttf')
 
 def dur(p):
     r = subprocess.run(['ffprobe', '-v', 'error', '-show_entries', 'format=duration',

@@ -25,7 +25,7 @@ W, H = 1080, 1920
 def bands():
     return dict(top=int(TOP*H), bottom=int(H-BOTTOM*H), right=int(W-RIGHT*W), left=int(LEFT*W))
 
-FONTS = "/Users/you/Code/video-edits/fonts"
+FONTS = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'fonts')
 
 def frames(path, times):
     out = []

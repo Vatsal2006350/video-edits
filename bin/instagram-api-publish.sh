@@ -65,13 +65,13 @@ fi
 
 if [[ -z "${IG_ACCESS_TOKEN:-}" ]]; then
   IG_ACCESS_TOKEN="$(security find-generic-password \
-    -a your_handle \
+    -a "${IG_KEYCHAIN_ACCOUNT:-${IG_ACCOUNT:-your_handle}}" \
     -s "$keychain_service" \
     -w 2>/dev/null || true)"
 fi
 
 : "${IG_ACCESS_TOKEN:?Set IG_ACCESS_TOKEN or store it in macOS Keychain}"
-IG_USER_ID="${IG_USER_ID:-${IG_USER_ID}}"
+IG_USER_ID="${IG_USER_ID:?set IG_USER_ID to your Instagram professional account ID}"
 
 command -v curl >/dev/null || { echo "curl is required" >&2; exit 1; }
 command -v jq >/dev/null || { echo "jq is required" >&2; exit 1; }

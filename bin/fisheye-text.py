@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 """Render stacked lines as gold outlined italic serif, barrel-warped (the IG 'fisheye' text look).
 Writes a transparent RGBA PNG sized to the video frame."""
-import sys, json, numpy as np
+import sys, json, os, numpy as np
 from PIL import Image, ImageDraw, ImageFont
 
 cfg = json.loads(sys.argv[1])
-FONT   = cfg.get('font', '/Users/you/Code/video-edits/fonts/PlayfairDisplay-BlackItalic.ttf')
+FONT   = cfg.get('font', os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'fonts', 'PlayfairDisplay-BlackItalic.ttf'))
 LINES  = cfg['lines']                      # [{"t":"...","rel":1.0}, ...]
 W, H   = cfg.get('w', 1080), cfg.get('h', 1920)
 TARGET = cfg.get('target_w', 840)          # widest line spans this many px

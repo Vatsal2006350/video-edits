@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 repo_dir="$(cd "$(dirname "$0")/.." && pwd)"
-downloads_dir="${1:-/Users/you/Downloads}"
+downloads_dir="${1:-${DOWNLOADS_DIR:-$HOME/Downloads}}"
 bowling_source="$downloads_dir/IMG_5456 2.MOV"
 candle_source="$downloads_dir/6685A3C8-C40A-450D-9978-ADE42C4C11A7.MP4"
 main_assets="$repo_dir/videos/birthday-bowling/assets"

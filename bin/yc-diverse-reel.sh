@@ -5,7 +5,7 @@ set -euo pipefail
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 KIND="${1:?variant}"; OUT="${2:?output}"
 FONT="$ROOT/fonts/Montserrat-Bold.ttf"
-AUDIO_DIR="/Users/you/Downloads/ig-trend-audio/2026-09-11"
+AUDIO_DIR="${DOWNLOADS_DIR:-$HOME/Downloads}/ig-trend-audio/2026-09-11"
 TMP="$(mktemp -d)"; trap 'rm -rf "$TMP"' EXIT
 mkdir -p "$(dirname "$OUT")"
 
