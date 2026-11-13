@@ -45,3 +45,6 @@ node_modules/
 .hyperframes/
 __pycache__/
 out/
+
+# gallery preview clips are part of the repo
+!catalog/previews/**/*.mp4
