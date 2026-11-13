@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Reel Picker</title>
+<style>
+:root{--bg:#0a0b0a;--panel:#121412;--panel2:#171a17;--line:#262a26;--text:#f3f5f3;--muted:#8f988f;--accent:#78e2b6;--accent-ink:#07120d;--warn:#f2c17e;--danger:#ff766d;--chip:#1c211d}
+*{box-sizing:border-box}html,body{margin:0;height:100%;background:var(--bg);color:var(--text);font:17px/1.5 Inter,-apple-system,BlinkMacSystemFont,"SF Pro Text",sans-serif}
+button,input,select,textarea{font:inherit;color:var(--text);background:var(--panel2);border:1px solid #31372f;border-radius:9px;padding:8px 10px;outline:none}
+input:focus,textarea:focus,select:focus{border-color:#4a7a63;box-shadow:0 0 0 3px rgba(120,226,182,.09)}
+button{cursor:pointer}button:hover{border-color:#56615a}.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink);font-weight:750}
+.app{display:grid;grid-template-columns:minmax(0,1fr) 470px;grid-template-rows:auto minmax(0,1fr);height:100vh}
+header{grid-column:1/-1;display:flex;gap:10px;align-items:center;padding:14px 18px;border-bottom:1px solid var(--line);background:var(--panel)}
+header h1{font-size:16px;margin:0 8px 0 0;letter-spacing:-.02em;white-space:nowrap}
+#brief{flex:1;min-width:0}
+main{overflow:auto;padding:14px 18px 40px}
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px;align-items:center}
+.tab{background:transparent;border-color:transparent;color:var(--muted);font-weight:650;font-size:16px;padding:9px 14px}.tab.on{background:var(--chip);border-color:#33403a;color:var(--text)}
+.tab .n{color:var(--muted);font-weight:500;margin-left:4px}
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}.chip{padding:5px 10px;border-radius:999px;font-size:12px;background:var(--chip)}.chip.on{background:#1f3a2e;border-color:#2f6a51}
+#search{width:220px;margin-left:auto}
+.lessons{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin-bottom:14px}.lessons h3{margin:0 0 6px;font-size:13px}.lessons li{color:#c9d0ca;margin:3px 0}
+.sec{font-size:12px;font-weight:750;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin:18px 0 10px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:16px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;overflow:hidden;cursor:pointer;position:relative;display:flex;flex-direction:column}
+.card:hover{border-color:#3c4a42}.card.sel{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent)}.card.active{outline:2px solid #fff3;outline-offset:2px}
+.media{aspect-ratio:9/16;background:#000;position:relative}.media img,.media video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.media video{opacity:0;transition:opacity .15s}.card:hover .media video.ready{opacity:1}
+.noprev{position:absolute;inset:0;display:grid;place-items:center;text-align:center;padding:14px;color:var(--muted);font-size:11px;background:repeating-linear-gradient(135deg,#111 0 8px,#151815 8px 16px)}
+.num{position:absolute;top:6px;left:6px;background:#000a;border-radius:6px;padding:1px 6px;font-size:11px;font-weight:700}
+.badge{position:absolute;top:6px;right:6px;background:var(--accent);color:var(--accent-ink);border-radius:6px;padding:1px 6px;font-size:11px;font-weight:800}
+.body{padding:8px 9px 10px}.title{font-weight:720;font-size:17px;line-height:1.25}.look{color:#b9c2bb;font-size:14px;margin-top:4px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.needs{display:inline-block;margin-top:6px;font-size:13px;font-weight:650;color:var(--warn);background:#221b12;border:1px solid #4c3a22;border-radius:999px;padding:1px 7px}
+aside{border-left:1px solid var(--line);background:var(--panel);overflow:auto;display:flex;flex-direction:column}
+.pv{padding:16px;border-bottom:1px solid var(--line)}
+.phone{width:290px;aspect-ratio:9/16;margin:0 auto 12px;border-radius:18px;overflow:hidden;background:#000;box-shadow:0 0 0 1px #333,0 20px 50px #0008;position:relative}
+.phone video,.phone img{width:100%;height:100%;object-fit:cover;display:block}
+.pv h2{font-size:15px;margin:0 0 4px}.pv p{margin:0 0 8px;color:#c9d0ca}.kv{font-size:14px;color:#aab3ac;margin:3px 0;word-break:break-word}.kv code{color:#cfe;font:11px ui-monospace,Menlo,monospace}
+.warn{color:var(--warn);font-size:12px;margin:6px 0}
+.empty{color:var(--muted);text-align:center;padding:30px 10px}
+.basket{padding:16px;display:grid;gap:10px}.basket h2{font-size:14px;margin:0}
+.slot{border:1px dashed #3a413b;border-radius:10px;padding:9px 10px;color:var(--muted);font-size:12px}
+.slot.filled{border-style:solid;border-color:#2f6a51;color:var(--text);background:#13201a;display:flex;justify-content:space-between;gap:8px;align-items:center}
+.fxrow{border:1px solid var(--line);border-radius:10px;padding:8px;display:grid;gap:6px;background:var(--panel2)}
+.fxrow .top{display:flex;justify-content:space-between;align-items:center;font-weight:700}
+.fxrow .t{display:grid;grid-template-columns:1fr 1fr;gap:6px}.fxrow input{padding:6px 8px;font-size:12px;width:100%}
+.x{background:transparent;border:0;color:var(--muted);padding:2px 6px}.x:hover{color:var(--danger)}
+label.small{font-size:11px;color:var(--muted);display:grid;gap:3px}
+#status{font-size:12px;color:var(--muted);white-space:pre-wrap}#status.ok{color:var(--accent)}#status.err{color:var(--danger)}
+@media (max-width:900px){.app{display:block;height:auto}aside{border-left:0;border-top:1px solid var(--line)}header{flex-wrap:wrap}#brief{flex-basis:100%}#search{width:100%;margin-left:0}main{padding:12px 16px}}
+</style></head><body>
+<div class="app">
+<header>
+  <h1>Reel Picker</h1>
+  <input id="brief" placeholder="Describe the reel: e.g. claude edited this, talking head, show my views">
+  <select id="footage" title="What footage you have"><option value="">Footage…</option><option>seated talking head</option><option>walking talking head</option><option>talk / keynote / panel</option><option>travel b-roll</option><option>food / street</option><option>photos</option><option>event / interview</option></select>
+  <button class="primary" id="go">Suggest</button>
+</header>
+<main>
+  <div class="tabs" id="tabs"></div>
+  <div class="chips" id="chips"></div>
+  <div id="content"></div>
+</main>
+<aside>
+  <div class="pv" id="pv"><div class="empty">Hover a card to play it. Click to see details here.</div></div>
+  <div class="basket">
+    <h2>Your reel</h2>
+    <div id="tplSlot" class="slot">Template: none yet (optional)</div>
+    <div id="fxList"></div>
+    <div id="trendList"></div>
+    <label class="small">Reel name (folder in videos/)<input id="slug" placeholder="e.g. claude-views-reel"></label>
+    <label class="small">Notes for Claude<textarea id="notes" rows="3" placeholder="Hook line, which clip, music, anything"></textarea></label>
+    <button class="primary" id="save">Save pick for Claude</button>
+    <div id="status"></div>
+  </div>
+</aside>
+</div>
+<script>
+const $=id=>document.getElementById(id);
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+let CAT=null,TAB='suggested',FXCAT='',ACTIVE=null,SUG=null;
+const PICK={template:null,effects:[],trends:[]};
+const byId=id=>CAT.items.find(i=>i.id===id);
+const src=p=>p?'/previews/'+p.replace(/^previews\//,''):'';
+
+function card(i){
+  const sel=(i.kind==='template'&&PICK.template===i.id)||(i.kind==='effect'&&PICK.effects.some(e=>e.id===i.id))||(i.kind==='trend'&&PICK.trends.includes(i.id));
+  const media=i.poster?`<img loading="lazy" src="${src(i.poster)}" alt="">${i.clip?`<video muted loop playsinline preload="none" data-src="${src(i.clip)}"></video>`:''}`
+    :`<div class="noprev">No example rendered yet<br><br>${esc(i.tool||'')}</div>`;
+  const stat=i.kind==='trend'?`<div class="look">${(i.likes||0).toLocaleString()} likes · ${(i.comments||0).toLocaleString()} comments</div>`:'';
+  return `<article class="card ${sel?'sel':''} ${ACTIVE===i.id?'active':''}" data-id="${esc(i.id)}"><div class="media">${media}${i.n?`<span class="num">${i.n}</span>`:''}${sel?'<span class="badge">ADDED</span>':''}</div>
+  <div class="body"><div class="title">${esc(i.name)}</div>${stat}<div class="look">${esc(i.look)}</div>${i.needs?`<span class="needs">needs ${esc(i.needs)}</span>`:''}</div></article>`;
+}
+function section(title,items){return items.length?`<div class="sec">${esc(title)}</div><div class="grid">${items.map(card).join('')}</div>`:''}
+
+function render(){
+  const q=($('search')?.value||'').toLowerCase();
+  const m=i=>!q||(i.name+' '+i.look+' '+(i.tags||'')).toLowerCase().includes(q);
+  const count=k=>CAT.items.filter(i=>i.kind===k).length;
+  $('tabs').innerHTML=[['suggested','Suggested',SUG?'':'·'],['template','Templates',count('template')],['effect','Effects',count('effect')],['trend','Trending refs',count('trend')]]
+    .map(([k,l,n])=>`<button class="tab ${TAB===k?'on':''}" data-tab="${k}">${l}<span class="n">${n}</span></button>`).join('')+`<input id="search" placeholder="Filter…" value="${esc(q)}">`;
+  $('search').oninput=render; if(q){$('search').focus();$('search').setSelectionRange(q.length,q.length)}
+  $('chips').innerHTML=TAB==='effect'?['',...Object.keys(CAT.fx_categories)].map(c=>`<button class="chip ${FXCAT===c?'on':''}" data-cat="${c}">${c?esc(CAT.fx_categories[c]):'All'}</button>`).join(''):'';
+  let html='';
+  if(TAB==='suggested'){
+    if(!SUG) html=`<div class="empty">Describe the reel above and press Suggest.<br>You'll get templates, effects and proven reference reels that fit, all with previews.</div>`;
+    else{
+      const pick=k=>SUG[k].map(r=>byId(r.id)).filter(Boolean).filter(m);
+      html=section('Templates that fit',pick('template'))+section('Effects that fit',pick('effect'))+section('Reference reels doing this',pick('trend'));
+      if(!html) html='<div class="empty">No clear match. Browse the tabs instead.</div>';
+      const w=SUG.template.find(r=>r.warn); if(w) html=`<div class="warn">${esc(w.name)}: ${esc(w.warn)}</div>`+html;
+    }
+  }else if(TAB==='effect'){
+    const cats=FXCAT?[FXCAT]:Object.keys(CAT.fx_categories);
+    html=cats.map(c=>section(CAT.fx_categories[c],CAT.items.filter(i=>i.kind==='effect'&&i.cat===c&&m(i)))).join('');
+  }else if(TAB==='trend'){
+    html=`<div class="lessons"><h3>What the viral "Claude edited this" reels share (scouted ${esc(CAT.scouted)})</h3><ul>${CAT.trend_lessons.map(l=>`<li>${esc(l)}</li>`).join('')}</ul></div>`+
+      section('Reference reels',CAT.items.filter(i=>i.kind==='trend'&&m(i)).sort((a,b)=>(b.likes+b.comments)-(a.likes+a.comments)));
+  }else{
+    const t=CAT.items.filter(i=>i.kind==='template'&&m(i));
+    html=section('With a finished example',t.filter(i=>i.poster))+section('No example yet',t.filter(i=>!i.poster));
+  }
+  $('content').innerHTML=html||'<div class="empty">Nothing matches that filter.</div>';
+  bindCards();
+}
+function bindCards(){
+  document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>{TAB=b.dataset.tab;render()});
+  document.querySelectorAll('.chip').forEach(b=>b.onclick=()=>{FXCAT=b.dataset.cat;render()});
+  document.querySelectorAll('.card').forEach(el=>{
+    const v=el.querySelector('video');
+    if(v){el.onmouseenter=()=>{if(!v.src)v.src=v.dataset.src;v.oncanplay=()=>v.classList.add('ready');v.play().catch(()=>{})};el.onmouseleave=()=>{v.pause()}}
+    el.onclick=()=>show(el.dataset.id);
+  });
+}
+function inPick(i){return (i.kind==='template'&&PICK.template===i.id)||(i.kind==='effect'&&PICK.effects.some(e=>e.id===i.id))||(i.kind==='trend'&&PICK.trends.includes(i.id))}
+function show(id){
+  const i=byId(id); if(!i) return; ACTIVE=id;
+  const media=i.clip?`<video src="${src(i.clip)}" autoplay muted loop playsinline poster="${src(i.poster)}"></video>`:i.poster?`<img src="${src(i.poster)}">`:'<div class="noprev">No example rendered yet</div>';
+  const kind={template:'Template',effect:'Effect · '+(i.cat_name||''),trend:'Reference reel'}[i.kind];
+  const added=inPick(i);
+  $('pv').innerHTML=`<div class="phone">${media}</div><div class="kv">${esc(kind)}</div><h2>${esc(i.name)}</h2><p>${esc(i.look)}</p>
+   ${i.warn?`<div class="warn">${esc(i.warn)}</div>`:''}${i.needs?`<div class="warn">Needs ${esc(i.needs)} (real, from your footage or facts)</div>`:''}
+   ${i.footage?`<div class="kv">Footage: ${esc(i.footage)}</div>`:''}${i.tool?`<div class="kv">Built with <code>${esc(i.tool)}</code></div>`:''}
+   ${i.fmt?`<div class="kv">Spec <code>${esc(i.fmt)}</code></div>`:''}${i.example_path?`<div class="kv">Example <code>${esc(i.example_path.replace(/^.*reel-batch\//,'reel-batch/'))}</code></div>`:''}
+   ${i.url?`<div class="kv"><a href="${esc(i.url)}" target="_blank" rel="noopener" style="color:var(--accent)">Open on Instagram</a> · try with: ${esc(i.try_with)}</div>`:''}
+   <button class="${added?'':'primary'}" id="addBtn" style="width:100%;margin-top:10px">${added?'Remove from reel':(i.kind==='template'?'Use this template':'Add to reel')}</button>`;
+  $('addBtn').onclick=()=>{toggle(i);show(id)};
+  render();
+}
+function toggle(i){
+  if(i.kind==='template') PICK.template=PICK.template===i.id?null:i.id;
+  else if(i.kind==='effect'){const k=PICK.effects.findIndex(e=>e.id===i.id);if(k>=0)PICK.effects.splice(k,1);else{const last=PICK.effects.at(-1);const s=last?+last.end+1:1;PICK.effects.push({id:i.id,start:s.toFixed(1),end:(s+3).toFixed(1),text:''})}}
+  else{const k=PICK.trends.indexOf(i.id);if(k>=0)PICK.trends.splice(k,1);else PICK.trends.push(i.id)}
+  basket();
+}
+function basket(){
+  const t=PICK.template&&byId(PICK.template);
+  $('tplSlot').className='slot'+(t?' filled':'');
+  $('tplSlot').innerHTML=t?`<span><b>${esc(t.name)}</b><br><span style="color:var(--muted);font-size:11px">template</span></span><button class="x" id="rmTpl">✕</button>`:'Template: none yet (optional)';
+  if(t) $('rmTpl').onclick=()=>{PICK.template=null;basket();render()};
+  $('fxList').innerHTML=PICK.effects.length?PICK.effects.map((e,k)=>`<div class="fxrow"><div class="top"><span>${esc(e.id)}</span><button class="x" data-rm="${k}">✕</button></div>
+    <div class="t"><label class="small">start s<input data-k="${k}" data-f="start" value="${esc(e.start)}" inputmode="decimal"></label><label class="small">end s<input data-k="${k}" data-f="end" value="${esc(e.end)}" inputmode="decimal"></label></div>
+    <label class="small">text (lines split with |)<input data-k="${k}" data-f="text" value="${esc(e.text)}" placeholder="leave empty to decide later"></label></div>`).join(''):'<div class="slot">Effects: none yet. Add 1 to 4; times are seconds in the final reel.</div>';
+  document.querySelectorAll('[data-rm]').forEach(b=>b.onclick=()=>{PICK.effects.splice(+b.dataset.rm,1);basket();render()});
+  document.querySelectorAll('.fxrow input').forEach(inp=>inp.oninput=()=>{PICK.effects[+inp.dataset.k][inp.dataset.f]=inp.value});
+  $('trendList').innerHTML=PICK.trends.length?`<div class="slot filled" style="display:block">Style refs: ${PICK.trends.map(id=>esc(byId(id)?.name)).join(', ')}</div>`:'';
+}
+async function doSuggest(){
+  const q=[$('brief').value,$('footage').value].join(' ').trim(); if(!q) return $('brief').focus();
+  SUG=await(await fetch('/api/suggest?q='+encodeURIComponent(q))).json(); TAB='suggested'; render();
+  if(!$('slug').value) $('slug').value=$('brief').value.toLowerCase().replace(/[^a-z0-9]+/g,'-').split('-').filter(Boolean).slice(0,4).join('-');
+}
+$('go').onclick=doSuggest; $('brief').onkeydown=e=>{if(e.key==='Enter')doSuggest()};
+$('save').onclick=async()=>{
+  const s=$('status'); s.className=''; s.textContent='Saving…';
+  try{const r=await fetch('/api/save',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({slug:$('slug').value,brief:$('brief').value,footage:$('footage').value,notes:$('notes').value,...PICK})});
+    const j=await r.json(); if(!r.ok) throw new Error(j.error||'save failed');
+    s.className='ok'; s.textContent=`Saved ${j.path}\nTell Claude: "build the reel in ${j.path}"`;}
+  catch(e){s.className='err';s.textContent=e.message}
+};
+fetch('/catalog.json').then(r=>r.json()).then(c=>{CAT=c;render();basket()});
+</script></body></html>

@@ -1,0 +1,132 @@
+{
+ "note": "watch_url is the public Google Drive link. Fill with bin/build-readme.py after upload.",
+ "folder_url": "https://drive.google.com/drive/folders/1aBELUVyYtmqNolzyXqawnfVl85__DHg7",
+ "items": [
+  {
+   "id": "effects-showcase__01_87_claude_effects_v5",
+   "title": "Claude effects montage",
+   "look": "70-effect library on one talking-head clip",
+   "duration_s": 31.2,
+   "thumb": "gallery/reels/effects-showcase__01_87_claude_effects_v5.jpg",
+   "drive_file": "effects-showcase__01_87_claude_effects_v5.mp4",
+   "watch_url": "https://drive.google.com/file/d/1ek_oA7HxoES0EP0ha7rP1wVpvUBlJFj3/view"
+  },
+  {
+   "id": "effects-showcase__02_87_camera_modes_v3",
+   "title": "Camera modes",
+   "look": "Procedural VFX: lens flares, iris blink, film burn, light leaks",
+   "duration_s": 15.6,
+   "thumb": "gallery/reels/effects-showcase__02_87_camera_modes_v3.jpg",
+   "drive_file": "effects-showcase__02_87_camera_modes_v3.mp4",
+   "watch_url": "https://drive.google.com/file/d/1Xhcc1PhLWrPN7zdfXWiWqe9c-VAGdc1v/view"
+  },
+  {
+   "id": "parashuram-yugs__01_parashuram-four-yugs_v5",
+   "title": "The four yugs",
+   "look": "Speaker cut out and relit inside each world",
+   "duration_s": 61.3,
+   "thumb": "gallery/reels/parashuram-yugs__01_parashuram-four-yugs_v5.jpg",
+   "drive_file": "parashuram-yugs__01_parashuram-four-yugs_v5.mp4",
+   "watch_url": "https://drive.google.com/file/d/1oZaovytBLsu2Iw0HlMSLcjxxfuzT7CEC/view"
+  },
+  {
+   "id": "claude-edit-english__02_claude_edited_200_reels_energy_v2",
+   "title": "Claude edited my reels",
+   "look": "Forest and cream editorial with an energy pass",
+   "duration_s": 48.7,
+   "thumb": "gallery/reels/claude-edit-english__02_claude_edited_200_reels_energy_v2.jpg",
+   "drive_file": "claude-edit-english__02_claude_edited_200_reels_energy_v2.mp4",
+   "watch_url": "https://drive.google.com/file/d/1w8xxV2TUKgTj7USJ6u6_llUsix5NXHHQ/view"
+  },
+  {
+   "id": "codex-ai-workflow__08_codex_ig_automation_cover_orbit",
+   "title": "My Instagram runs on Codex",
+   "look": "Reel covers orbit behind the head, AI composer UI",
+   "duration_s": 53.5,
+   "thumb": "gallery/reels/codex-ai-workflow__08_codex_ig_automation_cover_orbit.jpg",
+   "drive_file": "codex-ai-workflow__08_codex_ig_automation_cover_orbit.mp4",
+   "watch_url": "https://drive.google.com/file/d/1ricLWR8QiCwv7O5RlNqXa3Hl5GOa5Y0T/view"
+  },
+  {
+   "id": "nvidia-huang-news__06_second-affair_vertical_60s_v2",
+   "title": "Who runs Nvidia?",
+   "look": "Motion-design news explainer with source chips",
+   "duration_s": 58.4,
+   "thumb": "gallery/reels/nvidia-huang-news__06_second-affair_vertical_60s_v2.jpg",
+   "drive_file": "nvidia-huang-news__06_second-affair_vertical_60s_v2.mp4",
+   "watch_url": "https://drive.google.com/file/d/1e1e_rinWJcd7Tr042GWJ4sen2H0CS_2Y/view"
+  },
+  {
+   "id": "pager-reels__07_anthropic_ipo",
+   "title": "Anthropic IPO",
+   "look": "News pager card with animated chart",
+   "duration_s": 9.0,
+   "thumb": "gallery/reels/pager-reels__07_anthropic_ipo.jpg",
+   "drive_file": "pager-reels__07_anthropic_ipo.mp4",
+   "watch_url": "https://drive.google.com/file/d/1Dckf_Cfocw0Z4RRGmm-xQUkByEGqJDrY/view"
+  },
+  {
+   "id": "isg-ai-keynote__07_600k_to_30k_v2",
+   "title": "600K to 30K",
+   "look": "Keynote clip with a data card timed to the claim",
+   "duration_s": 61.3,
+   "thumb": "gallery/reels/isg-ai-keynote__07_600k_to_30k_v2.jpg",
+   "drive_file": "isg-ai-keynote__07_600k_to_30k_v2.mp4",
+   "watch_url": "https://drive.google.com/file/d/1tic3nGFCqlIeNNuIXVNAGQYn-r1GfMpd/view"
+  },
+  {
+   "id": "yc-heartbreak-pack__02_directed-by-her_final3",
+   "title": "Directed by: Her",
+   "look": "Credits-roll hook",
+   "duration_s": 15.0,
+   "thumb": "gallery/reels/yc-heartbreak-pack__02_directed-by-her_final3.jpg",
+   "drive_file": "yc-heartbreak-pack__02_directed-by-her_final3.mp4",
+   "watch_url": "https://drive.google.com/file/d/1WhZLPOUxT9prcmHBsv8vcIYUzrZY9gqV/view"
+  },
+  {
+   "id": "vatsal-story__06_vatsal-story_final_original-accent",
+   "title": "My story",
+   "look": "HyperFrames life-story reel with voices",
+   "duration_s": 62.0,
+   "thumb": "gallery/reels/vatsal-story__06_vatsal-story_final_original-accent.jpg",
+   "drive_file": "vatsal-story__06_vatsal-story_final_original-accent.mp4",
+   "watch_url": "https://drive.google.com/file/d/1XXkZppmTL9TYWPFQuDjuvSywgDlNkkS8/view"
+  },
+  {
+   "id": "anuv-journey__08_anuv-jain-fan-journey_v8_reel",
+   "title": "A fan's journey",
+   "look": "HyperFrames story reel",
+   "duration_s": 62.0,
+   "thumb": "gallery/reels/anuv-journey__08_anuv-jain-fan-journey_v8_reel.jpg",
+   "drive_file": "anuv-journey__08_anuv-jain-fan-journey_v8_reel.mp4",
+   "watch_url": "https://drive.google.com/file/d/1elhbxe2_KVLnlaXfRpItgjSnYgZQZln1/view"
+  },
+  {
+   "id": "jac-film__08_jac-reel_vertical_loser_sage_quieter",
+   "title": "Jac: the next era",
+   "look": "Cinematic event film",
+   "duration_s": 73.3,
+   "thumb": "gallery/reels/jac-film__08_jac-reel_vertical_loser_sage_quieter.jpg",
+   "drive_file": "jac-film__08_jac-reel_vertical_loser_sage_quieter.mp4",
+   "watch_url": "https://drive.google.com/file/d/1xxML7UczYHTYvFmgy-N-lQGPWc393xiw/view"
+  },
+  {
+   "id": "claude-ad-reel__02_claude-is-just-better_full-ad",
+   "title": "My Claude is just better",
+   "look": "Reaction hook into a full product ad",
+   "duration_s": 60.5,
+   "thumb": "gallery/reels/claude-ad-reel__02_claude-is-just-better_full-ad.jpg",
+   "drive_file": "claude-ad-reel__02_claude-is-just-better_full-ad.mp4",
+   "watch_url": "https://drive.google.com/file/d/1mpdya7Rg-HECcYrBiQTP0jmJcsS_W3Gc/view"
+  },
+  {
+   "id": "amplify-claude-coded-ad__03_amplify-ad-v3_landscape",
+   "title": "Claude-coded product ad",
+   "look": "Landscape motion-design ad",
+   "duration_s": 57.4,
+   "thumb": "gallery/reels/amplify-claude-coded-ad__03_amplify-ad-v3_landscape.jpg",
+   "drive_file": "amplify-claude-coded-ad__03_amplify-ad-v3_landscape.mp4",
+   "watch_url": "https://drive.google.com/file/d/1o5LBnZik0jjULMAT6Rn91TxOHrl_7H4k/view"
+  }
+ ]
+}

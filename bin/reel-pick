@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+# reel-pick                 open the visual picker (http://localhost:8771)
+# reel-pick suggest "<brief>"   ranked shortlist in the terminal
+# reel-pick rebuild         rebuild catalog/reel-catalog.json + previews after adding a format/effect
+set -euo pipefail
+D="$(cd "$(dirname "$0")" && pwd)/reel-picker"
+case "${1:-}" in
+  suggest) shift; exec python3 "$D/suggest.py" "$@";;
+  rebuild) shift; exec python3 "$D/build_catalog.py" "$@";;
+  *) exec python3 "$D/server.py" "$@";;
+esac

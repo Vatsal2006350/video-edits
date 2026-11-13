@@ -1,0 +1,766 @@
+{
+ "note": "Generated from catalog/reel-catalog.json. runs_here means the tool is in this repo.",
+ "count": 76,
+ "items": [
+  {
+   "id": "motion-one-shape",
+   "kind": "template",
+   "name": "Motion design: one shape, no cuts",
+   "look": "One element morphs from button to loader to card to chart and back, a slow camera drift, one serif word per state. No footage.",
+   "tool": "bin/motion-reel.sh motion/one-shape out.mp4",
+   "runs_here": true,
+   "poster": "catalog/previews/tpl/motion-one-shape.jpg",
+   "clip": "catalog/previews/tpl/motion-one-shape.mp4"
+  },
+  {
+   "id": "pager-news-card",
+   "kind": "template",
+   "name": "News pager card",
+   "look": "Full-bleed photo into a dark panel, bold centred headline with a brand-coloured highlight, grey dek, animated chart or bars.",
+   "tool": "bin/pager-reel.py",
+   "runs_here": true,
+   "poster": "catalog/previews/tpl/pager-news-card.jpg",
+   "clip": "catalog/previews/tpl/pager-news-card.mp4"
+  },
+  {
+   "id": "forest-cream-editorial",
+   "kind": "template",
+   "name": "Forest & cream editorial",
+   "look": "Two-tone Bodoni hero behind your head, green-box serif captions, cream Claude UI cards, proof cards, cover-grid takeover.",
+   "tool": "skill claude-edit-reel (videos/claude-edit-english/)",
+   "runs_here": false,
+   "poster": "catalog/previews/tpl/forest-cream-editorial.jpg",
+   "clip": "catalog/previews/tpl/forest-cream-editorial.mp4"
+  },
+  {
+   "id": "energy-walk-talk",
+   "kind": "template",
+   "name": "Energy pass (walk-and-talk)",
+   "look": "Whip-pan blur transitions, punch-in zooms, B&W flashes, auto-placed SFX.",
+   "tool": "sfx-kit.py + sfx-auto.py + energy-pass.py",
+   "runs_here": true,
+   "poster": "catalog/previews/tpl/energy-walk-talk.jpg",
+   "clip": "catalog/previews/tpl/energy-walk-talk.mp4"
+  },
+  {
+   "id": "cover-orbit-claude-ui",
+   "kind": "template",
+   "name": "Cover orbit + Claude UI",
+   "look": "Your own reel covers arc behind your head; a Claude composer types into an edit timeline; two-tier serif captions.",
+   "tool": "bin/face-track.py + HyperFrames comp (layer behind/front)",
+   "runs_here": true,
+   "poster": "catalog/previews/tpl/cover-orbit-claude-ui.jpg",
+   "clip": "catalog/previews/tpl/cover-orbit-claude-ui.mp4"
+  },
+  {
+   "id": "claude-chat-motion-ui",
+   "kind": "template",
+   "name": "Claude chat motion UI",
+   "look": "An app window where a prompt is sent and a useful answer arrives, timed to your words.",
+   "tool": "HyperFrames component",
+   "runs_here": false,
+   "poster": "catalog/previews/tpl/claude-chat-motion-ui.jpg",
+   "clip": "catalog/previews/tpl/claude-chat-motion-ui.mp4"
+  },
+  {
+   "id": "druk-title",
+   "kind": "template",
+   "name": "Tall condensed title (Druk-style)",
+   "look": "Bold vertically elongated Anton/Druk opener title, full-screen cards that clear the face.",
+   "tool": "bin/druk-inspired-title.py",
+   "runs_here": true,
+   "poster": "catalog/previews/tpl/druk-title.jpg",
+   "clip": "catalog/previews/tpl/druk-title.mp4"
+  },
+  {
+   "id": "concept-explainer-overlay",
+   "kind": "template",
+   "name": "Concept explainer overlay",
+   "look": "Opaque-box captions over conference/talking-head footage plus an animated data card (counter, bar, chip flow) timed to the claim.",
+   "tool": "make-captions.py (border_style:3) + PIL card",
+   "runs_here": true,
+   "poster": "catalog/previews/tpl/concept-explainer-overlay.jpg",
+   "clip": "catalog/previews/tpl/concept-explainer-overlay.mp4"
+  },
+  {
+   "id": "typewriter-hook",
+   "kind": "template",
+   "name": "Typewriter opener",
+   "look": "Instrument Serif 103 typed at 24 cps into a centred line, hold, 0.13s fade, optional keystrokes.",
+   "tool": "typewriter.py + keystroke-track.py",
+   "runs_here": true,
+   "poster": "catalog/previews/tpl/typewriter-hook.jpg",
+   "clip": "catalog/previews/tpl/typewriter-hook.mp4"
+  },
+  {
+   "id": "promo-kinetic",
+   "kind": "template",
+   "name": "Mumbai promo (kinetic Anton)",
+   "look": "Anton kinetic hero words behind the body, UMich blue/yellow, running Anton captions, logo cards.",
+   "tool": "kinetic-hook.py + promo-caption.py",
+   "runs_here": true,
+   "poster": "catalog/previews/tpl/promo-kinetic.jpg",
+   "clip": "catalog/previews/tpl/promo-kinetic.mp4"
+  },
+  {
+   "id": "yc-heartbreak-pack",
+   "kind": "template",
+   "name": "YC x heartbreak hooks",
+   "look": "Unsent iMessage, \"Directed by: Her\" credits, split timelines, year odometer, question hook; YC photo second.",
+   "tool": "videos/yc-heartbreak-pack/gen.py + build.sh",
+   "runs_here": false,
+   "poster": "catalog/previews/tpl/yc-heartbreak-pack.jpg",
+   "clip": "catalog/previews/tpl/yc-heartbreak-pack.mp4"
+  },
+  {
+   "id": "yc-question-list",
+   "kind": "template",
+   "name": "YC interview question list",
+   "look": "Question cards over a talking head, numbered list, orange accents.",
+   "tool": "bin/yc-interview-list.py",
+   "runs_here": true,
+   "poster": "catalog/previews/tpl/yc-question-list.jpg",
+   "clip": "catalog/previews/tpl/yc-question-list.mp4"
+  },
+  {
+   "id": "travel-story",
+   "kind": "template",
+   "name": "Travel story",
+   "look": "Quiet travel montage with a held story caption and music from frame one.",
+   "tool": "travel-story-reel.sh",
+   "runs_here": true,
+   "poster": "catalog/previews/tpl/travel-story.jpg",
+   "clip": "catalog/previews/tpl/travel-story.mp4"
+  },
+  {
+   "id": "travel-quote-sticker",
+   "kind": "template",
+   "name": "Travel quote sticker",
+   "look": "One travel shot, narrow black sans line in a held rounded white card.",
+   "tool": "travel-quote-reel.py",
+   "runs_here": true,
+   "poster": "catalog/previews/tpl/travel-quote-sticker.jpg",
+   "clip": "catalog/previews/tpl/travel-quote-sticker.mp4"
+  },
+  {
+   "id": "verified-evening",
+   "kind": "template",
+   "name": "Verified evening reel",
+   "look": "Time-of-day POV text on an evening shot.",
+   "tool": "bin/evening-reel.py",
+   "runs_here": true,
+   "poster": "catalog/previews/tpl/verified-evening.jpg",
+   "clip": "catalog/previews/tpl/verified-evening.mp4"
+  },
+  {
+   "id": "food-reel",
+   "kind": "template",
+   "name": "Food / street-food reel",
+   "look": "EDL cuts, warm grade, ASS captions and PNG price/recipe graphics.",
+   "tool": "videos/khau-galli/build.py",
+   "runs_here": false,
+   "poster": "catalog/previews/tpl/food-reel.jpg",
+   "clip": "catalog/previews/tpl/food-reel.mp4"
+  },
+  {
+   "id": "diwali-street-times",
+   "kind": "template",
+   "name": "Diwali abroad (street times)",
+   "look": "Festival-abroad street shots with time stamps.",
+   "tool": "project builder",
+   "runs_here": false,
+   "poster": "catalog/previews/tpl/diwali-street-times.jpg",
+   "clip": "catalog/previews/tpl/diwali-street-times.mp4"
+  },
+  {
+   "id": "gym-stat",
+   "kind": "template",
+   "name": "Gym stat typography",
+   "look": "Overlay stats on a finished gym tour edit; keeps its cuts and soundtrack.",
+   "tool": "bin/umich-gym-reel.sh",
+   "runs_here": true,
+   "poster": "catalog/previews/tpl/gym-stat.jpg",
+   "clip": "catalog/previews/tpl/gym-stat.mp4"
+  },
+  {
+   "id": "liquid-glass",
+   "kind": "template",
+   "name": "Liquid glass UI",
+   "look": "Frosted liquid-glass cards and graphs over a talking head.",
+   "tool": "skill liquid-glass",
+   "runs_here": false,
+   "poster": "catalog/previews/tpl/liquid-glass.jpg",
+   "clip": "catalog/previews/tpl/liquid-glass.mp4"
+  },
+  {
+   "id": "noise",
+   "kind": "effect",
+   "name": "noise",
+   "look": "reels pile up behind your head, one every quarter second",
+   "tool": "bin/fx-extra.sh noise in.mp4 NEW_out.mp4 --start S --end E",
+   "runs_here": true,
+   "poster": "catalog/previews/fx/noise.jpg",
+   "clip": "catalog/previews/fx/noise.mp4"
+  },
+  {
+   "id": "lineup",
+   "kind": "effect",
+   "name": "lineup",
+   "look": "numbered tiles fan out in an arc above your head",
+   "tool": "bin/fx-extra.sh lineup in.mp4 NEW_out.mp4 --start S --end E",
+   "runs_here": true,
+   "poster": "catalog/previews/fx/lineup.jpg",
+   "clip": "catalog/previews/fx/lineup.mp4"
+  },
+  {
+   "id": "locked-on",
+   "kind": "effect",
+   "name": "locked-on",
+   "look": "corner brackets snap onto your face and the camera follows you",
+   "tool": "bin/fx-extra.sh locked-on in.mp4 NEW_out.mp4 --start S --end E",
+   "runs_here": true,
+   "poster": "catalog/previews/fx/locked-on.jpg",
+   "clip": "catalog/previews/fx/locked-on.mp4"
+  },
+  {
+   "id": "orbit",
+   "kind": "effect",
+   "name": "orbit",
+   "look": "your reels circle your head: in front at the bottom, behind you at the top",
+   "tool": "bin/fx-extra.sh orbit in.mp4 NEW_out.mp4 --start S --end E",
+   "runs_here": true,
+   "poster": "catalog/previews/fx/orbit.jpg",
+   "clip": "catalog/previews/fx/orbit.mp4"
+  },
+  {
+   "id": "lean-in",
+   "kind": "effect",
+   "name": "lean-in",
+   "look": "a fast punch-in on one word",
+   "tool": "bin/fx-extra.sh lean-in in.mp4 NEW_out.mp4 --start S --end E",
+   "runs_here": true,
+   "poster": "catalog/previews/fx/lean-in.jpg",
+   "clip": "catalog/previews/fx/lean-in.mp4"
+  },
+  {
+   "id": "backdrop-word",
+   "kind": "effect",
+   "name": "backdrop-word",
+   "look": "a giant word drops in behind you",
+   "tool": "bin/fx-extra.sh backdrop-word in.mp4 NEW_out.mp4 --start S --end E",
+   "runs_here": true,
+   "poster": "catalog/previews/fx/backdrop-word.jpg",
+   "clip": "catalog/previews/fx/backdrop-word.mp4"
+  },
+  {
+   "id": "spotlight",
+   "kind": "effect",
+   "name": "spotlight",
+   "look": "kill the lights, keep you lit",
+   "tool": "bin/fx-extra.sh spotlight in.mp4 NEW_out.mp4 --start S --end E",
+   "runs_here": true,
+   "poster": "catalog/previews/fx/spotlight.jpg",
+   "clip": "catalog/previews/fx/spotlight.mp4"
+  },
+  {
+   "id": "the-bill",
+   "kind": "effect",
+   "name": "the-bill",
+   "look": "prints every instruction like a ticket, into the wall above your head",
+   "tool": "bin/fx-extra.sh the-bill in.mp4 NEW_out.mp4 --start S --end E",
+   "runs_here": true,
+   "poster": "catalog/previews/fx/the-bill.jpg",
+   "clip": "catalog/previews/fx/the-bill.mp4"
+  },
+  {
+   "id": "moody",
+   "kind": "effect",
+   "name": "moody",
+   "look": "a moody colour grade: darker, softer, teal shadows",
+   "tool": "bin/fx-extra.sh moody in.mp4 NEW_out.mp4 --start S --end E",
+   "runs_here": true,
+   "poster": "catalog/previews/fx/moody.jpg",
+   "clip": "catalog/previews/fx/moody.mp4"
+  },
+  {
+   "id": "swipe",
+   "kind": "effect",
+   "name": "swipe",
+   "look": "a before and after slider that sweeps across you",
+   "tool": "bin/fx-extra.sh swipe in.mp4 NEW_out.mp4 --start S --end E",
+   "runs_here": true,
+   "poster": "catalog/previews/fx/swipe.jpg",
+   "clip": "catalog/previews/fx/swipe.mp4"
+  },
+  {
+   "id": "todo",
+   "kind": "effect",
+   "name": "todo",
+   "look": "a checklist card beside your head that ticks off as you talk",
+   "tool": "bin/fx-extra.sh todo in.mp4 NEW_out.mp4 --start S --end E",
+   "runs_here": true,
+   "poster": "catalog/previews/fx/todo.jpg",
+   "clip": "catalog/previews/fx/todo.mp4"
+  },
+  {
+   "id": "tap",
+   "kind": "effect",
+   "name": "tap",
+   "look": "a Follow button pops up and flips to Following",
+   "tool": "bin/fx-extra.sh tap in.mp4 NEW_out.mp4 --start S --end E",
+   "runs_here": true,
+   "poster": "catalog/previews/fx/tap.jpg",
+   "clip": "catalog/previews/fx/tap.mp4"
+  },
+  {
+   "id": "pause-point",
+   "kind": "effect",
+   "name": "pause-point",
+   "look": "freeze the frame and point at something with a hand-drawn arrow",
+   "tool": "bin/fx-extra.sh pause-point in.mp4 NEW_out.mp4 --start S --end E",
+   "runs_here": true,
+   "poster": "catalog/previews/fx/pause-point.jpg",
+   "clip": "catalog/previews/fx/pause-point.mp4"
+  },
+  {
+   "id": "uninstall",
+   "kind": "effect",
+   "name": "uninstall",
+   "look": "a glitchy uninstall bar that breaks the frame apart",
+   "tool": "bin/fx-extra.sh uninstall in.mp4 NEW_out.mp4 --start S --end E",
+   "runs_here": true,
+   "poster": "catalog/previews/fx/uninstall.jpg",
+   "clip": "catalog/previews/fx/uninstall.mp4"
+  },
+  {
+   "id": "reel-frame",
+   "kind": "effect",
+   "name": "reel-frame",
+   "look": "your video shrinks into an Instagram reel card",
+   "tool": "bin/fx-extra.sh reel-frame in.mp4 NEW_out.mp4 --start S --end E",
+   "runs_here": true,
+   "poster": "catalog/previews/fx/reel-frame.jpg",
+   "clip": "catalog/previews/fx/reel-frame.mp4"
+  },
+  {
+   "id": "shortcut-rain",
+   "kind": "effect",
+   "name": "shortcut-rain",
+   "look": "keyboard keys rain down behind you",
+   "tool": "bin/fx-extra.sh shortcut-rain in.mp4 NEW_out.mp4 --start S --end E",
+   "runs_here": true,
+   "poster": "catalog/previews/fx/shortcut-rain.jpg",
+   "clip": "catalog/previews/fx/shortcut-rain.mp4"
+  },
+  {
+   "id": "reject-stamp",
+   "kind": "effect",
+   "name": "reject-stamp",
+   "look": "a big red stamp slams onto the screen",
+   "tool": "bin/fx-extra.sh reject-stamp in.mp4 NEW_out.mp4 --start S --end E",
+   "runs_here": true,
+   "poster": "catalog/previews/fx/reject-stamp.jpg",
+   "clip": "catalog/previews/fx/reject-stamp.mp4"
+  },
+  {
+   "id": "countdown-flip",
+   "kind": "effect",
+   "name": "countdown-flip",
+   "look": "a 3, 2, 1 flip clock above your head",
+   "tool": "bin/fx-extra.sh countdown-flip in.mp4 NEW_out.mp4 --start S --end E",
+   "runs_here": true,
+   "poster": "catalog/previews/fx/countdown-flip.jpg",
+   "clip": "catalog/previews/fx/countdown-flip.mp4"
+  },
+  {
+   "id": "rabbit-hole",
+   "kind": "effect",
+   "name": "rabbit-hole",
+   "look": "the frame tunnels into itself, spinning",
+   "tool": "bin/fx-extra.sh rabbit-hole in.mp4 NEW_out.mp4 --start S --end E",
+   "runs_here": true,
+   "poster": "catalog/previews/fx/rabbit-hole.jpg",
+   "clip": "catalog/previews/fx/rabbit-hole.mp4"
+  },
+  {
+   "id": "cover-star",
+   "kind": "effect",
+   "name": "cover-star",
+   "look": "you become a magazine cover, with the title behind your head",
+   "tool": "bin/fx-extra.sh cover-star in.mp4 NEW_out.mp4 --start S --end E",
+   "runs_here": true,
+   "poster": "catalog/previews/fx/cover-star.jpg",
+   "clip": "catalog/previews/fx/cover-star.mp4"
+  },
+  {
+   "id": "scribble",
+   "kind": "effect",
+   "name": "scribble",
+   "look": "marker doodles draw themselves around you",
+   "tool": "bin/fx-extra.sh scribble in.mp4 NEW_out.mp4 --start S --end E",
+   "runs_here": true,
+   "poster": "catalog/previews/fx/scribble.jpg",
+   "clip": "catalog/previews/fx/scribble.mp4"
+  },
+  {
+   "id": "red-collage",
+   "kind": "effect",
+   "name": "red-collage",
+   "look": "black and white you, a giant red word behind, kinetic type stacked beside you",
+   "tool": "bin/fx-extra.sh red-collage in.mp4 NEW_out.mp4 --start S --end E",
+   "runs_here": true,
+   "poster": "catalog/previews/fx/red-collage.jpg",
+   "clip": "catalog/previews/fx/red-collage.mp4"
+  },
+  {
+   "id": "split-headline",
+   "kind": "effect",
+   "name": "split-headline",
+   "look": "a clean headline card slides down and pushes you into the bottom of the frame",
+   "tool": "bin/fx-extra.sh split-headline in.mp4 NEW_out.mp4 --start S --end E",
+   "runs_here": true,
+   "poster": "catalog/previews/fx/split-headline.jpg",
+   "clip": "catalog/previews/fx/split-headline.mp4"
+  },
+  {
+   "id": "pastel-word",
+   "kind": "effect",
+   "name": "pastel-word",
+   "look": "a soft lavender backdrop, a giant word behind you and a profile card that gets followed",
+   "tool": "bin/fx-extra.sh pastel-word in.mp4 NEW_out.mp4 --start S --end E",
+   "runs_here": true,
+   "poster": "catalog/previews/fx/pastel-word.jpg",
+   "clip": "catalog/previews/fx/pastel-word.mp4"
+  },
+  {
+   "id": "check-pills",
+   "kind": "effect",
+   "name": "check-pills",
+   "look": "grid-paper room, your reels pinned behind you and blue pills that get clicked",
+   "tool": "bin/fx-extra.sh check-pills in.mp4 NEW_out.mp4 --start S --end E",
+   "runs_here": true,
+   "poster": "catalog/previews/fx/check-pills.jpg",
+   "clip": "catalog/previews/fx/check-pills.mp4"
+  },
+  {
+   "id": "headline-box",
+   "kind": "effect",
+   "name": "headline-box",
+   "look": "a punch-in with a clean two-line headline, the second line in a white box",
+   "tool": "bin/fx-extra.sh headline-box in.mp4 NEW_out.mp4 --start S --end E",
+   "runs_here": true,
+   "poster": "catalog/previews/fx/headline-box.jpg",
+   "clip": "catalog/previews/fx/headline-box.mp4"
+  },
+  {
+   "id": "profile-wall",
+   "kind": "effect",
+   "name": "profile-wall",
+   "look": "your profile grid fills the wall behind you while a counter ticks up",
+   "tool": "bin/fx-extra.sh profile-wall in.mp4 NEW_out.mp4 --start S --end E",
+   "runs_here": true,
+   "poster": "catalog/previews/fx/profile-wall.jpg",
+   "clip": "catalog/previews/fx/profile-wall.mp4"
+  },
+  {
+   "id": "tier-list",
+   "kind": "effect",
+   "name": "tier-list",
+   "look": "a tier list drops in front of you and Claude flies into S tier",
+   "tool": "bin/fx-extra.sh tier-list in.mp4 NEW_out.mp4 --start S --end E",
+   "runs_here": true,
+   "poster": "catalog/previews/fx/tier-list.jpg",
+   "clip": "catalog/previews/fx/tier-list.mp4"
+  },
+  {
+   "id": "broll-split",
+   "kind": "effect",
+   "name": "broll-split",
+   "look": "split screen: b-roll on top with a price-tag sticker, you on the bottom",
+   "tool": "bin/fx-extra.sh broll-split in.mp4 NEW_out.mp4 --start S --end E",
+   "runs_here": true,
+   "poster": "catalog/previews/fx/broll-split.jpg",
+   "clip": "catalog/previews/fx/broll-split.mp4"
+  },
+  {
+   "id": "phone-fan",
+   "kind": "effect",
+   "name": "phone-fan",
+   "look": "your reels fan out like a hand of phones in front of you, under a two-line headline",
+   "tool": "bin/fx-extra.sh phone-fan in.mp4 NEW_out.mp4 --start S --end E",
+   "runs_here": true,
+   "poster": "catalog/previews/fx/phone-fan.jpg",
+   "clip": "catalog/previews/fx/phone-fan.mp4"
+  },
+  {
+   "id": "dot-reveal",
+   "kind": "effect",
+   "name": "dot-reveal",
+   "look": "your shot builds itself out of glowing dots, then snaps into the full picture",
+   "tool": "bin/fx-extra.sh dot-reveal in.mp4 NEW_out.mp4 --start S --end E",
+   "runs_here": true,
+   "poster": "catalog/previews/fx/dot-reveal.jpg",
+   "clip": "catalog/previews/fx/dot-reveal.mp4"
+  },
+  {
+   "id": "headline-wall",
+   "kind": "effect",
+   "name": "headline-wall",
+   "look": "a wall of your own reel headlines piles up behind your head, then your total views pop in front",
+   "tool": "bin/fx-extra.sh headline-wall in.mp4 NEW_out.mp4 --start S --end E",
+   "runs_here": true,
+   "poster": "catalog/previews/fx/headline-wall.jpg",
+   "clip": "catalog/previews/fx/headline-wall.mp4"
+  },
+  {
+   "id": "checklist",
+   "kind": "effect",
+   "name": "checklist",
+   "look": "a Claude task list builds under your chin: each step spins, then ticks green",
+   "tool": "bin/fx-extra.sh checklist in.mp4 NEW_out.mp4 --start S --end E",
+   "runs_here": true,
+   "poster": "catalog/previews/fx/checklist.jpg",
+   "clip": "catalog/previews/fx/checklist.mp4"
+  },
+  {
+   "id": "glass-widgets",
+   "kind": "effect",
+   "name": "glass-widgets",
+   "look": "frosted glass phone widgets and mini artifacts float around your head, with an Edited by Claude pill",
+   "tool": "bin/fx-extra.sh glass-widgets in.mp4 NEW_out.mp4 --start S --end E",
+   "runs_here": true,
+   "poster": "catalog/previews/fx/glass-widgets.jpg",
+   "clip": "catalog/previews/fx/glass-widgets.mp4"
+  },
+  {
+   "id": "timeline",
+   "kind": "effect",
+   "name": "timeline",
+   "look": "a dark red cinematic grade with an editing timeline, a REC timecode and a glowing playhead",
+   "tool": "bin/fx-extra.sh timeline in.mp4 NEW_out.mp4 --start S --end E",
+   "runs_here": true,
+   "poster": "catalog/previews/fx/timeline.jpg",
+   "clip": "catalog/previews/fx/timeline.mp4"
+  },
+  {
+   "id": "comment-box",
+   "kind": "effect",
+   "name": "comment-box",
+   "look": "an Instagram comments sheet above your head types your word, posts it, gets a heart and your reply",
+   "tool": "bin/fx-extra.sh comment-box in.mp4 NEW_out.mp4 --start S --end E",
+   "runs_here": true,
+   "poster": "catalog/previews/fx/comment-box.jpg",
+   "clip": "catalog/previews/fx/comment-box.mp4"
+  },
+  {
+   "id": "liquid-glass-graph",
+   "kind": "effect",
+   "name": "liquid-glass-graph",
+   "look": "a liquid glass card floats under your chin while a graph climbs and the number counts up",
+   "tool": "bin/fx-extra.sh liquid-glass-graph in.mp4 NEW_out.mp4 --start S --end E",
+   "runs_here": true,
+   "poster": "catalog/previews/fx/liquid-glass-graph.jpg",
+   "clip": "catalog/previews/fx/liquid-glass-graph.mp4"
+  },
+  {
+   "id": "carousel-spin",
+   "kind": "effect",
+   "name": "carousel-spin",
+   "look": "your reels spin around you in a 3D carousel, then slow to a stop",
+   "tool": "bin/fx-extra.sh carousel-spin in.mp4 NEW_out.mp4 --start S --end E",
+   "runs_here": true,
+   "poster": "catalog/previews/fx/carousel-spin.jpg",
+   "clip": "catalog/previews/fx/carousel-spin.mp4"
+  },
+  {
+   "id": "match-cut",
+   "kind": "effect",
+   "name": "match-cut",
+   "look": "news pages cut on one word, locked in place behind your head",
+   "tool": "bin/fx-extra.sh match-cut in.mp4 NEW_out.mp4 --start S --end E",
+   "runs_here": true,
+   "poster": "catalog/previews/fx/match-cut.jpg",
+   "clip": "catalog/previews/fx/match-cut.mp4"
+  },
+  {
+   "id": "apple-toggles",
+   "kind": "effect",
+   "name": "apple-toggles",
+   "look": "an iPhone settings card under your chin flips its switches on, one line at a time",
+   "tool": "bin/fx-extra.sh apple-toggles in.mp4 NEW_out.mp4 --start S --end E",
+   "runs_here": true,
+   "poster": "catalog/previews/fx/apple-toggles.jpg",
+   "clip": "catalog/previews/fx/apple-toggles.mp4"
+  },
+  {
+   "id": "led-sign",
+   "kind": "effect",
+   "name": "led-sign",
+   "look": "the lights drop and a glowing LED sign types itself out behind you",
+   "tool": "bin/fx-extra.sh led-sign in.mp4 NEW_out.mp4 --start S --end E",
+   "runs_here": true,
+   "poster": "catalog/previews/fx/led-sign.jpg",
+   "clip": "catalog/previews/fx/led-sign.mp4"
+  },
+  {
+   "id": "slow-push",
+   "kind": "effect",
+   "name": "slow-push",
+   "look": "a slow cinematic push-in from the wide shot to your face, the room melting out of focus",
+   "tool": "bin/fx-extra.sh slow-push in.mp4 NEW_out.mp4 --start S --end E",
+   "runs_here": true,
+   "poster": "catalog/previews/fx/slow-push.jpg",
+   "clip": "catalog/previews/fx/slow-push.mp4"
+  },
+  {
+   "id": "over-the-shoulder-zoom",
+   "kind": "effect",
+   "name": "over-the-shoulder-zoom",
+   "look": "the camera pushes into one top corner, a liquid glass graph pops beside your head, then the other corner with a second graph",
+   "tool": "bin/fx-extra.sh over-the-shoulder-zoom in.mp4 NEW_out.mp4 --start S --end E",
+   "runs_here": true,
+   "poster": "catalog/previews/fx/over-the-shoulder-zoom.jpg",
+   "clip": "catalog/previews/fx/over-the-shoulder-zoom.mp4"
+  },
+  {
+   "id": "messages",
+   "kind": "effect",
+   "name": "messages",
+   "look": "iMessage notifications pop in one after another, creamy glass with a soft glow, stacking up above the bottom of the frame",
+   "tool": "bin/fx-extra.sh messages in.mp4 NEW_out.mp4 --start S --end E",
+   "runs_here": true,
+   "poster": "catalog/previews/fx/messages.jpg",
+   "clip": "catalog/previews/fx/messages.mp4"
+  },
+  {
+   "id": "place-in-grid",
+   "kind": "effect",
+   "name": "place-in-grid",
+   "look": "you shrink into the centre tile of your 3x3 profile grid on frosted glass, then 8 of your reels pop in around you, one per frame, view counts on every tile",
+   "tool": "bin/fx-extra.sh place-in-grid in.mp4 NEW_out.mp4 --start S --end E",
+   "runs_here": true,
+   "poster": "catalog/previews/fx/place-in-grid.jpg",
+   "clip": "catalog/previews/fx/place-in-grid.mp4"
+  },
+  {
+   "id": "tape-label",
+   "kind": "effect",
+   "name": "tape-label",
+   "look": "a strip of yellow tape with your line lands on your chest",
+   "tool": "bin/fx-extra.sh tape-label in.mp4 NEW_out.mp4 --start S --end E",
+   "runs_here": true,
+   "poster": "catalog/previews/fx/tape-label.jpg",
+   "clip": "catalog/previews/fx/tape-label.mp4"
+  },
+  {
+   "id": "select-resize",
+   "kind": "effect",
+   "name": "select-resize",
+   "look": "a blue selection box grabs your number and a cursor drags it bigger",
+   "tool": "bin/fx-extra.sh select-resize in.mp4 NEW_out.mp4 --start S --end E",
+   "runs_here": true,
+   "poster": "catalog/previews/fx/select-resize.jpg",
+   "clip": "catalog/previews/fx/select-resize.mp4"
+  },
+  {
+   "id": "wave-trim",
+   "kind": "effect",
+   "name": "wave-trim",
+   "look": "the silent parts of your voice are trimmed away on screen until only your words are left",
+   "tool": "bin/fx-extra.sh wave-trim in.mp4 NEW_out.mp4 --start S --end E",
+   "runs_here": true,
+   "poster": "catalog/previews/fx/wave-trim.jpg",
+   "clip": "catalog/previews/fx/wave-trim.mp4"
+  },
+  {
+   "id": "huge-strike",
+   "kind": "effect",
+   "name": "huge-strike",
+   "look": "one huge serif word fills the wall behind you, then a red line crosses it out",
+   "tool": "bin/fx-extra.sh huge-strike in.mp4 NEW_out.mp4 --start S --end E",
+   "runs_here": true,
+   "poster": "catalog/previews/fx/huge-strike.jpg",
+   "clip": "catalog/previews/fx/huge-strike.mp4"
+  },
+  {
+   "id": "crayon-write",
+   "kind": "effect",
+   "name": "crayon-write",
+   "look": "a red crayon writes your word behind your head, then underlines it",
+   "tool": "bin/fx-extra.sh crayon-write in.mp4 NEW_out.mp4 --start S --end E",
+   "runs_here": true,
+   "poster": "catalog/previews/fx/crayon-write.jpg",
+   "clip": "catalog/previews/fx/crayon-write.mp4"
+  },
+  {
+   "id": "fan-build",
+   "kind": "effect",
+   "name": "fan-build",
+   "look": "your reel covers deal into a fan behind your head, one card at a time",
+   "tool": "bin/fx-extra.sh fan-build in.mp4 NEW_out.mp4 --start S --end E",
+   "runs_here": true,
+   "poster": "catalog/previews/fx/fan-build.jpg",
+   "clip": "catalog/previews/fx/fan-build.mp4"
+  },
+  {
+   "id": "spotify-scroll",
+   "kind": "effect",
+   "name": "spotify-scroll",
+   "look": "a tilted Spotify-style list scrolls behind you, the active row glows",
+   "tool": "bin/fx-extra.sh spotify-scroll in.mp4 NEW_out.mp4 --start S --end E",
+   "runs_here": true,
+   "poster": "catalog/previews/fx/spotify-scroll.jpg",
+   "clip": "catalog/previews/fx/spotify-scroll.mp4"
+  },
+  {
+   "id": "tech-widgets",
+   "kind": "effect",
+   "name": "tech-widgets",
+   "look": "an iOS calendar widget and a black reel-views widget pop in above your head",
+   "tool": "bin/fx-extra.sh tech-widgets in.mp4 NEW_out.mp4 --start S --end E",
+   "runs_here": true,
+   "poster": "catalog/previews/fx/tech-widgets.jpg",
+   "clip": "catalog/previews/fx/tech-widgets.mp4"
+  },
+  {
+   "id": "glass-tunnel",
+   "kind": "effect",
+   "name": "glass-tunnel",
+   "look": "reel cards fly outward past you like a tunnel, behind your head",
+   "tool": "bin/fx-extra.sh glass-tunnel in.mp4 NEW_out.mp4 --start S --end E",
+   "runs_here": true,
+   "poster": "catalog/previews/fx/glass-tunnel.jpg",
+   "clip": "catalog/previews/fx/glass-tunnel.mp4"
+  },
+  {
+   "id": "notes-app",
+   "kind": "effect",
+   "name": "notes-app",
+   "look": "an Apple Notes card types a checklist and ticks it off",
+   "tool": "bin/fx-extra.sh notes-app in.mp4 NEW_out.mp4 --start S --end E",
+   "runs_here": true,
+   "poster": "catalog/previews/fx/notes-app.jpg",
+   "clip": "catalog/previews/fx/notes-app.mp4"
+  },
+  {
+   "id": "story-portal",
+   "kind": "effect",
+   "name": "story-portal",
+   "look": "an orange dot portal, then your clip lands inside an Instagram feed with a story row",
+   "tool": "bin/fx-extra.sh story-portal in.mp4 NEW_out.mp4 --start S --end E",
+   "runs_here": true,
+   "poster": "catalog/previews/fx/story-portal.jpg",
+   "clip": "catalog/previews/fx/story-portal.mp4"
+  },
+  {
+   "id": "yap-headline",
+   "kind": "effect",
+   "name": "yap-headline",
+   "look": "a bubbly pink headline pops in letter by letter with sticker stars and a cursor click",
+   "tool": "bin/fx-extra.sh yap-headline in.mp4 NEW_out.mp4 --start S --end E",
+   "runs_here": true,
+   "poster": "catalog/previews/fx/yap-headline.jpg",
+   "clip": "catalog/previews/fx/yap-headline.mp4"
+  }
+ ]
+}

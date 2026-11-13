@@ -1,0 +1,9 @@
+{
+  "name": "one-shape",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "npx --yes hyperframes@0.8.225 preview",
+    "render": "npx --yes hyperframes@0.8.225 render"
+  }
+}

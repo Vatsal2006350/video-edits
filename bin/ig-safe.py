@@ -27,6 +27,20 @@ def bands():
 
 FONTS = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'fonts')
 
+def _font(name, size):
+    """Repo font if present, else a system font, else Pillow's default (fonts are not shipped)."""
+    for path in (f"{FONTS}/{name}", "/System/Library/Fonts/Helvetica.ttc",
+                 "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf"):
+        try:
+            return ImageFont.truetype(path, size)
+        except OSError:
+            continue
+    try:
+        return ImageFont.load_default(size=size)
+    except TypeError:
+        return ImageFont.load_default()
+
+
 def frames(path, times):
     out = []
     for t in times:
@@ -60,7 +74,7 @@ def zones():
 def view(path, out, times):
     b = bands()
     tiles = []
-    lf = ImageFont.truetype(f"{FONTS}/Montserrat-Bold.ttf", 30)
+    lf = _font("Montserrat-Bold.ttf", 30)
     for t, im in frames(path, times):
         ov = im.convert('RGBA')
         sh = Image.new('RGBA', (W, H), (0, 0, 0, 0))

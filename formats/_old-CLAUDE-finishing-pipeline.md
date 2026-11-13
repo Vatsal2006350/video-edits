@@ -15,7 +15,7 @@ usually in CapCut). This pipeline does ONLY the finishing layer:
 ## Layout
 - `bin/` — driver scripts (see below)
 - `fonts/` — Anton (hero), Montserrat (captions)
-- `.agents/skills/` — hyperframes skill packs. PATCHED: make-theme.cjs has a
+- `effects/` — hyperframes skill packs. PATCHED: make-theme.cjs has a
   `lastOut` cap (final caption line vs trailing outro). Keep patches here;
   re-check after `hyperframes skills update`.
 - `HOUSE-STYLE.md` — the validated look. Follow it.
@@ -29,10 +29,10 @@ usually in CapCut). This pipeline does ONLY the finishing layer:
 2. Review `sheet.png`, `scene-cuts.txt`, `transcript.json` (fix misheard
    names — Whisper writes "Butso" for "the creator"), `safe-zones.json`.
 3. Author `theme.json` per HOUSE-STYLE.md (copy 0820/theme.json as base).
-4. `node .agents/skills/embedded-captions/scripts/make-theme.cjs <project>`
+4. `node effects/embedded-captions/scripts/make-theme.cjs <project>`
 5. Preview + QA per HOUSE-STYLE.md — including the head-edge zoom check;
    run `bin/refine-matte.sh` if the subject is small (wide shot).
-6. `bash .agents/skills/embedded-captions/scripts/render-theme.sh <project>`
+6. `bash effects/embedded-captions/scripts/render-theme.sh <project>`
 7. CTA if wanted: `bin/cta-overlay.sh final_fx.mp4 FINAL_reel.mp4 <t> ...`
 8. `bin/check-audio.sh FINAL_reel.mp4 <segments around each cut>` + spot-check
    frames, then deliver FINAL_reel.mp4 via SendUserFile.

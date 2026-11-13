@@ -1,379 +1,123 @@
 # video-edits
 
-**A local, free toolkit for making short-form vertical videos** (Instagram Reels, TikTok, Shorts) with FFmpeg, Python, and a few open-source helpers. Everything runs on your machine. No cloud rendering, and no API keys are needed for the core workflow.
+**Short vertical video, made from code.** Every reel below was cut, typed, animated and exported by an editing agent working through the tools in this repo: FFmpeg, Python, HyperFrames and small JSON specs. No timeline editor, no paid API, no stock library.
 
-It grew out of one creator's reel factory and has been cleaned up so you can run the same builders on your own footage.
+<p align="center"><img src="docs/hero.jpg" alt="A wall of looks from this repo: talking-head reels with type, effects and overlays" width="100%"></p>
 
-> **In this repo now:** the builder scripts (`bin/`), a local timeline editor, the Instagram export and safe-area checks, the measured format specs (`formats/`), and research notes (`research/`).
-> **Not in this repo yet:** the 57-effect overlay library and the Claude skill packs described below. They live in a private working copy. They are listed here so you can see what the full toolkit does. See [Status](#status).
+**[▶ Watch the 14 finished reels](https://drive.google.com/drive/folders/1aBELUVyYtmqNolzyXqawnfVl85__DHg7)** · **[Tap through all 76 looks](https://vatsal2006350.github.io/video-edits/)** · **[Start a video](START-HERE.md)**
 
----
+- 14 finished reels made by the agent, on Google Drive, with thumbnails below
+- 76 looks with a preview clip each; 70 of them run straight from this repo
+- A 70-effect overlay library (`bin/fx-extra.sh list`) plus 20 heavier one-shot effects (`bin/run-visual-effect.sh list`)
+- A motion-design track: one shape, no cuts, rendered from HTML ([`formats/motion-design.md`](formats/motion-design.md))
+- 43 format notes with the numbers each look was measured at
 
-## Contents
+## Finished reels
 
-- [What it does](#what-it-does)
-- [Quick start](#quick-start)
-- [Configuration](#configuration)
-- [Builders (bin/)](#builders-bin)
-- [Overlay effects (57)](#overlay-effects-57)
-- [Claude skill packs](#claude-skill-packs)
-- [Format specs (formats/)](#format-specs-formats)
-- [Repo layout](#repo-layout)
-- [Status](#status)
-- [Privacy and what stays out of git](#privacy-and-what-stays-out-of-git)
+Made by the editing agent from raw phone footage. Click a thumbnail to watch.
 
----
+<!-- reels:start -->
+<table>
+<tr><td width="33%" valign="top"><a href="https://drive.google.com/file/d/1ek_oA7HxoES0EP0ha7rP1wVpvUBlJFj3/view"><img src="gallery/reels/effects-showcase__01_87_claude_effects_v5.jpg" alt="Claude effects montage" width="100%"></a><br><a href="https://drive.google.com/file/d/1ek_oA7HxoES0EP0ha7rP1wVpvUBlJFj3/view"><b>Claude effects montage</b></a><br><sub>70-effect library on one talking-head clip · 31s</sub></td><td width="33%" valign="top"><a href="https://drive.google.com/file/d/1Xhcc1PhLWrPN7zdfXWiWqe9c-VAGdc1v/view"><img src="gallery/reels/effects-showcase__02_87_camera_modes_v3.jpg" alt="Camera modes" width="100%"></a><br><a href="https://drive.google.com/file/d/1Xhcc1PhLWrPN7zdfXWiWqe9c-VAGdc1v/view"><b>Camera modes</b></a><br><sub>Procedural VFX: lens flares, iris blink, film burn, light leaks · 16s</sub></td><td width="33%" valign="top"><a href="https://drive.google.com/file/d/1oZaovytBLsu2Iw0HlMSLcjxxfuzT7CEC/view"><img src="gallery/reels/parashuram-yugs__01_parashuram-four-yugs_v5.jpg" alt="The four yugs" width="100%"></a><br><a href="https://drive.google.com/file/d/1oZaovytBLsu2Iw0HlMSLcjxxfuzT7CEC/view"><b>The four yugs</b></a><br><sub>Speaker cut out and relit inside each world · 61s</sub></td></tr>
+<tr><td width="33%" valign="top"><a href="https://drive.google.com/file/d/1w8xxV2TUKgTj7USJ6u6_llUsix5NXHHQ/view"><img src="gallery/reels/claude-edit-english__02_claude_edited_200_reels_energy_v2.jpg" alt="Claude edited my reels" width="100%"></a><br><a href="https://drive.google.com/file/d/1w8xxV2TUKgTj7USJ6u6_llUsix5NXHHQ/view"><b>Claude edited my reels</b></a><br><sub>Forest and cream editorial with an energy pass · 49s</sub></td><td width="33%" valign="top"><a href="https://drive.google.com/file/d/1ricLWR8QiCwv7O5RlNqXa3Hl5GOa5Y0T/view"><img src="gallery/reels/codex-ai-workflow__08_codex_ig_automation_cover_orbit.jpg" alt="My Instagram runs on Codex" width="100%"></a><br><a href="https://drive.google.com/file/d/1ricLWR8QiCwv7O5RlNqXa3Hl5GOa5Y0T/view"><b>My Instagram runs on Codex</b></a><br><sub>Reel covers orbit behind the head, AI composer UI · 54s</sub></td><td width="33%" valign="top"><a href="https://drive.google.com/file/d/1e1e_rinWJcd7Tr042GWJ4sen2H0CS_2Y/view"><img src="gallery/reels/nvidia-huang-news__06_second-affair_vertical_60s_v2.jpg" alt="Who runs Nvidia?" width="100%"></a><br><a href="https://drive.google.com/file/d/1e1e_rinWJcd7Tr042GWJ4sen2H0CS_2Y/view"><b>Who runs Nvidia?</b></a><br><sub>Motion-design news explainer with source chips · 58s</sub></td></tr>
+<tr><td width="33%" valign="top"><a href="https://drive.google.com/file/d/1Dckf_Cfocw0Z4RRGmm-xQUkByEGqJDrY/view"><img src="gallery/reels/pager-reels__07_anthropic_ipo.jpg" alt="Anthropic IPO" width="100%"></a><br><a href="https://drive.google.com/file/d/1Dckf_Cfocw0Z4RRGmm-xQUkByEGqJDrY/view"><b>Anthropic IPO</b></a><br><sub>News pager card with animated chart · 9s</sub></td><td width="33%" valign="top"><a href="https://drive.google.com/file/d/1tic3nGFCqlIeNNuIXVNAGQYn-r1GfMpd/view"><img src="gallery/reels/isg-ai-keynote__07_600k_to_30k_v2.jpg" alt="600K to 30K" width="100%"></a><br><a href="https://drive.google.com/file/d/1tic3nGFCqlIeNNuIXVNAGQYn-r1GfMpd/view"><b>600K to 30K</b></a><br><sub>Keynote clip with a data card timed to the claim · 61s</sub></td><td width="33%" valign="top"><a href="https://drive.google.com/file/d/1WhZLPOUxT9prcmHBsv8vcIYUzrZY9gqV/view"><img src="gallery/reels/yc-heartbreak-pack__02_directed-by-her_final3.jpg" alt="Directed by: Her" width="100%"></a><br><a href="https://drive.google.com/file/d/1WhZLPOUxT9prcmHBsv8vcIYUzrZY9gqV/view"><b>Directed by: Her</b></a><br><sub>Credits-roll hook · 15s</sub></td></tr>
+<tr><td width="33%" valign="top"><a href="https://drive.google.com/file/d/1XXkZppmTL9TYWPFQuDjuvSywgDlNkkS8/view"><img src="gallery/reels/vatsal-story__06_vatsal-story_final_original-accent.jpg" alt="My story" width="100%"></a><br><a href="https://drive.google.com/file/d/1XXkZppmTL9TYWPFQuDjuvSywgDlNkkS8/view"><b>My story</b></a><br><sub>HyperFrames life-story reel with voices · 62s</sub></td><td width="33%" valign="top"><a href="https://drive.google.com/file/d/1elhbxe2_KVLnlaXfRpItgjSnYgZQZln1/view"><img src="gallery/reels/anuv-journey__08_anuv-jain-fan-journey_v8_reel.jpg" alt="A fan&#x27;s journey" width="100%"></a><br><a href="https://drive.google.com/file/d/1elhbxe2_KVLnlaXfRpItgjSnYgZQZln1/view"><b>A fan&#x27;s journey</b></a><br><sub>HyperFrames story reel · 62s</sub></td><td width="33%" valign="top"><a href="https://drive.google.com/file/d/1xxML7UczYHTYvFmgy-N-lQGPWc393xiw/view"><img src="gallery/reels/jac-film__08_jac-reel_vertical_loser_sage_quieter.jpg" alt="Jac: the next era" width="100%"></a><br><a href="https://drive.google.com/file/d/1xxML7UczYHTYvFmgy-N-lQGPWc393xiw/view"><b>Jac: the next era</b></a><br><sub>Cinematic event film · 73s</sub></td></tr>
+<tr><td width="33%" valign="top"><a href="https://drive.google.com/file/d/1mpdya7Rg-HECcYrBiQTP0jmJcsS_W3Gc/view"><img src="gallery/reels/claude-ad-reel__02_claude-is-just-better_full-ad.jpg" alt="My Claude is just better" width="100%"></a><br><a href="https://drive.google.com/file/d/1mpdya7Rg-HECcYrBiQTP0jmJcsS_W3Gc/view"><b>My Claude is just better</b></a><br><sub>Reaction hook into a full product ad · 60s</sub></td><td width="33%" valign="top"><a href="https://drive.google.com/file/d/1o5LBnZik0jjULMAT6Rn91TxOHrl_7H4k/view"><img src="gallery/reels/amplify-claude-coded-ad__03_amplify-ad-v3_landscape.jpg" alt="Claude-coded product ad" width="100%"></a><br><a href="https://drive.google.com/file/d/1o5LBnZik0jjULMAT6Rn91TxOHrl_7H4k/view"><b>Claude-coded product ad</b></a><br><sub>Landscape motion-design ad · 57s</sub></td></tr>
+</table>
+<!-- reels:end -->
 
-## What it does
+## The looks
 
-- **Talking-head reels** with word-accurate captions, a typed serif hook, music ducked under the voice, and cut-safe speech edits.
-- **Text-led formats**: "X OR Y" hooks, "N things at N" lists, receipts, glow-ups, before/after diptychs, travel montages, and typewriter openers.
-- **Music-led cuts**: detect beats and the drop in a track, then place each cut on the beat.
-- **Delivery that passes platform checks**: 1080×1920 at 30 fps, Rec.709 colour (iPhone HLG is tonemapped first), an Instagram safe-area check, and a standard upload encode with loudness normalisation.
-- **Review tools**: a contact sheet to see what is in a folder, and a local editor.
+76 looks, each one a short preview of a repeatable style: hooks, type treatments, overlays, card layouts, world-bending effects and motion design. Click a preview to play it. "runs here" means the builder is in this repo.
 
----
+<!-- looks:start -->
+<table>
+<tr><td width="25%" valign="top"><a href="catalog/previews/tpl/motion-one-shape.mp4"><img src="catalog/previews/tpl/motion-one-shape.jpg" alt="Motion design: one shape, no cuts" width="100%"></a><br><b>Motion design: one shape, no cuts</b><br><sub>template · runs here · bin/motion-reel.sh</sub></td><td width="25%" valign="top"><a href="catalog/previews/tpl/pager-news-card.mp4"><img src="catalog/previews/tpl/pager-news-card.jpg" alt="News pager card" width="100%"></a><br><b>News pager card</b><br><sub>template · runs here · bin/pager-reel.py</sub></td><td width="25%" valign="top"><a href="catalog/previews/tpl/forest-cream-editorial.mp4"><img src="catalog/previews/tpl/forest-cream-editorial.jpg" alt="Forest &amp; cream editorial" width="100%"></a><br><b>Forest &amp; cream editorial</b><br><sub>template · preview · skill</sub></td><td width="25%" valign="top"><a href="catalog/previews/tpl/energy-walk-talk.mp4"><img src="catalog/previews/tpl/energy-walk-talk.jpg" alt="Energy pass (walk-and-talk)" width="100%"></a><br><b>Energy pass (walk-and-talk)</b><br><sub>template · runs here · sfx-kit.py</sub></td></tr>
+<tr><td width="25%" valign="top"><a href="catalog/previews/tpl/cover-orbit-claude-ui.mp4"><img src="catalog/previews/tpl/cover-orbit-claude-ui.jpg" alt="Cover orbit + Claude UI" width="100%"></a><br><b>Cover orbit + Claude UI</b><br><sub>template · runs here · bin/face-track.py</sub></td><td width="25%" valign="top"><a href="catalog/previews/tpl/claude-chat-motion-ui.mp4"><img src="catalog/previews/tpl/claude-chat-motion-ui.jpg" alt="Claude chat motion UI" width="100%"></a><br><b>Claude chat motion UI</b><br><sub>template · preview · HyperFrames</sub></td><td width="25%" valign="top"><a href="catalog/previews/tpl/druk-title.mp4"><img src="catalog/previews/tpl/druk-title.jpg" alt="Tall condensed title (Druk-style)" width="100%"></a><br><b>Tall condensed title (Druk-style)</b><br><sub>template · runs here · bin/druk-inspired-title.py</sub></td><td width="25%" valign="top"><a href="catalog/previews/tpl/concept-explainer-overlay.mp4"><img src="catalog/previews/tpl/concept-explainer-overlay.jpg" alt="Concept explainer overlay" width="100%"></a><br><b>Concept explainer overlay</b><br><sub>template · runs here · make-captions.py</sub></td></tr>
+<tr><td width="25%" valign="top"><a href="catalog/previews/tpl/typewriter-hook.mp4"><img src="catalog/previews/tpl/typewriter-hook.jpg" alt="Typewriter opener" width="100%"></a><br><b>Typewriter opener</b><br><sub>template · runs here · typewriter.py</sub></td><td width="25%" valign="top"><a href="catalog/previews/tpl/promo-kinetic.mp4"><img src="catalog/previews/tpl/promo-kinetic.jpg" alt="Mumbai promo (kinetic Anton)" width="100%"></a><br><b>Mumbai promo (kinetic Anton)</b><br><sub>template · runs here · kinetic-hook.py</sub></td><td width="25%" valign="top"><a href="catalog/previews/tpl/yc-heartbreak-pack.mp4"><img src="catalog/previews/tpl/yc-heartbreak-pack.jpg" alt="YC x heartbreak hooks" width="100%"></a><br><b>YC x heartbreak hooks</b><br><sub>template · preview · videos/yc-heartbreak-pack/gen.py</sub></td><td width="25%" valign="top"><a href="catalog/previews/tpl/yc-question-list.mp4"><img src="catalog/previews/tpl/yc-question-list.jpg" alt="YC interview question list" width="100%"></a><br><b>YC interview question list</b><br><sub>template · runs here · bin/yc-interview-list.py</sub></td></tr>
+<tr><td width="25%" valign="top"><a href="catalog/previews/tpl/travel-story.mp4"><img src="catalog/previews/tpl/travel-story.jpg" alt="Travel story" width="100%"></a><br><b>Travel story</b><br><sub>template · runs here · travel-story-reel.sh</sub></td><td width="25%" valign="top"><a href="catalog/previews/tpl/travel-quote-sticker.mp4"><img src="catalog/previews/tpl/travel-quote-sticker.jpg" alt="Travel quote sticker" width="100%"></a><br><b>Travel quote sticker</b><br><sub>template · runs here · travel-quote-reel.py</sub></td><td width="25%" valign="top"><a href="catalog/previews/tpl/verified-evening.mp4"><img src="catalog/previews/tpl/verified-evening.jpg" alt="Verified evening reel" width="100%"></a><br><b>Verified evening reel</b><br><sub>template · runs here · bin/evening-reel.py</sub></td><td width="25%" valign="top"><a href="catalog/previews/tpl/food-reel.mp4"><img src="catalog/previews/tpl/food-reel.jpg" alt="Food / street-food reel" width="100%"></a><br><b>Food / street-food reel</b><br><sub>template · preview · videos/khau-galli/build.py</sub></td></tr>
+<tr><td width="25%" valign="top"><a href="catalog/previews/tpl/diwali-street-times.mp4"><img src="catalog/previews/tpl/diwali-street-times.jpg" alt="Diwali abroad (street times)" width="100%"></a><br><b>Diwali abroad (street times)</b><br><sub>template · preview · project</sub></td><td width="25%" valign="top"><a href="catalog/previews/tpl/gym-stat.mp4"><img src="catalog/previews/tpl/gym-stat.jpg" alt="Gym stat typography" width="100%"></a><br><b>Gym stat typography</b><br><sub>template · runs here · bin/umich-gym-reel.sh</sub></td><td width="25%" valign="top"><a href="catalog/previews/tpl/liquid-glass.mp4"><img src="catalog/previews/tpl/liquid-glass.jpg" alt="Liquid glass UI" width="100%"></a><br><b>Liquid glass UI</b><br><sub>template · preview · skill</sub></td><td width="25%" valign="top"><a href="catalog/previews/fx/noise.mp4"><img src="catalog/previews/fx/noise.jpg" alt="noise" width="100%"></a><br><b>noise</b><br><sub>effect · runs here · bin/fx-extra.sh</sub></td></tr>
+<tr><td width="25%" valign="top"><a href="catalog/previews/fx/lineup.mp4"><img src="catalog/previews/fx/lineup.jpg" alt="lineup" width="100%"></a><br><b>lineup</b><br><sub>effect · runs here · bin/fx-extra.sh</sub></td><td width="25%" valign="top"><a href="catalog/previews/fx/locked-on.mp4"><img src="catalog/previews/fx/locked-on.jpg" alt="locked-on" width="100%"></a><br><b>locked-on</b><br><sub>effect · runs here · bin/fx-extra.sh</sub></td><td width="25%" valign="top"><a href="catalog/previews/fx/orbit.mp4"><img src="catalog/previews/fx/orbit.jpg" alt="orbit" width="100%"></a><br><b>orbit</b><br><sub>effect · runs here · bin/fx-extra.sh</sub></td><td width="25%" valign="top"><a href="catalog/previews/fx/lean-in.mp4"><img src="catalog/previews/fx/lean-in.jpg" alt="lean-in" width="100%"></a><br><b>lean-in</b><br><sub>effect · runs here · bin/fx-extra.sh</sub></td></tr>
+<tr><td width="25%" valign="top"><a href="catalog/previews/fx/backdrop-word.mp4"><img src="catalog/previews/fx/backdrop-word.jpg" alt="backdrop-word" width="100%"></a><br><b>backdrop-word</b><br><sub>effect · runs here · bin/fx-extra.sh</sub></td><td width="25%" valign="top"><a href="catalog/previews/fx/spotlight.mp4"><img src="catalog/previews/fx/spotlight.jpg" alt="spotlight" width="100%"></a><br><b>spotlight</b><br><sub>effect · runs here · bin/fx-extra.sh</sub></td><td width="25%" valign="top"><a href="catalog/previews/fx/the-bill.mp4"><img src="catalog/previews/fx/the-bill.jpg" alt="the-bill" width="100%"></a><br><b>the-bill</b><br><sub>effect · runs here · bin/fx-extra.sh</sub></td><td width="25%" valign="top"><a href="catalog/previews/fx/moody.mp4"><img src="catalog/previews/fx/moody.jpg" alt="moody" width="100%"></a><br><b>moody</b><br><sub>effect · runs here · bin/fx-extra.sh</sub></td></tr>
+<tr><td width="25%" valign="top"><a href="catalog/previews/fx/swipe.mp4"><img src="catalog/previews/fx/swipe.jpg" alt="swipe" width="100%"></a><br><b>swipe</b><br><sub>effect · runs here · bin/fx-extra.sh</sub></td><td width="25%" valign="top"><a href="catalog/previews/fx/todo.mp4"><img src="catalog/previews/fx/todo.jpg" alt="todo" width="100%"></a><br><b>todo</b><br><sub>effect · runs here · bin/fx-extra.sh</sub></td><td width="25%" valign="top"><a href="catalog/previews/fx/tap.mp4"><img src="catalog/previews/fx/tap.jpg" alt="tap" width="100%"></a><br><b>tap</b><br><sub>effect · runs here · bin/fx-extra.sh</sub></td><td width="25%" valign="top"><a href="catalog/previews/fx/pause-point.mp4"><img src="catalog/previews/fx/pause-point.jpg" alt="pause-point" width="100%"></a><br><b>pause-point</b><br><sub>effect · runs here · bin/fx-extra.sh</sub></td></tr>
+<tr><td width="25%" valign="top"><a href="catalog/previews/fx/uninstall.mp4"><img src="catalog/previews/fx/uninstall.jpg" alt="uninstall" width="100%"></a><br><b>uninstall</b><br><sub>effect · runs here · bin/fx-extra.sh</sub></td><td width="25%" valign="top"><a href="catalog/previews/fx/reel-frame.mp4"><img src="catalog/previews/fx/reel-frame.jpg" alt="reel-frame" width="100%"></a><br><b>reel-frame</b><br><sub>effect · runs here · bin/fx-extra.sh</sub></td><td width="25%" valign="top"><a href="catalog/previews/fx/shortcut-rain.mp4"><img src="catalog/previews/fx/shortcut-rain.jpg" alt="shortcut-rain" width="100%"></a><br><b>shortcut-rain</b><br><sub>effect · runs here · bin/fx-extra.sh</sub></td><td width="25%" valign="top"><a href="catalog/previews/fx/reject-stamp.mp4"><img src="catalog/previews/fx/reject-stamp.jpg" alt="reject-stamp" width="100%"></a><br><b>reject-stamp</b><br><sub>effect · runs here · bin/fx-extra.sh</sub></td></tr>
+<tr><td width="25%" valign="top"><a href="catalog/previews/fx/countdown-flip.mp4"><img src="catalog/previews/fx/countdown-flip.jpg" alt="countdown-flip" width="100%"></a><br><b>countdown-flip</b><br><sub>effect · runs here · bin/fx-extra.sh</sub></td><td width="25%" valign="top"><a href="catalog/previews/fx/rabbit-hole.mp4"><img src="catalog/previews/fx/rabbit-hole.jpg" alt="rabbit-hole" width="100%"></a><br><b>rabbit-hole</b><br><sub>effect · runs here · bin/fx-extra.sh</sub></td><td width="25%" valign="top"><a href="catalog/previews/fx/cover-star.mp4"><img src="catalog/previews/fx/cover-star.jpg" alt="cover-star" width="100%"></a><br><b>cover-star</b><br><sub>effect · runs here · bin/fx-extra.sh</sub></td><td width="25%" valign="top"><a href="catalog/previews/fx/scribble.mp4"><img src="catalog/previews/fx/scribble.jpg" alt="scribble" width="100%"></a><br><b>scribble</b><br><sub>effect · runs here · bin/fx-extra.sh</sub></td></tr>
+<tr><td width="25%" valign="top"><a href="catalog/previews/fx/red-collage.mp4"><img src="catalog/previews/fx/red-collage.jpg" alt="red-collage" width="100%"></a><br><b>red-collage</b><br><sub>effect · runs here · bin/fx-extra.sh</sub></td><td width="25%" valign="top"><a href="catalog/previews/fx/split-headline.mp4"><img src="catalog/previews/fx/split-headline.jpg" alt="split-headline" width="100%"></a><br><b>split-headline</b><br><sub>effect · runs here · bin/fx-extra.sh</sub></td><td width="25%" valign="top"><a href="catalog/previews/fx/pastel-word.mp4"><img src="catalog/previews/fx/pastel-word.jpg" alt="pastel-word" width="100%"></a><br><b>pastel-word</b><br><sub>effect · runs here · bin/fx-extra.sh</sub></td><td width="25%" valign="top"><a href="catalog/previews/fx/check-pills.mp4"><img src="catalog/previews/fx/check-pills.jpg" alt="check-pills" width="100%"></a><br><b>check-pills</b><br><sub>effect · runs here · bin/fx-extra.sh</sub></td></tr>
+<tr><td width="25%" valign="top"><a href="catalog/previews/fx/headline-box.mp4"><img src="catalog/previews/fx/headline-box.jpg" alt="headline-box" width="100%"></a><br><b>headline-box</b><br><sub>effect · runs here · bin/fx-extra.sh</sub></td><td width="25%" valign="top"><a href="catalog/previews/fx/profile-wall.mp4"><img src="catalog/previews/fx/profile-wall.jpg" alt="profile-wall" width="100%"></a><br><b>profile-wall</b><br><sub>effect · runs here · bin/fx-extra.sh</sub></td><td width="25%" valign="top"><a href="catalog/previews/fx/tier-list.mp4"><img src="catalog/previews/fx/tier-list.jpg" alt="tier-list" width="100%"></a><br><b>tier-list</b><br><sub>effect · runs here · bin/fx-extra.sh</sub></td><td width="25%" valign="top"><a href="catalog/previews/fx/broll-split.mp4"><img src="catalog/previews/fx/broll-split.jpg" alt="broll-split" width="100%"></a><br><b>broll-split</b><br><sub>effect · runs here · bin/fx-extra.sh</sub></td></tr>
+<tr><td width="25%" valign="top"><a href="catalog/previews/fx/phone-fan.mp4"><img src="catalog/previews/fx/phone-fan.jpg" alt="phone-fan" width="100%"></a><br><b>phone-fan</b><br><sub>effect · runs here · bin/fx-extra.sh</sub></td><td width="25%" valign="top"><a href="catalog/previews/fx/dot-reveal.mp4"><img src="catalog/previews/fx/dot-reveal.jpg" alt="dot-reveal" width="100%"></a><br><b>dot-reveal</b><br><sub>effect · runs here · bin/fx-extra.sh</sub></td><td width="25%" valign="top"><a href="catalog/previews/fx/headline-wall.mp4"><img src="catalog/previews/fx/headline-wall.jpg" alt="headline-wall" width="100%"></a><br><b>headline-wall</b><br><sub>effect · runs here · bin/fx-extra.sh</sub></td><td width="25%" valign="top"><a href="catalog/previews/fx/checklist.mp4"><img src="catalog/previews/fx/checklist.jpg" alt="checklist" width="100%"></a><br><b>checklist</b><br><sub>effect · runs here · bin/fx-extra.sh</sub></td></tr>
+<tr><td width="25%" valign="top"><a href="catalog/previews/fx/glass-widgets.mp4"><img src="catalog/previews/fx/glass-widgets.jpg" alt="glass-widgets" width="100%"></a><br><b>glass-widgets</b><br><sub>effect · runs here · bin/fx-extra.sh</sub></td><td width="25%" valign="top"><a href="catalog/previews/fx/timeline.mp4"><img src="catalog/previews/fx/timeline.jpg" alt="timeline" width="100%"></a><br><b>timeline</b><br><sub>effect · runs here · bin/fx-extra.sh</sub></td><td width="25%" valign="top"><a href="catalog/previews/fx/comment-box.mp4"><img src="catalog/previews/fx/comment-box.jpg" alt="comment-box" width="100%"></a><br><b>comment-box</b><br><sub>effect · runs here · bin/fx-extra.sh</sub></td><td width="25%" valign="top"><a href="catalog/previews/fx/liquid-glass-graph.mp4"><img src="catalog/previews/fx/liquid-glass-graph.jpg" alt="liquid-glass-graph" width="100%"></a><br><b>liquid-glass-graph</b><br><sub>effect · runs here · bin/fx-extra.sh</sub></td></tr>
+<tr><td width="25%" valign="top"><a href="catalog/previews/fx/carousel-spin.mp4"><img src="catalog/previews/fx/carousel-spin.jpg" alt="carousel-spin" width="100%"></a><br><b>carousel-spin</b><br><sub>effect · runs here · bin/fx-extra.sh</sub></td><td width="25%" valign="top"><a href="catalog/previews/fx/match-cut.mp4"><img src="catalog/previews/fx/match-cut.jpg" alt="match-cut" width="100%"></a><br><b>match-cut</b><br><sub>effect · runs here · bin/fx-extra.sh</sub></td><td width="25%" valign="top"><a href="catalog/previews/fx/apple-toggles.mp4"><img src="catalog/previews/fx/apple-toggles.jpg" alt="apple-toggles" width="100%"></a><br><b>apple-toggles</b><br><sub>effect · runs here · bin/fx-extra.sh</sub></td><td width="25%" valign="top"><a href="catalog/previews/fx/led-sign.mp4"><img src="catalog/previews/fx/led-sign.jpg" alt="led-sign" width="100%"></a><br><b>led-sign</b><br><sub>effect · runs here · bin/fx-extra.sh</sub></td></tr>
+<tr><td width="25%" valign="top"><a href="catalog/previews/fx/slow-push.mp4"><img src="catalog/previews/fx/slow-push.jpg" alt="slow-push" width="100%"></a><br><b>slow-push</b><br><sub>effect · runs here · bin/fx-extra.sh</sub></td><td width="25%" valign="top"><a href="catalog/previews/fx/over-the-shoulder-zoom.mp4"><img src="catalog/previews/fx/over-the-shoulder-zoom.jpg" alt="over-the-shoulder-zoom" width="100%"></a><br><b>over-the-shoulder-zoom</b><br><sub>effect · runs here · bin/fx-extra.sh</sub></td><td width="25%" valign="top"><a href="catalog/previews/fx/messages.mp4"><img src="catalog/previews/fx/messages.jpg" alt="messages" width="100%"></a><br><b>messages</b><br><sub>effect · runs here · bin/fx-extra.sh</sub></td><td width="25%" valign="top"><a href="catalog/previews/fx/place-in-grid.mp4"><img src="catalog/previews/fx/place-in-grid.jpg" alt="place-in-grid" width="100%"></a><br><b>place-in-grid</b><br><sub>effect · runs here · bin/fx-extra.sh</sub></td></tr>
+<tr><td width="25%" valign="top"><a href="catalog/previews/fx/tape-label.mp4"><img src="catalog/previews/fx/tape-label.jpg" alt="tape-label" width="100%"></a><br><b>tape-label</b><br><sub>effect · runs here · bin/fx-extra.sh</sub></td><td width="25%" valign="top"><a href="catalog/previews/fx/select-resize.mp4"><img src="catalog/previews/fx/select-resize.jpg" alt="select-resize" width="100%"></a><br><b>select-resize</b><br><sub>effect · runs here · bin/fx-extra.sh</sub></td><td width="25%" valign="top"><a href="catalog/previews/fx/wave-trim.mp4"><img src="catalog/previews/fx/wave-trim.jpg" alt="wave-trim" width="100%"></a><br><b>wave-trim</b><br><sub>effect · runs here · bin/fx-extra.sh</sub></td><td width="25%" valign="top"><a href="catalog/previews/fx/huge-strike.mp4"><img src="catalog/previews/fx/huge-strike.jpg" alt="huge-strike" width="100%"></a><br><b>huge-strike</b><br><sub>effect · runs here · bin/fx-extra.sh</sub></td></tr>
+<tr><td width="25%" valign="top"><a href="catalog/previews/fx/crayon-write.mp4"><img src="catalog/previews/fx/crayon-write.jpg" alt="crayon-write" width="100%"></a><br><b>crayon-write</b><br><sub>effect · runs here · bin/fx-extra.sh</sub></td><td width="25%" valign="top"><a href="catalog/previews/fx/fan-build.mp4"><img src="catalog/previews/fx/fan-build.jpg" alt="fan-build" width="100%"></a><br><b>fan-build</b><br><sub>effect · runs here · bin/fx-extra.sh</sub></td><td width="25%" valign="top"><a href="catalog/previews/fx/spotify-scroll.mp4"><img src="catalog/previews/fx/spotify-scroll.jpg" alt="spotify-scroll" width="100%"></a><br><b>spotify-scroll</b><br><sub>effect · runs here · bin/fx-extra.sh</sub></td><td width="25%" valign="top"><a href="catalog/previews/fx/tech-widgets.mp4"><img src="catalog/previews/fx/tech-widgets.jpg" alt="tech-widgets" width="100%"></a><br><b>tech-widgets</b><br><sub>effect · runs here · bin/fx-extra.sh</sub></td></tr>
+<tr><td width="25%" valign="top"><a href="catalog/previews/fx/glass-tunnel.mp4"><img src="catalog/previews/fx/glass-tunnel.jpg" alt="glass-tunnel" width="100%"></a><br><b>glass-tunnel</b><br><sub>effect · runs here · bin/fx-extra.sh</sub></td><td width="25%" valign="top"><a href="catalog/previews/fx/notes-app.mp4"><img src="catalog/previews/fx/notes-app.jpg" alt="notes-app" width="100%"></a><br><b>notes-app</b><br><sub>effect · runs here · bin/fx-extra.sh</sub></td><td width="25%" valign="top"><a href="catalog/previews/fx/story-portal.mp4"><img src="catalog/previews/fx/story-portal.jpg" alt="story-portal" width="100%"></a><br><b>story-portal</b><br><sub>effect · runs here · bin/fx-extra.sh</sub></td><td width="25%" valign="top"><a href="catalog/previews/fx/yap-headline.mp4"><img src="catalog/previews/fx/yap-headline.jpg" alt="yap-headline" width="100%"></a><br><b>yap-headline</b><br><sub>effect · runs here · bin/fx-extra.sh</sub></td></tr>
+</table>
+<!-- looks:end -->
 
-## Quick start
+## Start a video: which kind is it?
 
-### 1. Requirements
+The agent asks this first, because each kind is built differently. The full intake, with the follow-up questions and tools for each, is in [`START-HERE.md`](START-HERE.md).
 
-| Tool | Why | Install (macOS / Linux) |
+| Kind | What makes it feel right | Start with |
 |---|---|---|
-| Bash, Python 3 | scripts | preinstalled on macOS; `apt install python3` on Linux |
-| FFmpeg + FFprobe | every render | `brew install ffmpeg` / `apt install ffmpeg` |
-| Pillow, NumPy | text and image layers | `python3 -m pip install pillow numpy` |
-| `uv` / `uvx` | isolated transcription and media tools | `brew install uv`, or the [uv installer](https://docs.astral.sh/uv/) |
-| `jq`, `rg`, Node.js | some workflows | `brew install jq ripgrep node` |
+| Talking-head edit | speech flows, captions sit in the safe box, effects land on words | `bin/build-story-reel.sh`, `bin/fx-extra.sh` |
+| Motion design | one element carries the eye, no cuts, everything eases, it loops | `bin/motion-reel.sh motion/one-shape out.mp4` |
+| Hybrid | motion inserts timed to the word they explain | a HyperFrames comp per insert + `bin/composite-layers.py` |
+| Footage montage | the payoff cut lands on the drop | `bin/music-map.py`, `bin/beat-reel.sh` |
+| Faceless clip | every claim sourced, the speaker credited | `bin/podcast-clip.sh`, `bin/pager-reel.py` |
 
-Optional:
-- `cloudflared`: only for the Instagram API publisher, which tunnels your local file to Meta.
-- `HyperFrames`: for the HTML-rendered motion layers used by some builders.
+Not sure which look? `bin/reel-pick suggest "your brief"` ranks them, and `bin/reel-pick` opens the visual picker at http://localhost:8771.
 
-### 2. Clone and check
+## Try it in two minutes
 
 ```bash
-git clone https://github.com/Vatsal2006350/video-edits.git ~/Code/video-edits
-cd ~/Code/video-edits
-for f in bin/*.sh; do bash -n "$f"; done
-python3 -m py_compile bin/*.py && echo "scripts parse"
+git clone https://github.com/Vatsal2006350/video-edits && cd video-edits
+bin/fx-extra.sh list                                    # sets up the effect venv once, lists 70 effects
+bin/fx-extra.sh halo-rays my-clip.mp4 out/halo.mp4 --start 1 --end 4
+bin/motion-reel.sh motion/one-shape out/one-shape.mp4  # renders the motion-design starter
+python3 bin/ig-safe.py view out/halo.mp4 out/halo-safe.jpg  # safe-box contact sheet
+bash bin/export-ig.sh out/halo.mp4 out/halo_IG.mp4     # upload copy: 44.1 kHz stereo, loudness normalised
 ```
 
-### 3. Put your own media in place
+You need ffmpeg, Python 3 and Node 18+. Footage, music and fonts are yours to supply ([`fonts/README.md`](fonts/README.md) lists the faces).
 
-Keep footage, music, and fonts **outside** the repo. Point the tools at them with the environment variables in [Configuration](#configuration).
+## How a reel gets made
 
-### 4. Make a reel
+1. **Pick the kind and the look.** [`START-HERE.md`](START-HERE.md), then the note in [`formats/`](formats/).
+2. **Write a spec.** A short JSON or manifest: cut points, words, colours, music beat.
+3. **Render the layers.** Type, cards and effects render as separate layers ([`bin/typewriter.py`](bin/typewriter.py), [`bin/kinetic-hook.py`](bin/kinetic-hook.py), [`bin/hero-type.py`](bin/hero-type.py), the effect library), or a HyperFrames comp for motion design.
+4. **Composite.** [`bin/composite-layers.py`](bin/composite-layers.py) stacks PNG sequences and mattes frame by frame, so no frame is dropped.
+5. **Check.** [`bin/ig-safe.py`](bin/ig-safe.py) for the safe box, [`bin/motion-qc.py`](bin/motion-qc.py) for fast sections, [`bin/reel-qc.py`](bin/reel-qc.py) for the rest.
+6. **Export.** [`bin/export-ig.sh`](bin/export-ig.sh) writes the Instagram copy: stereo 44.1 kHz AAC, loudness normalised, constant 30 fps, Rec.709 tagged.
 
-```bash
-# See what is in a folder of clips before you cut anything
-python3 bin/contact-sheet.py ~/Movies/raw-clips
+## Explore the code
 
-# Check the loudness of a cut
-bash bin/check-audio.sh my_cut.mp4
-
-# Build a receipt-style reel from your own manifest
-bash bin/receipt-reel2.sh my.manifest out.mp4 10.9
-
-# Make the Instagram upload copy from a master
-bash bin/export-ig.sh master.mp4 reel_IG.mp4
-
-# Check the Instagram safe area (text must sit inside it)
-python3 bin/ig-safe.py view out.mp4
-```
-
-### 5. Open the local editor
-
-```bash
-python3 bin/editor/server.py        # http://localhost:8765/
-```
-
-The server binds to `127.0.0.1`. It does not publish or upload anything.
-
----
-
-## Configuration
-
-Set these in your shell profile or in a local `.env` file that you do not commit.
-
-| Variable | Default | Used by |
-|---|---|---|
-| `VIDEO_EDITS_ROOT` | `~/Code/video-edits` | scripts that refer to the repo or its fonts |
-| `DOWNLOADS_DIR` | `~/Downloads` | one-off builders that read from Downloads |
-| `IG_USER_ID` | *(none, required)* | Instagram publisher: your professional account ID |
-| `IG_ACCOUNT` | `your_handle` | Instagram publisher: account label |
-| `IG_KEYCHAIN_ACCOUNT` | `$IG_ACCOUNT` | macOS Keychain entry that holds the token |
-| `IG_ACCESS_TOKEN` | read from Keychain | Instagram publisher: long-lived token (never commit it) |
-| `IG_KEYCHAIN_SERVICE` | `com.video-edits.instagram-access-token` | Keychain service name |
-
-Publishing to Instagram is optional and always explicit. The publisher defaults to a **manual Trial Reel**, and it publishes a normal Reel only with `--public`.
-
----
-
-## Builders (bin/)
-
-Each builder is a single command. Run it with no arguments to see its usage, or read the first lines of the script.
-
-### Talking-head and story reels
-| Tool | What it does |
+| Where | What you will find |
 |---|---|
-| `build-story-reel.sh` | Generic talking-head reel with forced-aligned captions and a typed serif hook. Speech cuts, cutaways, b-roll tail, caption fixes, and ducked music are set by environment variables. |
-| `typed-hook.py` | Serif opening hook that types out word by word in sync with the speech. |
-| `typewriter.py`, `keystroke-track.py` | Typewriter hook, with an optional keystroke sound track. |
-| `kinetic-hook.py` | Kinetic serif hook: words arrive where they are spoken and cascade around the frame. |
-| `dynamic-hook.py` | Short phrases that replace each other, with hero words blown up. |
-| `hero-type.py` | Stacked light serif or sans hero type that reveals word by word. |
-| `title-card.py` | Opening card: serif lead-in, then a big bold line. |
-| `make-captions.py` | Builds caption ASS files from force-aligned word timings. |
-| `promo-caption.py` | Burned-in captions with logo cards that pop in on cue. |
-| `studio-key.py` | Clean key of a matted talking head over a generated backdrop, with no white fringe. |
-| `remix-story-audio.sh` | Rebuilds a story reel's soundtrack from a clean voice stem and a music bed. |
+| [`START-HERE.md`](START-HERE.md) | The intake: which kind of video, what to ask, which tools. |
+| [`bin/`](bin/) | Builders, renderers, the reel picker, QA and export tools. Each script's header says what it does. |
+| [`effects/`](effects/) | The effect engines: our 70-effect library and the vendored MIT packs it builds on. |
+| [`motion/`](motion/) | Motion-design compositions (HTML, rendered by HyperFrames). |
+| [`formats/`](formats/) | One note per proven look, with the numbers it was measured at. Read these before the code. |
+| [`catalog/`](catalog/) | The look catalog and preview clips the picker and gallery read. |
+| [`gallery/`](gallery/) | `looks.json` and `reels.json`; `bin/build-readme.py` writes the tables above from them. |
+| [`research/`](research/) | Dated, cited notes on trends and production choices. |
+| [`docs/INVENTORY.md`](docs/INVENTORY.md) | The older full tool inventory, with setup notes. |
 
-### Text-led formats
-| Tool | What it does |
-|---|---|
-| `or-reel.sh` + `fisheye-text.py` | "X OR Y" gold fisheye hook, loading dots, then beat-cut payoffs. |
-| `list-reel.sh` + `list-label.py` | "N things I did at N" list, one beat per item. |
-| `receipt-reel.sh`, `receipt-reel2.sh` | Meme hook into receipt shots, cut on the track's beats. (`2` is the current version.) |
-| `card-reel.sh` | One line of hero type per shot, no talking head. |
-| `glowup-reel.sh` | Stills desaturated; colour returns on the drop. |
-| `diptych-reel.sh` | Then/now split, top and bottom, cut together. |
-| `travel-story-reel.sh`, `travel-reel.sh` | Quiet opening line, then a beat-cut montage. |
-| `bounce-reel.sh` | Hard-cut bounce between shots, with one italic caption held across. |
-| `beat-reel.sh` | Beat-synced cuts with a caption and a transition. |
-| `alternating-reaction-reel.sh` | Reaction meme: a vertical reaction clip beside a horizontal product shot. |
-| `glow-text.py` | Bold caption with a coloured outer glow. |
-| `greyscale-drop.sh` | Greyscale clip that snaps to colour on a drop. |
-| `make-card.py` | Floating rounded card for a photo or screenshot on a transparent 1080×1920 canvas. |
-| `embed-behind.sh`, `embed-behind-seq.sh` | Puts a text PNG or PNG sequence behind the subject, using a matte. |
-| `cta-overlay.sh` | Three-line call-to-action overlay, with an optional scrim. |
-| `timeline-reel.py` | Builds a reel from a JSON spec where every cut sits on an exact timestamp. |
-| `make-aura.py` | "Disappeared" reel: hook, drop, then achievement cards. |
+## Rules every reel here follows
 
-### Music and timing
-| Tool | What it does |
-|---|---|
-| `beats.py` | Detects beat times with spectral-flux onsets. |
-| `music-map.py` | Profiles a track: beats, energy envelope, and where the drop is. |
-| `audio-map.py` | Reports structure: RMS envelope, the drop, and the beats after it. |
-| `pick_cuts.py` | Chooses n+1 beat boundaries at least 1.6 s apart for n scenes. |
-| `safe-cuts.py` | Shows where you can cut without clipping speech. |
-| `trend-remix.sh` | Retimes an existing vertical edit so its main transition lands on a beat. |
-| `ig-audio.py` | Extracts MP3 reference tracks from public Instagram Reel URLs. |
+- **Frame:** 1080×1920 at 30 fps. Instagram's safe box is x 59–918, y 278–1536; centred text is bounded by 724 px.
+- **Colour:** iPhone HLG footage is tonemapped to Rec.709 before any grade, otherwise the picture goes flat.
+- **Sound:** the music bed is ducked under the voice, so the speech stays clear.
+- **Facts only:** a caption or number that cannot be checked against the footage, the speaker's words or a cited source is not written.
+- **Motion:** transforms, not layout; one easing family; no dead frames ([`formats/motion-design.md`](formats/motion-design.md)).
 
-### Analysis and media review
-| Tool | What it does |
-|---|---|
-| `contact-sheet.py` | Contact sheet of a folder of clips or stills, so you can see what is in them before editing. |
-| `scan-stability.py` | Finds the steadiest window of a given length in each clip. |
-| `group-shoots.py` | Clusters clips into shoots by date and visual similarity. |
-| `find-clip.sh` | Finds a talking-head clip by what is said in it. |
-| `transcribe-clips.py` | Word-level transcripts for cut safety. |
-| `watch-transcribe.sh` | Watches a folder and transcribes new clips as they arrive. |
-| `force-align.py` | Forced alignment of Whisper output against the audio. |
-| `color-normalize.sh` | Rec.709 handling: tonemaps iPhone HLG/PQ before any grade. |
-| `refine-matte.sh` | Refines a matte for a project between two timestamps. |
-| `check-audio.sh` | Integrated LUFS and per-segment mean volume. |
+## Credits and takedowns
 
-### Delivery and QA
-| Tool | What it does |
-|---|---|
-| `export-ig.sh` | Instagram upload copy: stereo 44.1 kHz AAC, loudness normalised, CFR 30 fps, faststart, Rec.709 tagged. |
-| `ig-safe.py` | Instagram safe-area viewer and checker. Text must sit inside the safe box. |
-| `validate-instagram-reel.sh` | Checks a reel folder: dimensions, codec, audio, duration, caption length. |
-| `story-qa.py` | Mechanical QA for `build-story-reel.sh` specs, run before rendering. |
+The effect library builds on two MIT-licensed packs: Vibha Ramprakash's claude-video-effects and Charlie Hills' reel-editing-skills. Their licences are in [`effects/LICENSES/`](effects/LICENSES/). The motion-design brief takes its cue from the public collection of Claude Opus 5.5 videos (yihui-dev/awesome-opus5-5-videos).
 
-### Publishing (optional)
-| Tool | What it does |
-|---|---|
-| `instagram-api-publish.sh` | Publishes a validated reel folder through the Instagram Graph API. Defaults to a manual Trial Reel. Needs `IG_USER_ID` and a token. |
-| `comment-dm/` | A small dashboard and webhook service for keyword-triggered private replies on a published Reel. Needs a Meta app and a public HTTPS endpoint. See `bin/comment-dm/README.md`. |
+Third-party names, logos, photos and music belong to their owners. If you appear in a reel or preview and want it removed, open an issue and it will come out.
 
-### Generative helpers (optional, paid APIs)
-| Tool | What it does |
-|---|---|
-| `gen-sora.sh` | Text or image to video with an OpenAI video model. Needs your own API key. |
-| `gen-veo.mjs` | Text or image to video with a Google Veo model. Needs your own API key. |
+## Licence
 
-Generative tools never run implicitly. You have to call them.
-
-### macOS-only tools
-| Tool | What it does |
-|---|---|
-| `photos-fetch.sh`, `fetch-from-photos.sh` | Pulls clips from the Photos library. Run from Terminal.app, because macOS privacy rules block Photos access from other shells. |
-| `get-purple.sh`, `get-dm-and-purple.sh` | Screen-recording helpers that must run in Terminal.app. |
-
-### One-off builders (worked examples)
-These were written for specific reels. Read them as examples of how the builders combine, not as general tools.
-
-`birthday-trial-loop.py`, `prepare-birthday-batch3.sh`, `prepare-birthday-media.sh`, `build-amplify.sh`, `build-t20-reel.sh`, `exams-overlays.sh`, `fetch-kerala-missing.sh`, `whimsy-year-off-recut.sh`, `wishes-yc-reel.sh`, `yc-diverse-reel.sh`, `yc-drop-reel.sh`, `yc-shirt-transition.sh`, `yc-trend-variant.sh`, `new-reel.sh`.
-
----
-
-## Overlay effects (57)
-
-These are overlay animations that sit on a talking head. Each layer is rendered and then composited on top of the picture. They are part of the full toolkit and **are not yet in this public repo** (see [Status](#status)).
-
-<details>
-<summary><b>Show all 57 effects</b></summary>
-
-| # | Effect | What it does |
-|---|---|---|
-| 1 | `noise` | reels pile up behind your head, one every quarter second |
-| 2 | `lineup` | numbered tiles fan out in an arc above your head |
-| 3 | `locked-on` | corner brackets snap onto your face and the camera follows you |
-| 4 | `orbit` | your reels circle your head: in front at the bottom, behind at the top |
-| 5 | `lean-in` | a fast punch-in on one word |
-| 6 | `backdrop-word` | a giant word drops in behind you |
-| 7 | `spotlight` | kill the lights, keep you lit |
-| 8 | `the-bill` | prints every instruction like a ticket into the wall above your head |
-| 9 | `moody` | a moody colour grade: darker, softer, teal shadows |
-| 10 | `swipe` | a before-and-after slider that sweeps across you |
-| 11 | `todo` | a checklist card beside your head that ticks off as you talk |
-| 12 | `tap` | a Follow button pops up and flips to Following |
-| 13 | `pause-point` | freeze the frame and point at something with a hand-drawn arrow |
-| 14 | `uninstall` | a glitchy uninstall bar that breaks the frame apart |
-| 15 | `reel-frame` | your video shrinks into an Instagram reel card |
-| 16 | `shortcut-rain` | keyboard keys rain down behind you |
-| 17 | `reject-stamp` | a big red stamp slams onto the screen |
-| 18 | `countdown-flip` | a 3-2-1 flip clock above your head |
-| 19 | `rabbit-hole` | the frame tunnels into itself, spinning |
-| 20 | `cover-star` | you become a magazine cover, with the title behind your head |
-| 21 | `scribble` | marker doodles draw themselves around you |
-| 22 | `red-collage` | black-and-white you, a giant red word behind, kinetic type stacked beside you |
-| 23 | `split-headline` | a clean headline card slides down and pushes you into the bottom of the frame |
-| 24 | `pastel-word` | a soft lavender backdrop, a giant word behind you, and a profile card |
-| 25 | `check-pills` | grid-paper room, your reels pinned behind you, blue pills get clicked |
-| 26 | `headline-box` | a punch-in with a clean two-line headline, the second line in a white box |
-| 27 | `profile-wall` | your profile grid fills the wall behind you while a counter ticks up |
-| 28 | `tier-list` | a tier list drops in front of you and lands in S tier |
-| 29 | `broll-split` | split screen: b-roll on top with a price-tag sticker, you on the bottom |
-| 30 | `phone-fan` | your reels fan out like a hand of phones under a two-line headline |
-| 31 | `dot-reveal` | your shot builds itself out of glowing dots, then snaps into the full picture |
-| 32 | `headline-wall` | a wall of headlines piles up behind your head, then a total pops in front |
-| 33 | `checklist` | a task list builds under your chin: each step spins, then ticks green |
-| 34 | `glass-widgets` | frosted-glass phone widgets float around your head |
-| 35 | `timeline` | a dark red cinematic grade with an editing timeline, REC timecode, and playhead |
-| 36 | `comment-box` | an Instagram comments sheet types your word, posts it, gets a heart and a reply |
-| 37 | `liquid-glass-graph` | a liquid-glass card under your chin while a graph climbs and the number counts up |
-| 38 | `carousel-spin` | your reels spin around you in a 3D carousel, then slow to a stop |
-| 39 | `match-cut` | news pages cut on one word, locked in place behind your head |
-| 40 | `apple-toggles` | an iPhone settings card under your chin flips its switches, one line at a time |
-| 41 | `led-sign` | the lights drop and a glowing LED sign types itself out behind you |
-| 42 | `slow-push` | a slow cinematic push-in from the wide shot to your face |
-| 43 | `over-the-shoulder-zoom` | the camera pushes into one corner, a liquid-glass graph pops beside your head, then the other corner |
-| 44 | `messages` | iMessage notifications pop in one after another, stacking above the bottom of the frame |
-| 45 | `place-in-grid` | you shrink into the centre tile of a 3×3 profile grid, then reels pop in around you |
-| 46 | `tape-label` | a strip of yellow tape with your line lands on your chest |
-| 47 | `select-resize` | a blue selection box grabs your number and a cursor drags it bigger |
-| 48 | `wave-trim` | the silent parts of your voice are trimmed away on screen until only your words remain |
-| 49 | `huge-strike` | one huge serif word fills the wall behind you, then a red line crosses it out |
-| 50 | `crayon-write` | a red crayon writes your word behind your head, then underlines it |
-| 51 | `fan-build` | cover cards deal into a fan behind your head, one at a time |
-| 52 | `spotify-scroll` | a tilted Spotify-style list scrolls behind you, the active row glows |
-| 53 | `tech-widgets` | an iOS calendar widget and a black reel-views widget pop in above your head |
-| 54 | `glass-tunnel` | reel cards fly outward past you like a tunnel, behind your head |
-| 55 | `notes-app` | an Apple Notes card types a checklist and ticks it off |
-| 56 | `story-portal` | an orange dot portal, then your clip lands inside an Instagram feed |
-| 57 | `yap-headline` | a bubbly pink headline pops in letter by letter with sticker stars |
-
-</details>
-
-Each effect has a `--check` mode that renders a stills sheet, so you can look at it before a full render.
-
----
-
-## Claude skill packs
-
-If you use [Claude Code](https://claude.com/claude-code), the private workspace also carries a set of skills (house rules and step-by-step workflows) that call the builders above. They are **not in this repo yet**.
-
-**Reel workflow skills**
-- `reel-effects`: the 57-effect library above, with a stills check before each render
-- `claude-edit-reel`: forest-green and cream explainer reel with Claude UI cards
-- `talking-head-recut`, `reel-audio-sync` (music-led cuts), `embedded-captions`, `captions-overlay`, `video-sound` (audio clean-up and ducking)
-- `vatsal-motion-effects`: house rules for restraint and typography in motion work (rename it for your own fork)
-
-**Motion and layout skills**
-- `behind-my-head`, `title-orbit`, `ribbon-wrap`, `liquid-glass`, `depth-ui`, `shatter`, `portal`, `vertigo`, `zoom-through`, `tile-tunnel`, `grid-dive`, `cube-spin`, `frame-break`, `head-pop-out`, `magnifying-lens`, `pull-back-reveal`, `screen-in-screen`, `phone-fan`, `spotlight`, `infinite-zoom`, `oversized-cursor`, `word-highlight`, `zoom-cut`, `cut-the-curve`, `seam-craft`
-
-**Explainer and content-type skills**
-- `opening-hook`, `call-to-action`, `call-clips`, `explainer-video`, `faceless-explainer`, `product-demo`, `product-launch-video`, `news-reaction`, `tier-list`, `stripe-style`, `apple-style`, `animated-numbers`, `big-idea-video`, `changelog-video`, `slideshow`, `clone-room`, `every-format`, `toolkit-video`, `video-intake`, `video-check`, `brand-setup`, `music-to-video`, `pr-to-video`
-
-**Motion-graphics frameworks**
-- `hyperframes` and its sub-skills (`-animation`, `-audio`, `-cli`, `-core`, `-creative`, `-keyframes`, `-registry`), `motion-graphics`, `motion-doctrine`, `remotion-to-hyperframes`, `media-use`, `general-video`
-
-**Third-party packs (credit and licence)**
-- Effects from **Vibha's `claude-video-effects`** (51 effects), and the skills from **Charlie Hills' `reel-editing-skills`** (MIT, © 2026 Charlie Hills). They are vendored outside this repo, and this repo's house rules take priority over them. Keep the upstream licence notices if you redistribute them.
-
----
-
-## Format specs (formats/)
-
-Each file is a measured format: the numbers, timings, and rules that made it work. They are the best place to start if you want a look that already works.
-
-| File | Format |
-|---|---|
-| `alternating-reaction-meme.md` | reaction meme |
-| `cinematic-hero-type.md` | stacked light serif/sans hero type |
-| `daily-routine-bounce.md` | hard-cut bounce with one caption |
-| `food-reel-format.md` | food reel with a verdict beat |
-| `footage-folder-names-lie.md` | why you check footage by eye, not by folder name |
-| `glowup-reel-format.md` | glow-up transformation |
-| `ig-safe-area.md` | the Instagram safe box and text width rules |
-| `kumar-method-reel-format.md` | flat serif, fixed cap height, echo stack, hard cuts |
-| `list-reel-format.md` | "N things at N" list |
-| `or-choice-reel-format.md` | "X OR Y" fisheye hook |
-| `promo-reel-format.md` | kinetic hero words, running captions, logo cards |
-| `receipt-reel-format.md` | receipt reel |
-| `reel-font-repo.md` | font presets and the gold-glow look |
-| `reel-typography-standard.md` | the house type standard across reels |
-| `story-reel-qa.md` | QA layers for talking-head specs |
-| `typed-serif-hook.md` | serif hook that types word by word |
-| `typewriter-hook-format.md` | typewriter opener |
-| `zoompan-squashes-stills.md` | why `zoompan` stretches stills, and what to use instead |
-| `_old-CLAUDE-finishing-pipeline.md` | older finishing pipeline (kept for reference) |
-
----
-
-## Repo layout
-
-```
-bin/            builders, analysers, QA and delivery tools
-bin/editor/     local timeline editor (server.py, editor.html, compositor.js)
-bin/comment-dm/ optional comment-to-DM dashboard and webhook service
-formats/        measured format specs
-research/       dated research notes (trends, production, audio)
-analytics/      performance-logging template and a trend simulation
-fonts/          font setup notes (font files are not included)
-CLAUDE.md       production contract for AI agents working in this repo
-TOOLS.md        tool selection notes
-HOUSE-STYLE.md  house style rules
-VIRAL-FORMAT.md format notes
-```
-
----
-
-## Status
-
-| Part | In this repo | Notes |
-|---|---|---|
-| Builders (`bin/`) | yes | some are one-off examples; see above |
-| Local editor | yes | `bin/editor/server.py` |
-| Instagram export and safe-area checks | yes | `export-ig.sh`, `ig-safe.py`, `validate-instagram-reel.sh` |
-| Format specs and research | yes | `formats/`, `research/` |
-| 57-effect overlay library (`fx-extra`) | **no** | in a private workspace; planned |
-| Claude skill packs | **no** | local to the author's machine; planned |
-| Reel library server | **no** | planned |
-| Licence | **MIT** (see `LICENSE`) |
-
----
-
-## Privacy and what stays out of git
-
-The repo is built to keep private material out of version control. `.gitignore` excludes raw footage, exports, rendered media, the `.work/` cache, font and music files, account analytics, and credentials.
-
-Rules for contributors and for your own fork:
-- Never commit `.env` files, API keys, or tokens. Read them from the environment or the macOS Keychain.
-- Never commit footage, rendered video, or licensed music. Keep them in your own folders and point the tools at them.
-- Never hard-code account IDs, handles, or home-directory paths. Use the variables in [Configuration](#configuration).
-- Generated and paid AI media is optional, and it runs only when you call it.
+MIT. See [`LICENSE`](LICENSE).

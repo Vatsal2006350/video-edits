@@ -38,3 +38,10 @@ _matte*.log
 # vendored skill packs (reinstallable via npx skills add)
 .agents/
 .claude/
+
+# local setup and renders
+.venv/
+node_modules/
+.hyperframes/
+__pycache__/
+out/

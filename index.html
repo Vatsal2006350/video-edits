@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>video-edits gallery</title>
+<meta name="description" content="Short vertical reels and the looks they are built from, made with FFmpeg and Python.">
+<style>
+  :root {
+    --bg: #f6f4ef; --fg: #161616; --muted: #6b6b6b; --card: #ffffff; --line: #e2ded5; --accent: #1f6f50;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) { --bg: #0e0f0d; --fg: #f1f0ec; --muted: #9a9a94; --card: #171815; --line: #2a2b27; --accent: #6fd3a6; }
+  }
+  :root[data-theme="dark"] { --bg: #0e0f0d; --fg: #f1f0ec; --muted: #9a9a94; --card: #171815; --line: #2a2b27; --accent: #6fd3a6; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--fg); font: 16px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; }
+  main { max-width: 1120px; margin: 0 auto; padding: 32px 16px 64px; }
+  h1 { font-size: 28px; margin: 0 0 4px; }
+  h2 { font-size: 20px; margin: 40px 0 12px; }
+  p.lede { color: var(--muted); margin: 0 0 20px; max-width: 62ch; }
+  a { color: var(--accent); }
+  .bar { display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0; }
+  input[type="search"] { flex: 1 1 220px; padding: 10px 12px; border: 1px solid var(--line); border-radius: 8px; background: var(--card); color: var(--fg); font: inherit; }
+  button.chip { padding: 8px 12px; border: 1px solid var(--line); border-radius: 999px; background: var(--card); color: var(--fg); font: inherit; cursor: pointer; }
+  button.chip[aria-pressed="true"] { border-color: var(--accent); color: var(--accent); }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 14px; }
+  .tile { background: var(--card); border: 1px solid var(--line); border-radius: 10px; overflow: hidden; text-align: left; padding: 0; cursor: pointer; color: inherit; font: inherit; }
+  .tile img { display: block; width: 100%; aspect-ratio: 9 / 16; object-fit: cover; background: #000; }
+  .tile .cap { padding: 8px 10px 10px; }
+  .tile .name { font-weight: 600; font-size: 14px; word-break: break-word; }
+  .tile .meta { color: var(--muted); font-size: 12px; }
+  .reels { grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); }
+  .reels .tile img { aspect-ratio: 9 / 16; }
+  .empty { color: var(--muted); border: 1px dashed var(--line); border-radius: 10px; padding: 16px; }
+  dialog { border: 0; padding: 0; background: transparent; max-width: min(92vw, 420px); }
+  dialog::backdrop { background: rgba(0,0,0,.7); }
+  dialog video { width: 100%; display: block; border-radius: 12px; background: #000; }
+  dialog .close { position: absolute; top: 8px; right: 8px; border: 0; border-radius: 999px; padding: 6px 10px; cursor: pointer; }
+  dialog .wrap { position: relative; }
+  dialog .info { color: #ddd; padding: 10px 2px 0; font-size: 14px; }
+  footer { margin-top: 56px; color: var(--muted); font-size: 13px; }
+  code { font-size: 13px; word-break: break-all; }
+</style>
+</head>
+<body>
+<main>
+  <h1>video-edits</h1>
+  <p class="lede">Short vertical reels built from code. Tap a preview to play it. Every finished reel was edited by an agent using the tools in the repo.</p>
+
+  <h2>Finished reels</h2>
+  <div id="reels" class="grid reels"></div>
+  <div id="reels-empty" class="empty" hidden>Finished reels are added here once they are uploaded.</div>
+
+  <h2>The looks</h2>
+  <div class="bar">
+    <input id="q" type="search" placeholder="Search looks, e.g. typewriter, glow, list" aria-label="Search looks">
+    <button class="chip" data-kind="all" aria-pressed="true">All</button>
+    <button class="chip" data-kind="template" aria-pressed="false">Templates</button>
+    <button class="chip" data-kind="effect" aria-pressed="false">Effects</button>
+  </div>
+  <p id="count" class="lede"></p>
+  <div id="looks" class="grid"></div>
+
+  <footer>
+    Source: <a href="https://github.com/Vatsal2006350/video-edits">github.com/Vatsal2006350/video-edits</a> (MIT).
+    Looks marked <em>runs here</em> build straight from the repo.
+    If you appear in a preview and want it removed, open an issue.
+  </footer>
+</main>
+
+<dialog id="player">
+  <div class="wrap">
+    <button class="close" aria-label="Close">✕</button>
+    <video controls playsinline loop preload="metadata"></video>
+    <div class="info"></div>
+  </div>
+</dialog>
+
+<script>
+(function () {
+  var state = { kind: 'all', q: '' };
+  var el = function (tag, attrs, html) {
+    var n = document.createElement(tag);
+    Object.keys(attrs || {}).forEach(function (k) { n.setAttribute(k, attrs[k]); });
+    if (html != null) n.innerHTML = html;
+    return n;
+  };
+  var esc = function (s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
+    return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); };
+
+  var dlg = document.getElementById('player');
+  var vid = dlg.querySelector('video');
+  var info = dlg.querySelector('.info');
+  function play(src, title, meta) {
+    vid.src = src;
+    info.innerHTML = '<strong>' + esc(title) + '</strong><br><span>' + esc(meta) + '</span>';
+    dlg.showModal();
+    vid.play().catch(function () {});
+  }
+  dlg.querySelector('.close').addEventListener('click', function () { dlg.close(); });
+  dlg.addEventListener('close', function () { vid.pause(); vid.removeAttribute('src'); vid.load(); });
+  dlg.addEventListener('click', function (e) { if (e.target === dlg) dlg.close(); });
+
+  function renderReels(items, folder) {
+    var live = (items || []).map(function (r) { return Object.assign({}, r, { watch_url: r.watch_url || folder }); })
+      .filter(function (r) { return r.watch_url; });
+    var box = document.getElementById('reels');
+    document.getElementById('reels-empty').hidden = live.length > 0;
+    live.forEach(function (r) {
+      var a = el('a', { href: r.watch_url, target: '_blank', rel: 'noopener', class: 'tile' },
+        '<img loading="lazy" src="' + esc(r.thumb) + '" alt="' + esc(r.title) + '">' +
+        '<div class="cap"><div class="name">' + esc(r.title) + '</div>' +
+        '<div class="meta">' + esc(r.look) + ' · ' + Math.round(r.duration_s) + 's</div></div>');
+      box.appendChild(a);
+    });
+  }
+
+  function renderLooks(items) {
+    var box = document.getElementById('looks');
+    box.innerHTML = '';
+    var q = state.q.trim().toLowerCase();
+    var shown = items.filter(function (l) {
+      if (state.kind !== 'all' && l.kind !== state.kind) return false;
+      if (!q) return true;
+      return (l.name + ' ' + l.look + ' ' + (l.tool || '')).toLowerCase().indexOf(q) !== -1;
+    });
+    document.getElementById('count').textContent = shown.length + ' of ' + items.length + ' looks';
+    shown.forEach(function (l) {
+      var badge = l.runs_here ? 'runs here' : 'preview';
+      var btn = el('button', { class: 'tile', type: 'button', title: l.look || '' },
+        '<img loading="lazy" src="' + esc(l.poster) + '" alt="' + esc(l.name) + '">' +
+        '<div class="cap"><div class="name">' + esc(l.name) + '</div>' +
+        '<div class="meta">' + esc(l.kind) + ' · ' + badge + '</div></div>');
+      btn.addEventListener('click', function () {
+        play(l.clip, l.name, (l.look || '') + (l.tool ? ' — ' + l.tool : ''));
+      });
+      box.appendChild(btn);
+    });
+  }
+
+  var looks = [];
+  Promise.all([
+    fetch('gallery/reels.json').then(function (r) { return r.json(); }).catch(function () { return { items: [] }; }),
+    fetch('gallery/looks.json').then(function (r) { return r.json(); })
+  ]).then(function (res) {
+    renderReels(res[0].items, res[0].folder_url);
+    looks = res[1].items;
+    renderLooks(looks);
+  });
+
+  document.getElementById('q').addEventListener('input', function (e) { state.q = e.target.value; renderLooks(looks); });
+  document.querySelectorAll('button.chip').forEach(function (b) {
+    b.addEventListener('click', function () {
+      state.kind = b.getAttribute('data-kind');
+      document.querySelectorAll('button.chip').forEach(function (x) { x.setAttribute('aria-pressed', x === b ? 'true' : 'false'); });
+      renderLooks(looks);
+    });
+  });
+})();
+</script>
+</body>
+</html>

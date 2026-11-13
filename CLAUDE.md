@@ -5,6 +5,16 @@ actually contains — folder names lie), and `formats/` (one file per proven ree
 format with the measured numbers). `research/` holds dated trend/strategy briefs (agent research, cited). Everything is local and free: ffmpeg,
 PIL/numpy, mlx-whisper via `uvx`, hyperframes for mattes. No API keys needed.
 
+## First: ask which kind of video it is
+Before cutting anything, find out the kind: talking-head edit, motion design,
+hybrid, footage montage or faceless clip. If the brief does not say, ask that one
+question and then the follow-ups in `START-HERE.md`. They are built differently:
+a talking-head edit is cuts, captions and timing; motion design has no footage,
+one element that morphs instead of cutting, and one easing family
+(`formats/motion-design.md`, `bin/motion-reel.sh`, starter `motion/one-shape/`).
+Then pick the look with `bin/reel-pick suggest "<brief>"`. Effects:
+`bin/fx-extra.sh list` (70) and `bin/run-visual-effect.sh list` (heavier ones).
+
 ## Two modes
 1. **Build from raw** (the current mode). the creator drops raw clips / a reference IG
    reel / a track; you cut, time, grade, type and deliver. Builders live in `bin/`,
