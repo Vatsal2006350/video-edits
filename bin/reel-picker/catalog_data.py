@@ -10,6 +10,11 @@ RB = os.path.expanduser('~/Downloads/reel-batch')
 # --- whole-reel templates (the CLAUDE.md typography table + formats/) -------------------------
 # example: a finished reel that shows the look (relative to ~/Downloads/reel-batch), or None.
 TEMPLATES = [
+    dict(id='motion-one-line', name='Motion design: one line, three inks',
+         look='One pencil line is promoted from graphite on paper to a blueprint wire to light on black and never leaves the screen. 120 BPM, no cuts, original score.',
+         tool='bin/motion-brief.py --style drafting-inks ... then bin/motion-reel.sh motion/<film> out.mp4', fmt='formats/motion-design.md',
+         example='motion-one-line/01_one-line-becomes-a-reel.mp4', footage='none (HTML canvas rendered by HyperFrames)',
+         tags='motion design animation showreel intro loop blueprint hologram pencil paper hatching cube gear dashboard no cuts drafting technical system tool explainer smooth'),
     dict(id='pager-news-card', name='News pager card',
          look='Full-bleed photo into a dark panel, bold centred headline with a brand-coloured highlight, grey dek, animated chart or bars.',
          tool='bin/pager-reel.py <spec.json>', fmt='formats/pager-news-card.md',

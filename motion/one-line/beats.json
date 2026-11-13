@@ -1,0 +1,128 @@
+{
+ "bpm": 120.0,
+ "seconds": 24.0,
+ "bar_seconds": 2.0,
+ "pack": "drafting-inks",
+ "bars": [
+  {
+   "bar": 1,
+   "start": 0.0,
+   "end": 2.0,
+   "name": "DRAFT",
+   "does": "the hero word is pressed flat into the line",
+   "words": [
+    {
+     "text": "REELS",
+     "role": "hero: fitted to the safe width, the film's first and last frame"
+    }
+   ]
+  },
+  {
+   "bar": 2,
+   "start": 2.0,
+   "end": 4.0,
+   "name": "TYPE",
+   "does": "words live in a slot between two rails that resize to fit each word",
+   "words": [
+    {
+     "text": "ONE LINE",
+     "role": "slot word: lives between the rails, the rails resize to fit it"
+    },
+    {
+     "text": "BECOMES",
+     "role": "slot word: lives between the rails, the rails resize to fit it"
+    }
+   ]
+  },
+  {
+   "bar": 3,
+   "start": 4.0,
+   "end": 6.0,
+   "name": "CURVE",
+   "does": "pen-tool handles bend the line; copies fan; travelling sines",
+   "words": [
+    {
+     "text": "A REEL",
+     "role": "slot word: lives between the rails, the rails resize to fit it"
+    }
+   ]
+  },
+  {
+   "bar": 4,
+   "start": 6.0,
+   "end": 8.0,
+   "name": "MORPH",
+   "does": "the line curls into a circle (length kept), then triangle, square, hexagon; hatching builds",
+   "words": []
+  },
+  {
+   "bar": 5,
+   "start": 8.0,
+   "end": 10.0,
+   "name": "TILE",
+   "does": "honeycomb; hatching floods solid; the centre cell floods the frame into blueprint",
+   "words": []
+  },
+  {
+   "bar": 6,
+   "start": 10.0,
+   "end": 12.0,
+   "name": "SOLID",
+   "does": "each hexagon becomes a cube seen corner-on; they merge; perspective turns on",
+   "words": []
+  },
+  {
+   "bar": 7,
+   "start": 12.0,
+   "end": 14.0,
+   "name": "GEAR",
+   "does": "the front face grows teeth; a meshing gear train steps on eighth notes",
+   "words": []
+  },
+  {
+   "bar": 8,
+   "start": 14.0,
+   "end": 16.0,
+   "name": "PANEL",
+   "does": "the cube unfolds into six panels that become a dashboard of the user's real numbers",
+   "words": []
+  },
+  {
+   "bar": 9,
+   "start": 16.0,
+   "end": 18.0,
+   "name": "DATA",
+   "does": "a playhead runs at the real time; a cursor clicks a mode switch; a scan line turns it to light",
+   "words": []
+  },
+  {
+   "bar": 10,
+   "start": 18.0,
+   "end": 20.0,
+   "name": "LIGHT",
+   "does": "the chart stands up as lit solids",
+   "words": []
+  },
+  {
+   "bar": 11,
+   "start": 20.0,
+   "end": 22.0,
+   "name": "WAVE",
+   "does": "their tops join into a travelling surface that flattens into the line",
+   "words": []
+  },
+  {
+   "bar": 12,
+   "start": 22.0,
+   "end": 24.0,
+   "name": "END",
+   "does": "the line lifts into the rail and the hero word rises back; the last frame is the first",
+   "words": [
+    {
+     "text": "REELS",
+     "role": "hero returns: the loop closes"
+    }
+   ]
+  }
+ ]
+}

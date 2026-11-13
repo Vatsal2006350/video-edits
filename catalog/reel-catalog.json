@@ -11,15 +11,16 @@
  "items": [
   {
    "kind": "template",
-   "id": "motion-one-shape",
-   "name": "Motion design: one shape, no cuts",
-   "look": "One element morphs from button to loader to card to chart and back, a slow camera drift, one serif word per state. No footage.",
-   "tool": "bin/motion-reel.sh motion/one-shape out.mp4",
+   "id": "motion-one-line",
+   "name": "Motion design: one line, three inks",
+   "look": "One pencil line is promoted from graphite on paper to a blueprint wire to light on black and never leaves the screen: type pressed into rails, pen-tool curves, shape morphs, honeycomb, cube, gears, a live dashboard, a light wave. 120 BPM, no cuts, original score.",
+   "tool": "bin/motion-brief.py --style drafting-inks ... then bin/motion-reel.sh motion/<film> out.mp4",
    "fmt": "formats/motion-design.md",
-   "footage": "none",
-   "tags": "motion design animation ui morph shape no cuts loop explainer product saas gsap hyperframes html",
-   "poster": "previews/tpl/motion-one-shape.jpg",
-   "clip": "previews/tpl/motion-one-shape.mp4"
+   "example": "motion-one-line/01_one-line-becomes-a-reel.mp4",
+   "footage": "none (HTML canvas rendered by HyperFrames)",
+   "tags": "motion design animation showreel intro loop blueprint hologram pencil paper hatching cube gear dashboard no cuts drafting technical system tool explainer smooth",
+   "poster": "previews/tpl/motion-one-line.jpg",
+   "clip": "previews/tpl/motion-one-line.mp4"
   },
   {
    "kind": "template",

@@ -11,7 +11,8 @@ hybrid, footage montage or faceless clip. If the brief does not say, ask that on
 question and then the follow-ups in `START-HERE.md`. They are built differently:
 a talking-head edit is cuts, captions and timing; motion design has no footage,
 one element that morphs instead of cutting, and one easing family
-(`formats/motion-design.md`, `bin/motion-reel.sh`, starter `motion/one-shape/`).
+(`formats/motion-design.md`, skill `skills/motion-director`: `bin/motion-brief.py` writes the brief,
+`motion/engine/mg.js` + `bin/motion-reel.sh` build it, `hx.py motion check` gates it; example `motion/one-line/`).
 Then pick the look with `bin/reel-pick suggest "<brief>"`. Effects:
 `bin/fx-extra.sh list` (70) and `bin/run-visual-effect.sh list` (heavier ones).
 

@@ -3,14 +3,14 @@
  "count": 76,
  "items": [
   {
-   "id": "motion-one-shape",
+   "id": "motion-one-line",
    "kind": "template",
-   "name": "Motion design: one shape, no cuts",
-   "look": "One element morphs from button to loader to card to chart and back, a slow camera drift, one serif word per state. No footage.",
-   "tool": "bin/motion-reel.sh motion/one-shape out.mp4",
+   "name": "Motion design: one line, three inks",
+   "look": "One pencil line is promoted from graphite on paper to a blueprint wire to light on black and never leaves the screen: type pressed into rails, pen-tool curves, shape morphs, honeycomb, cube, gears, a live dashboard, a light wave. 120 BPM, no cuts, original score.",
+   "tool": "bin/motion-brief.py --style drafting-inks ...",
    "runs_here": true,
-   "poster": "catalog/previews/tpl/motion-one-shape.jpg",
-   "clip": "catalog/previews/tpl/motion-one-shape.mp4"
+   "poster": "catalog/previews/tpl/motion-one-line.jpg",
+   "clip": "catalog/previews/tpl/motion-one-line.mp4"
   },
   {
    "id": "pager-news-card",

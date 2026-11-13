@@ -48,3 +48,6 @@ out/
 
 # gallery preview clips are part of the repo
 !catalog/previews/**/*.mp4
+
+# per-film copy of the shared motion engine (synced by bin/motion-reel.sh)
+motion/*/engine/

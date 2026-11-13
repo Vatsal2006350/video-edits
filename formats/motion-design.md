@@ -1,39 +1,61 @@
 # Motion design (no footage, no cuts)
 
-The look of the "Opus made this video" posts: an animation written as code, where one element keeps changing shape instead of the edit cutting to a new shot. It reads as smooth because the frame never resets. The eye follows one thing from the first frame to the last.
+The look of the best "Claude made this video" posts: an animation written as code, where every shot
+is made out of the one before it. It reads as smooth because nothing is replaced and nothing
+crossfades. The eye follows one thing from the first frame to the last.
 
-Starter: `motion/one-shape/` (12 s, 1080×1920, a pill button → loader → text card → bar chart → pill again).
-Render: `bin/motion-reel.sh motion/one-shape out/one-shape.mp4`.
+Example: `motion/one-line/` ("one line becomes a reel", 24 s, 1080x1920, 120 BPM, 48 beats, 12 bars).
+Deliverable: `~/Downloads/reel-batch/motion-one-line/01_one-line-becomes-a-reel{,_IG}.mp4`.
+Skill: `motion-director` (the whole flow, step by step).
 
-## The rules
+## The flow
 
-1. **One carrier.** A single element carries the eye through every state. It changes width, height, radius and colour. It is never replaced. If a new element must appear, it grows out of the carrier.
-2. **No cuts.** Every change is a tween. Hard cuts belong to talking-head edits.
-3. **Transforms, not layout.** Move with `x`, `y`, `scale`, `rotation`, `opacity`. Centre the carrier with `xPercent: -50, yPercent: -50`. Margins and `left/top` snap to whole pixels and stutter when the renderer seeks frame by frame (`hyperframes check` flags this as `gsap_non_transform_motion`).
-4. **One easing family.** `expo.inOut` for state changes, `power4.out` for things arriving, `power3.in` for things leaving, `back.out(3)` only for a press. Mixing families makes the motion feel like several animators.
-5. **Overlap the states.** Start the next morph 0.1–0.2 s before the last one settles, so there is never a dead frame.
-6. **The camera drifts.** A background (dot grid, glow) moves slowly and linearly for the whole piece. It gives depth and hides the fact that the carrier is centred.
-7. **Stagger the insides.** Lines, bars and list items enter 0.08–0.12 s apart, never all at once.
-8. **End where you began.** The last state matches the first so the reel can loop on Instagram.
-9. **Words in time.** One word per state, in a serif italic, swapped with a 0.35 s exit and 0.5 s entry on the morph, not between morphs.
+| step | tool | what it does |
+|---|---|---|
+| intake | `START-HERE.md` | ask the kind of video, the exact words, the cleared numbers |
+| brief | `bin/motion-brief.py` (`hx.py motion brief`) | picks a taste pack from `motion/styles.json`, measures the track/brand/footage, lays the arc over the bars, writes `BRIEF.md` + `beats.json` |
+| build | `motion/engine/mg.js` + `motion/<film>/film.js` | every frame a pure function of t |
+| stills | `motion/tools/sheet.html?film=<film>&t=...` | the frames you would judge, before the render |
+| render | `bin/motion-reel.sh motion/<film> out.mp4` | vendors the engine, HyperFrames check, render with 4 motion-blur sub-frames |
+| sound | `bin/motion-score.py score.json score.wav --mux` | original score from sines and noise: soft kick on beats, a sound on every visible action, limited |
+| gate | `hx.py motion check motion/<film> --render out.mp4 --ref ref.mp4` | seek-safety, pixel snapping, ../ paths, holds, hard jumps; `bin/motion-stats.py` against a reference |
+| deliver | `bin/export-ig.sh`, `bin/ig-safe.py view`, phone mirror | CLAUDE.md "Deliverables" |
 
-## Numbers (the starter's values)
+## The rules (from the references that work)
 
-| Thing | Value |
-|---|---|
-| Frame | 1080×1920 at 30 fps |
-| State length | 1.6–2.4 s each, 5 to 12 states |
-| Morph duration | 0.9–1.1 s |
-| Press | 0.18 s down, 0.4 s back with `back.out(3)` |
-| Background drift | 160–260 px over the whole piece, `ease: none` |
-| Carrier radius | pill = height / 2; card 44–56 px |
-| Type | label 52 px bold sans; word 84 px serif italic at y 1360; kicker 30 px, tracking 0.32 em |
-| Safe area | keep text inside x 59–918, y 278–1536 |
+1. **One carrier.** Every shot is made out of the previous one: shapes, type and colour transform into the next scene.
+2. **No cuts, no fades.** Ink changes are a flood with a hard edge or one horizontal scan line.
+3. **A beat grid.** 120 BPM, something on every beat, moves start 0.05 s early so they land on it. No hold over 0.5 s.
+4. **Springs that never overshoot.** `1 - (1 + w t) e^(-w t)`, w 12-40. Exponential in/out only for wipes, presses and exits.
+5. **Pure function of time.** No `tl.call()`, no state between frames: HyperFrames seeks frame by frame and motion-blur sub-frames run backwards.
+6. **Transforms and geometry, not layout.** Margins and left/top snap to whole pixels and stutter.
+7. **Light is line density.** Scan lines whose thickness follows the light. No glow, no flares, no particles.
+8. **Few inks.** Two or three, each stage's accent is the next stage's colour, never a fourth colour.
+9. **Safe box.** Centred work within 724 px (x 178-902); labels at y 318 and 1512; the right edge belongs to Instagram's buttons.
+10. **Facts only.** Numbers on screen come from `channel-facts.json` or the user's words. The film uses 88 effects (effects_count), 76 looks (catalog), 120 BPM, 0 cuts.
+11. **Loop.** The last frame is the first frame, picture and sound.
 
-## Asking the user
+## Measured (bin/motion-stats.py, 30 fps, 160 px greyscale)
 
-Ask for: the subject, the 5–12 states it should become, one accent colour (or black and white), the length, and the track or BPM. With a track, put each morph on a beat (`bin/music-map.py` finds them).
+| film | hard jumps/s | still share | longest hold | mean motion |
+|---|---|---|---|---|
+| reference: drafting-inks showreel (`~/Downloads/original.mp4`, 30 s) | 0.23 | 27.0% | 0.4 s | 1.94 |
+| `motion/one-line` r7 (24 s) | 0.21 | 34.9% | 0.5 s | 1.42 |
 
-## Where this came from
+The first renders of `one-line` held still for 0.9-1.0 s three times (the hologram chart, the dashboard
+fill, the end card) and read as dead air next to the reference. Each was fixed by giving that bar a move on
+every beat: the chart scrolls one column a beat, the solids turn, a hatch sweeps into the reel panel, a
+pass of light crosses the wordmark.
 
-The brief comes from the prompts in the public collection of Claude Opus 5.5 videos (yihui-dev/awesome-opus5-5-videos): the strongest motion pieces ask for one shape, no cuts, Dribbble-level UI states and a loop. The numbers in the table are the ones the starter uses; change them per piece and record what worked.
+## Taste packs (`motion/styles.json`)
+
+| pack | fits | from |
+|---|---|---|
+| drafting-inks | introduce a person, a tool or a system; how something is built | heyiamnick's showreel prompt |
+| one-shape-ui | an app or SaaS product, a feature flow | twoclipping's UI-morph prompt |
+| loud-poster | a launch or drop with real clips and photos | twoclipping's castr trailer prompt |
+| editorial-cream | a talking-head point: a number grows, a comparison, a step, a chapter | Skillry CreatorMotion's house style |
+| kinetic-architecture | a quote, a manifesto, a founder line | gdgtify's BUILD THE FLOOR prompt |
+
+Take the rules from a reference, never the creator's film. Add a pack only when a reference earns it,
+and measure it with `bin/motion-stats.py` first.

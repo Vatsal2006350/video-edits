@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1080, height=1920" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@600;700;800;900&display=block" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <script src="engine/mg.js"></script>
+    <script src="film.js"></script>
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body { width: 1080px; height: 1920px; overflow: hidden; background: #EDE6D5; }
+      #film { display: block; width: 1080px; height: 1920px; }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="main" data-start="0" data-duration="24" data-width="1080" data-height="1920">
+      <canvas id="film" class="clip" width="1080" height="1920" data-start="0" data-duration="24" data-track-index="0"></canvas>
+    </div>
+    <script>
+      // The film is a pure function of time. The GSAP timeline is only a clock HyperFrames can seek.
+      const ctx = document.getElementById("film").getContext("2d");
+      const clock = { t: 0 };
+      const SUB = Number(new URLSearchParams(location.search).get("sub") || 4);
+      const paint = () => FILM.draw(ctx, clock.t, SUB);
+      const tl = gsap.timeline({ paused: true });
+      tl.to(clock, { t: FILM.DUR, duration: FILM.DUR, ease: "none", onUpdate: paint }, 0);
+      window.__timelines = window.__timelines || {};
+      window.__timelines["main"] = tl;
+      document.fonts.ready.then(() => { tl.seek(0); paint(); });
+      tl.seek(0);
+      paint();
+    </script>
+  </body>
+</html>

@@ -22,10 +22,10 @@ Cuts, captions, a hook and a few effects on top of real speech.
 
 ## 2. Motion design
 
-Pure animation rendered from HTML. This is the look of the "Opus made this video" posts: a button that becomes a loader that becomes a card that becomes a chart, without a single cut.
+Pure animation rendered from HTML. This is the look of the best "Claude made this video" posts: one line that becomes type, a curve, a shape, a honeycomb, a cube, a gear, a dashboard, a wave of light, without a single cut.
 
-- **Ask:** the subject (product, idea, data), the states it should pass through (5 to 12), one accent colour or black and white, the length, and the beat or track if there is music.
-- **Build with:** a HyperFrames composition in `motion/<name>/index.html`, rendered by `bin/motion-reel.sh`. Start from `motion/one-shape/`.
+- **Ask:** the subject, the exact words for the screen (hero word first), which numbers are cleared to show, and optionally a track, brand files or footage. The brief generator measures the rest and lists what is still unknown.
+- **Build with:** `bin/motion-brief.py` writes the full brief from your words (taste pack, beat map, words on bars); the film is built on `motion/engine/mg.js` in `motion/<name>/`, rendered by `bin/motion-reel.sh`, scored by `bin/motion-score.py`, gated by `hx.py motion check`. Start from `motion/one-line/`. The skill `motion-director` walks the whole flow.
 - **Feels right when:** one element carries the eye the whole way, every move eases in and out, the camera drifts and never jumps, and the piece ends where it can loop.
 - **Format:** `formats/motion-design.md` (the rules and numbers).
 
