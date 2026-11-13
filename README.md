@@ -67,6 +67,10 @@ It picks a taste pack ([`motion/styles.json`](motion/styles.json): drafting inks
 
 The film is then drawn on [`motion/engine/mg.js`](motion/engine/mg.js): springs that never overshoot, a beat clock, three inks that draw the same geometry (pencil on paper, line on blueprint, light on black), hatching, shape morphs, a wire cube, gears, flood and scan-line wipes. [`bin/motion-score.py`](bin/motion-score.py) synthesizes an original score with a sound on every visible action. [`bin/motion-stats.py`](bin/motion-stats.py) measures the render against a reference (hard jumps per second, longest hold, still-frame share) and `python3 harness/hx.py motion check` fails it on the mistakes this repo already made. The whole flow is the [`motion-director`](skills/motion-director/SKILL.md) skill.
 
+## Interview clips: the idea, drawn
+
+[`bin/clip-edit.sh <spec.json>`](bin/clip-edit.sh) turns an interview or podcast moment into a "layercut" reel: the speaker fills the frame, one huge word per sentence sits behind their head (cut out with RobustVideoMatting), captions sit at chest height with the key word in serif italic, and concept cards draw what is being explained, timed to the word that says it: a slider, a comparison, a list, a counter, growth and decay curves, Kahneman's prospect-theory curve, a loop, a Venn. Per clip the agent writes about 25 lines of JSON; cuts, words, the matte and the person track are cached, so a re-edit re-renders in about 90 s. See [`formats/layercut-clip.md`](formats/layercut-clip.md) and the [`clip-editor`](skills/clip-editor/SKILL.md) skill.
+
 ## Start a video: which kind is it?
 
 The agent asks this first, because each kind is built differently. The full intake, with the follow-up questions and tools for each, is in [`START-HERE.md`](START-HERE.md).
@@ -77,7 +81,7 @@ The agent asks this first, because each kind is built differently. The full inta
 | Motion design | every shot is made from the last, something on every beat, no cuts, it loops | `bin/motion-brief.py`, then `bin/motion-reel.sh motion/one-line out.mp4` |
 | Hybrid | motion inserts timed to the word they explain | a HyperFrames comp per insert + `bin/composite-layers.py` |
 | Footage montage | the payoff cut lands on the drop | `bin/music-map.py`, `bin/beat-reel.sh` |
-| Faceless clip | every claim sourced, the speaker credited | `bin/podcast-clip.sh`, `bin/pager-reel.py` |
+| Faceless clip | every claim sourced, the speaker credited, the idea drawn | `bin/clip-edit.sh` (layercut), `bin/podcast-clip.sh`, `bin/pager-reel.py` |
 
 Not sure which look? `bin/reel-pick suggest "your brief"` ranks them, and `bin/reel-pick` opens the visual picker at `http://localhost:8771` on your machine.
 

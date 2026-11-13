@@ -1,5 +1,9 @@
 # Faceless podcast clip (clip-page look)
 
+> Newer look for the same clips: **layercut** (`bin/clip-edit.sh`, `formats/layercut-clip.md`): the speaker full-frame,
+> a huge word behind the head each sentence, and concept cards that draw the idea. It reuses this tool's
+> `qc.json` cuts and `words.json` timings, so a re-edit is one `edit` block in the same spec.
+
 Someone else's long 16:9 interview cut into a 1080x1920 reel: one emotional or funny moment,
 30-60 s, with a clip-page top caption, a square picture box that follows the speaker, captions and
 a ducked music bed. Tool: `bin/podcast-clip.sh <spec.json>` (wraps `bin/podcast-clip.py` under uvx
@@ -58,7 +62,7 @@ Word timings: whisper large-v3-turbo per range (cached in `specs/work/_cache`). 
 - Guest's own music under that guest when it exists (Anuv Jain, Karan Aujla); attach the IG library version when posting.
 - These are third-party clips: claims/takedowns are possible. Keep edits transformative (re-cut, captions, framing).
 
-## Cutting rules (2026-11-11, after the first batch: "you're cutting off his speech, it sucks")
+## Cutting rules (Vatsal, 2026-11-11, after the first batch: "you're cutting off his speech, it sucks")
 - **Let answers flow.** One range per thought; keep the speaker's natural pauses. Cut only between
   thoughts, or to drop the host re-phrasing a question (stop at "what version of you has died?").
 - **Never clip a word.** The builder snaps every range *end* to the first real pause (80 ms below 10% of the
