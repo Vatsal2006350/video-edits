@@ -171,7 +171,8 @@ def frames(path, w, h, pix='rgb24'):
 
 def matte(base, work):
     """RobustVideoMatting over the whole cut -> an alpha video (cached). Tracking is separate (track())."""
-    am = base.replace('.mp4', '_alpha.mkv')
+    BW0, BH0 = dims(base); ratio = 0.5 if BH0 > BW0 else 0.25  # a small speaker in a tall frame needs a finer matte
+    am = base.replace('.mp4', '_alpha.mkv' if ratio == 0.25 else '_alpha_r50.mkv')
     if os.path.exists(am):
         return am
     import torch
@@ -187,7 +188,7 @@ def matte(base, work):
             if prev_small is not None and np.abs(small - prev_small).mean() > 14: rec = [None] * 4  # a shot change
             prev_small = small
             src = torch.from_numpy(f.copy()).to(dev).permute(2, 0, 1)[None].float() / 255
-            _, pha, *rec = m(src, *rec, downsample_ratio=0.25)
+            _, pha, *rec = m(src, *rec, downsample_ratio=ratio)
             wr.stdin.write((pha[0, 0].clamp(0, 1) * 255).byte().cpu().numpy().tobytes())
     wr.stdin.close(); wr.wait(); os.replace(tmp, am)
     return am
@@ -205,9 +206,9 @@ def track(base, am):
     """Per frame: which person to frame and where their head is (cached next to the matte).
     Among the people the matte finds, pick the one whose head shows the most face, weighted by size, so an
     over-the-shoulder shot frames the speaker, not the back of the nearer head."""
-    tr = am.replace('_alpha.mkv', '_track3.json')
+    tr = am.replace('.mkv', '_track5.json')
     if os.path.exists(tr): return json.load(open(tr))
-    out = []; prev_small = None
+    out = []; prev_small = None; prev_cx = None
     BW, BH = dims(base)
     for f, a in zip(frames(base, BW, BH), frames(am, BW, BH, 'gray')):
         small = f[::8, ::8].mean(axis=2); cut = bool(prev_small is not None and np.abs(small - prev_small).mean() > 14); prev_small = small
@@ -230,30 +231,48 @@ def track(base, am):
             patch = f[top:top + 240, s0:s1 + 1][band] if band.any() else np.zeros((0, 3), np.uint8)
             bottom = int(rows[-1]) / a.shape[0]  # people on a projector screen end mid-frame; the speaker stands on the floor
             score = mass * (0.25 + skin_ratio(patch)) * (0.3 + 0.7 * bottom)
+            # stay with the person we were following: a figure far from them must be much more prominent to win
+            # (2026-11-13: the tracker flipped to a woman on the projector screen whenever Jason was small)
+            if prev_cx is not None and not cut: score /= 1.0 + abs(cx - prev_cx) / 120.0
             if best is None or score > best[0]: best = (score, cx, top)
         out.append({'cx': best[1] if best else None, 'top': best[2] if best else None, 'cut': cut})
+        if best: prev_cx = best[1]
+        if cut: prev_cx = None
     json.dump(out, open(tr, 'w'))
     return out
 
 
-def smooth_track(track):
-    """Per shot: hold a steady frame, follow only when the head drifts out of the middle third."""
+def _gauss(x, sigma):
+    if len(x) < 3 or sigma <= 0: return x.copy()
+    r = int(3 * sigma); k = np.exp(-0.5 * (np.arange(-r, r + 1) / sigma) ** 2); k /= k.sum()
+    xp = np.pad(x, r, mode='edge'); return np.convolve(xp, k, mode='valid')
+
+
+def smooth_track(track, sigma=14.0, bounds=()):
+    """A camera operator's path, computed for the whole clip at once (no frame-to-frame catching up):
+    per shot, the head position is filled, de-spiked with a median, then smoothed with a zero-lag
+    Gaussian (sigma in frames). Hard cuts restart the path so it never slides across a cut."""
     n = len(track); cx = np.zeros(n); top = np.zeros(n)
-    last_cx, last_top = 960.0, 300.0
+    last_cx, last_top = None, None
     for i, t in enumerate(track):
-        last_cx = t['cx'] if t['cx'] is not None else last_cx
-        last_top = t['top'] if t['top'] is not None else last_top
-        cx[i] = last_cx; top[i] = last_top
-    out_cx = np.zeros(n); out_top = np.zeros(n); cur = cx[0]; curt = top[0]
-    for i in range(n):
-        if track[i]['cut'] or i == 0:
-            j = i; seg = []
-            while j < n and (j == i or not track[j]['cut']): seg.append(cx[j]); j += 1
-            cur = float(np.median(seg)); curt = top[i]
-        if abs(cx[i] - cur) > 300: cur = cx[i]  # a missed cut or a big move: jump, never half a person
-        elif abs(cx[i] - cur) > 90: cur += (cx[i] - cur) * 0.22  # a walking speaker: follow quickly enough to stay whole
-        curt += (top[i] - curt) * 0.15
-        out_cx[i] = cur; out_top[i] = curt
+        if t['cx'] is not None: last_cx, last_top = t['cx'], t['top']
+        cx[i] = last_cx if last_cx is not None else np.nan; top[i] = last_top if last_top is not None else np.nan
+    first = next((i for i in range(n) if not np.isnan(cx[i])), None)
+    if first is None: return np.full(n, 960.0), np.full(n, 300.0)
+    cx[:first] = cx[first]; top[:first] = top[first]
+    # a camera change between two similar-looking shots is missed by the frame-difference test; a person
+    # cannot move 250 px in one frame, so a head jump that large is a cut too
+    # A frame-difference "cut" alone is not trusted: a projector slide changing trips it while the speaker stands
+    # still (2026-11-13, keynote 01). It counts only if the head also moves; edit boundaries always count.
+    def moved(i, r=2):
+        lo, hi = max(0, i - r), min(n - 1, i + r); return abs(cx[hi] - cx[lo]) > 60
+    cuts = sorted({0, n, *[b for b in bounds if 0 < b < n],
+                   *[i for i in range(1, n) if abs(cx[i] - cx[i - 1]) > 250 or (track[i]['cut'] and moved(i))]})
+    out_cx = np.zeros(n); out_top = np.zeros(n)
+    for a, b in zip(cuts, cuts[1:]):
+        seg_c, seg_t = cx[a:b], top[a:b]
+        med = lambda x, r=4: np.array([np.median(x[max(0, j - r):j + r + 1]) for j in range(len(x))])
+        out_cx[a:b] = _gauss(med(seg_c), sigma); out_top[a:b] = _gauss(med(seg_t), sigma * 1.5)
     return out_cx, out_top
 
 
@@ -341,10 +360,10 @@ def plan_behind(words, spec, edit):
             if isinstance(when, str) and when.startswith('on:'):
                 key, _, nth = when[3:].partition('#'); i = find_word(words, key, int(nth or 1))  # on:word#2 = the 2nd time it is said
                 if i is None: print(f"behind '{txt}': '{when[3:]}' is not in the transcript, skipped"); continue
-                t = words[i]['s']
+                t = words[i]['s']; said = words[i]['e']
             else:
-                t = float(when)
-            plan.append({'t': t, 'text': txt.upper()})
+                t = float(when); said = t + 0.5
+            plan.append({'t': t, 'said': said, 'text': txt.upper()})
         plan.sort(key=lambda p: p['t'])
     else:
         for sent in sentences(words):
@@ -352,16 +371,18 @@ def plan_behind(words, spec, edit):
             if not cands: continue
             pri = [i for i in cands if any(clean(words[i]['w']).startswith(e) for e in emph)]
             i = pri[0] if pri else max(cands, key=lambda j: (len(clean(words[j]['w'])), words[j]['e'] - words[j]['s']))
-            plan.append({'t': words[sent[0]]['s'], 'text': clean(words[i]['w']).upper().replace("'", "’")})
+            plan.append({'t': words[i]['s'], 'said': words[i]['e'], 'text': clean(words[i]['w']).upper().replace("'", "’")})
     # each word holds until the next one, min 1.2 s; drop repeats back to back
     out = []
     for p in plan:
         if out and out[-1]['text'] == p['text']: continue
         if out and p['t'] - out[-1]['t'] < 1.2: continue
         out.append(p)
-    if out: out[0]['t'] = 0.0  # the hook frame always carries a word
+    if out and edit.get('hook_word'): out[0]['t'] = 0.0  # opt-in: the hook frame carries the first word
+    hold = float(edit.get('behind_hold', 2.4))  # a word lives around when it is said, then leaves
     for k, p in enumerate(out):
-        p['end'] = out[k + 1]['t'] if k + 1 < len(out) else words[-1]['e'] + 0.5
+        nxt = out[k + 1]['t'] if k + 1 < len(out) else words[-1]['e'] + 0.5
+        p['end'] = min(nxt, p['said'] + hold)
     return out
 
 
@@ -395,6 +416,7 @@ def big_word_img(ink, text, outline):
 
 
 def draw_behind(canvas, ink, plan, t, head_y, frame_i):
+    """head_y is unused for placement: each word has a fixed p['y'] computed once (no per-frame jitter)."""
     # the hook frame shows its word whole (k = 1 when the word starts at 0)
     cur = [p for p in plan if p['t'] - 0.05 <= t < p['end']]
     if not cur: return
@@ -408,10 +430,10 @@ def draw_behind(canvas, ink, plan, t, head_y, frame_i):
         a = np.array(im2); a[..., 3] = (a[..., 3] * min(1, k * 1.4) * out).astype(np.uint8); im2 = Image.fromarray(a)
     elif out < 1:
         a = np.array(im2); a[..., 3] = (a[..., 3] * out).astype(np.uint8); im2 = Image.fromarray(a)
-    y = int(head_y - h * 0.42)  # the head overlaps the lower half of the word
+    y = int(p.get('y', head_y) - h * 0.42)  # fixed per word: the head overlaps the lower half
     canvas.alpha_composite(im2, (W // 2 - w // 2, max(140, y)))
     # a thin ring behind the head, turning slowly (it reads as depth, not decoration)
-    d = ImageDraw.Draw(canvas); r = 410; cy = head_y + 120; ang = (frame_i / FPS) * 18
+    d = ImageDraw.Draw(canvas); r = 410; cy = p.get('y', head_y) + 120; ang = (frame_i / FPS) * 18
     for j in range(36):
         a0 = ang + j * 10
         if j % 3 == 0: continue
@@ -688,14 +710,22 @@ def compose(spec, work, base, am, track, words, edit, stills=None):
     ink = Ink(edit.get('accent', '#FFD43B'))
     emph = [e.lower() for e in spec.get('emph', []) + edit.get('italic', [])]
     behind = plan_behind(words, spec, edit); cards = plan_cards(words, edit); groups = caption_groups(words)
-    cx, top = smooth_track(track)
+    cx, top = smooth_track(track, bounds=edit.get('_bounds', ()))
     # a 720p source cannot take a 1.6x push without going soft: frame it looser, more room for the word
     sw, sh, _ = src_info(spec['src']); BW, BH = dims(base); portrait = BH > BW
     PLATE_H = int(edit.get('plate_h', 1700 if min(sw, sh) >= 1080 else 1380)); PLATE_Y = H - PLATE_H
     cut_b = int(edit.get('src_crop_bottom', 0))  # burned-in subtitles in the source: crop them away
     # a wide shot (speaker small on a stage) is framed through a window that follows the head
     WH = int(edit.get('window_h', 880 if portrait else BH - cut_b)); S = PLATE_H / WH; cw = int(round(W / S))
-    wy = max(0.0, float(top[0]) - 0.2 * WH) if len(top) else 0.0
+    if WH < BH - cut_b:  # the window's vertical path, from the smoothed head (precomputed, so stills match the video)
+        wys = np.clip(top - 0.2 * WH, 0, BH - cut_b - WH)
+    else:
+        wys = np.zeros(len(top))
+    head_ys = PLATE_Y + (top - wys) * S
+    for p in behind:  # one height per word, for its whole life on screen
+        a_, b_ = int(p['t'] * FPS), max(int(p['t'] * FPS) + 1, int(p['end'] * FPS))
+        p['y'] = float(np.median(head_ys[min(a_, len(head_ys) - 1):min(b_, len(head_ys))]))
+    dbg = []
     grade_dark = 0.58
     name = spec['name']; pic = os.path.join(work, 'layercut_picture.mp4')
     wr = None
@@ -712,18 +742,14 @@ def compose(spec, work, base, am, track, words, edit, stills=None):
         if portrait:  # a speaker at the very edge of a wide shot: pad with black so they stay centred
             pw = cw // 2; fe = 140; ramp = np.ones(BW, np.float32); ramp[:fe] = np.linspace(0, 1, fe); ramp[-fe:] = np.linspace(1, 0, fe)
             f = np.pad((f * ramp[None, :, None]).astype(np.uint8), ((0, 0), (pw, pw), (0, 0))); a = np.pad(a, ((0, 0), (pw, pw)))  # feathered edge
-            x0 = int(min(BW + 2 * pw - cw, max(0, cx[min(i, len(cx) - 1)] + pw - cw / 2)))
+            x0 = float(min(BW + 2 * pw - cw, max(0, cx[min(i, len(cx) - 1)] + pw - cw / 2)))
         else:
-            x0 = int(min(BW - cw, max(0, cx[min(i, len(cx) - 1)] - cw / 2)))
-        ht = top[min(i, len(top) - 1)]
-        if WH < BH - cut_b:  # window: keep the head about a fifth of the way down, move gently
-            target = min(BH - cut_b - WH, max(0, ht - 0.2 * WH)); wy = target if stills else wy + (target - wy) * 0.1
-        else:
-            wy = 0
-        y0 = int(wy)
-        crop = Image.fromarray(f[y0:y0 + WH, x0:x0 + cw]).resize((W, PLATE_H), Image.LANCZOS)
-        al = Image.fromarray(a[y0:y0 + WH, x0:x0 + cw]).resize((W, PLATE_H), Image.BILINEAR)
-        head_y = PLATE_Y + (ht - y0) * S
+            x0 = float(min(BW - cw, max(0, cx[min(i, len(cx) - 1)] - cw / 2)))
+        j = min(i, len(top) - 1); y0 = float(wys[j]); head_y = float(head_ys[j])
+        box = (x0, y0, x0 + cw, y0 + WH)  # sub-pixel crop: integer crops step 2 px after the zoom
+        crop = Image.fromarray(f).resize((W, PLATE_H), Image.LANCZOS, box=box)
+        al = Image.fromarray(a).resize((W, PLATE_H), Image.BILINEAR, box=box)
+        dbg.append([i, round(x0, 2), round(y0, 2), next((round(p['y'], 1) for p in behind if p['t'] - 0.05 <= t < p['end']), None)])
         canvas = Image.new('RGBA', (W, H), (11, 11, 12, 255))
         plate = np.asarray(crop).astype(np.float32)
         lum = plate.mean(axis=2, keepdims=True); room = float(lum.mean())
@@ -751,6 +777,7 @@ def compose(spec, work, base, am, track, words, edit, stills=None):
             wr.stdin.write(out.tobytes())
     if wr:
         wr.stdin.close(); wr.wait()
+    json.dump(dbg, open(os.path.join(work, 'layercut_camera.json'), 'w'))  # per-frame crop and word y, for the stability check
     return pic
 
 
@@ -777,6 +804,8 @@ def main():
     if '--out' in sys.argv: out = os.path.expanduser(sys.argv[sys.argv.index('--out') + 1])
     spec, work, ranges, words = load(spec_path)
     edit = spec.get('edit', {})
+    acc = 0.0; edit['_bounds'] = []
+    for a_, b_ in ranges[:-1]: acc += b_ - a_; edit['_bounds'].append(int(round(acc * FPS)))  # the edit's own cut points
     base = base_cut(spec, work, ranges)
     if spec.get('lines'): words = words_from_lines(spec, ranges)  # translated clips: English lines, not whisper
     elif words is None: words = transcribe(base, work, spec)

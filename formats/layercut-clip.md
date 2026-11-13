@@ -65,6 +65,23 @@ Anchor every card to the word that says it: `"on": "compounding", "nth": 2`.
   padded with a feathered black edge so they stay centred. The tracker prefers a figure whose feet reach
   low in the frame, so people on a projector screen are not picked.
 
+
+## Stabilisation (2026-11-13, after "the AGI in the back is flickering, the numbers shake")
+Root causes found frame by frame on Jason keynote 04: the word was placed from the head position *each frame*
+(jitter), the crop followed with a dead zone in whole pixels (stepping and lag), the tracker flipped to a woman on
+the projector screen whenever Jason was small, and a camera change between two similar shots was not detected.
+- The camera is a path computed for the whole clip: per shot, head x/top are median-despiked and smoothed
+  with a zero-lag Gaussian (sigma 14 frames x, 21 frames y). Crops are sub-pixel (`resize(box=...)`).
+- A shot change is an edit boundary, a head jump over 250 px in one frame, or a frame-difference cut **with**
+  head motion (a projector slide changing trips the frame difference while the speaker stands still).
+- The tracker stays with the person it follows: other figures are discounted by distance (score / (1 + d/120)).
+- Each behind-word gets one fixed height for its whole life (median of the smoothed head over its time).
+- A behind-word appears when its word is spoken and leaves `behind_hold` (2.4 s) after, or at the next word.
+  `hook_word: true` restores a word on frame 1.
+- Tall/wide sources are matted at downsample 0.5 (cache `_alpha_r50.mkv`).
+- Check: `specs/work/<name>/layercut_camera.json` logs the crop and word y per frame; fast moves (>15 px/frame)
+  must line up with real cuts, and the word y must never change while a word is on screen.
+
 ## Rules
 - Behind words: one per sentence, a noun or the stake ("COMPOUNDING", "FALL OFF"), never a pronoun or filler.
   Write them in `edit.behind` for anything that will be posted; `auto` is a fallback.
