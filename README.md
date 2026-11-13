@@ -66,7 +66,7 @@ The agent asks this first, because each kind is built differently. The full inta
 | Footage montage | the payoff cut lands on the drop | `bin/music-map.py`, `bin/beat-reel.sh` |
 | Faceless clip | every claim sourced, the speaker credited | `bin/podcast-clip.sh`, `bin/pager-reel.py` |
 
-Not sure which look? `bin/reel-pick suggest "your brief"` ranks them, and `bin/reel-pick` opens the visual picker at http://localhost:8771.
+Not sure which look? `bin/reel-pick suggest "your brief"` ranks them, and `bin/reel-pick` opens the visual picker at `http://localhost:8771` on your machine.
 
 ## Try it in two minutes
 
