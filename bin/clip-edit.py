@@ -111,17 +111,40 @@ def transcribe(base, work, spec):
     return words
 
 
+def src_info(src):
+    """Display size after rotation, and whether the pixels are HDR (iPhone HLG / PQ)."""
+    j = json.loads(subprocess.run(['ffprobe', '-v', 'error', '-select_streams', 'v:0', '-show_entries',
+                                   'stream=width,height,color_transfer:stream_side_data=rotation', '-of', 'json', src],
+                                  capture_output=True, text=True).stdout)['streams'][0]
+    w, h = j['width'], j['height']
+    rot = next((abs(int(sd.get('rotation', 0))) for sd in j.get('side_data_list', []) if 'rotation' in sd), 0)
+    if rot in (90, 270): w, h = h, w
+    return w, h, j.get('color_transfer') in ('arib-std-b67', 'smpte2084')
+
+
+def dims(path):
+    w, h = subprocess.run(['ffprobe', '-v', 'error', '-select_streams', 'v:0', '-show_entries', 'stream=width,height',
+                           '-of', 'csv=p=0', path], capture_output=True, text=True).stdout.strip().split(',')[:2]
+    return int(w), int(h)
+
+
+TONEMAP = 'zscale=t=linear:npl=100,format=gbrpf32le,zscale=p=bt709,tonemap=hable:desat=0,zscale=t=bt709:m=bt709:r=tv,'
+
+
 def base_cut(spec, work, ranges):
-    """The edit's picture and voice, in edit time, cached by the ranges."""
+    """The edit's picture and voice, in edit time, cached by the ranges. Keeps the source's shape
+    (16:9 -> 1920x1080, vertical -> 1080x1920) and tonemaps HLG/PQ to Rec.709 first."""
     key = hashlib.md5(json.dumps([spec['src'], ranges]).encode()).hexdigest()[:10]
     out = os.path.join(work, f'layercut_base_{key}.mp4')
     if os.path.exists(out):
         return out
+    sw, sh, hdr = src_info(spec['src'])
+    size = '1080:1920' if sh > sw else '1920:1080'
     parts = []
     for i, (a, b) in enumerate(ranges):
         p = os.path.join(work, f'_lc_part{i}.mp4')
         run(['ffmpeg', '-nostdin', '-v', 'error', '-y', '-ss', f'{a:.3f}', '-i', spec['src'], '-t', f'{b - a:.3f}',
-             '-vf', 'fps=30,scale=1920:1080:flags=lanczos,format=yuv420p', '-af', 'aresample=48000',
+             '-vf', (TONEMAP if hdr else '') + f'fps=30,scale={size}:flags=lanczos,format=yuv420p', '-af', 'aresample=48000',
              '-c:v', 'libx264', '-crf', '12', '-preset', 'fast', '-c:a', 'pcm_s16le', p.replace('.mp4', '.mov')])
         parts.append(p.replace('.mp4', '.mov'))
     lst = os.path.join(work, '_lc_parts.txt')
@@ -154,12 +177,12 @@ def matte(base, work):
     import torch
     dev = 'mps' if torch.backends.mps.is_available() else ('cuda' if torch.cuda.is_available() else 'cpu')
     m = torch.hub.load('PeterL1n/RobustVideoMatting', 'resnet50', trust_repo=True).eval().to(dev)
-    tmp = am + '.part.mkv'
-    wr = subprocess.Popen(['ffmpeg', '-nostdin', '-v', 'error', '-y', '-f', 'rawvideo', '-pix_fmt', 'gray', '-s', '1920x1080',
+    tmp = am + '.part.mkv'; BW, BH = dims(base)
+    wr = subprocess.Popen(['ffmpeg', '-nostdin', '-v', 'error', '-y', '-f', 'rawvideo', '-pix_fmt', 'gray', '-s', f'{BW}x{BH}',
                            '-framerate', '30', '-i', '-', '-c:v', 'ffv1', tmp], stdin=subprocess.PIPE)
     rec = [None] * 4; prev_small = None
     with torch.no_grad():
-        for f in frames(base, 1920, 1080):
+        for f in frames(base, BW, BH):
             small = f[::8, ::8].mean(axis=2)
             if prev_small is not None and np.abs(small - prev_small).mean() > 14: rec = [None] * 4  # a shot change
             prev_small = small
@@ -182,10 +205,11 @@ def track(base, am):
     """Per frame: which person to frame and where their head is (cached next to the matte).
     Among the people the matte finds, pick the one whose head shows the most face, weighted by size, so an
     over-the-shoulder shot frames the speaker, not the back of the nearer head."""
-    tr = am.replace('_alpha.mkv', '_track2.json')
+    tr = am.replace('_alpha.mkv', '_track3.json')
     if os.path.exists(tr): return json.load(open(tr))
     out = []; prev_small = None
-    for f, a in zip(frames(base, 1920, 1080), frames(am, 1920, 1080, 'gray')):
+    BW, BH = dims(base)
+    for f, a in zip(frames(base, BW, BH), frames(am, BW, BH, 'gray')):
         small = f[::8, ::8].mean(axis=2); cut = bool(prev_small is not None and np.abs(small - prev_small).mean() > 14); prev_small = small
         col = (a > 128).sum(axis=0).astype(np.float32)
         if col.sum() < 2000: out.append({'cx': None, 'top': None, 'cut': cut}); continue
@@ -204,7 +228,8 @@ def track(base, am):
             hc = band.sum(axis=0); xs = np.arange(s0, s1 + 1)
             cx = float((hc * xs).sum() / hc.sum()) if hc.sum() else float((s0 + s1) / 2)
             patch = f[top:top + 240, s0:s1 + 1][band] if band.any() else np.zeros((0, 3), np.uint8)
-            score = mass * (0.25 + skin_ratio(patch))
+            bottom = int(rows[-1]) / a.shape[0]  # people on a projector screen end mid-frame; the speaker stands on the floor
+            score = mass * (0.25 + skin_ratio(patch)) * (0.3 + 0.7 * bottom)
             if best is None or score > best[0]: best = (score, cx, top)
         out.append({'cx': best[1] if best else None, 'top': best[2] if best else None, 'cut': cut})
     json.dump(out, open(tr, 'w'))
@@ -226,7 +251,7 @@ def smooth_track(track):
             while j < n and (j == i or not track[j]['cut']): seg.append(cx[j]); j += 1
             cur = float(np.median(seg)); curt = top[i]
         if abs(cx[i] - cur) > 300: cur = cx[i]  # a missed cut or a big move: jump, never half a person
-        elif abs(cx[i] - cur) > 120: cur += (cx[i] - cur) * 0.12
+        elif abs(cx[i] - cur) > 90: cur += (cx[i] - cur) * 0.22  # a walking speaker: follow quickly enough to stay whole
         curt += (top[i] - curt) * 0.15
         out_cx[i] = cur; out_top[i] = curt
     return out_cx, out_top
@@ -248,13 +273,50 @@ def sentences(words):
     return out
 
 
+def words_from_lines(spec, ranges):
+    """Hindi/Punjabi clips carry hand-written English lines (source time) instead of whisper words.
+    Map each line into edit time and spread its words over it by length, so behind-words, cards ("on")
+    and captions all work in English. A line keeps its words together as one caption group."""
+    offs = []; acc = 0.0
+    for a, b in ranges: offs.append((a, b, acc)); acc += b - a
+    mapped = []
+    for s, e, text, *rest in spec['lines']:
+        hit = next(((a, b, o) for a, b, o in offs if a - 0.3 <= s < b), None)
+        if not hit: continue
+        a, b, o = hit
+        if min(b, e) - max(a, s) < 0.6 * (e - s): continue  # the cut keeps too little of this line to read it
+        mapped.append((o + max(0, s - a), o + min(b, e) - a, text))
+    mapped.sort()  # story (edit) order, not source order
+    clean_lines = []
+    for s2, e2, text in mapped:  # the same line written twice: keep the first, and never overlap the previous line
+        if clean_lines and text == clean_lines[-1][2]: continue
+        if clean_lines and s2 < clean_lines[-1][1]: s2 = clean_lines[-1][1]
+        if e2 - s2 > 0.3: clean_lines.append((s2, e2, text))
+    words = []; gid = 0
+    for s2, e2, text in clean_lines:
+        toks = text.replace('"', '').split(); n = sum(len(x) + 1 for x in toks); pos = 0
+        chunk = 0
+        for k, w_ in enumerate(toks):
+            ws = s2 + (e2 - s2) * pos / n; pos += len(w_) + 1; we = s2 + (e2 - s2) * pos / n
+            if k and k % 6 == 0: chunk += 1
+            words.append({'w': w_, 's': ws, 'e': we, 'g': f'{gid}.{chunk}'})
+        gid += 1
+    return words
+
+
 def caption_groups(words):
+    if words and 'g' in words[0]:  # lines mode: one group per line chunk
+        out = []; last = None
+        for i, w in enumerate(words):
+            if w['g'] != last: out.append([]); last = w['g']
+            out[-1].append(i)
+        return out
     out = []; cur = []
     for i, w in enumerate(words):
         cur.append(i)
         gap = words[i + 1]['s'] - w['e'] if i + 1 < len(words) else 9
         dur = words[cur[-1]]['e'] - words[cur[0]]['s']
-        if re.search(r'[.?!,]$', w['w']) or gap > 0.35 or len(cur) >= 4 or dur > 1.5:
+        if re.search(r'[.?!,]$', w['w']) or gap > 0.35 or len(cur) >= 5 or dur > 1.8:
             out.append(cur); cur = []
     if cur: out.append(cur)
     return out
@@ -277,7 +339,9 @@ def plan_behind(words, spec, edit):
     if given != 'auto':
         for txt, when in given:
             if isinstance(when, str) and when.startswith('on:'):
-                i = find_word(words, when[3:]); t = words[i]['s'] if i is not None else 0
+                key, _, nth = when[3:].partition('#'); i = find_word(words, key, int(nth or 1))  # on:word#2 = the 2nd time it is said
+                if i is None: print(f"behind '{txt}': '{when[3:]}' is not in the transcript, skipped"); continue
+                t = words[i]['s']
             else:
                 t = float(when)
             plan.append({'t': t, 'text': txt.upper()})
@@ -307,7 +371,9 @@ class Ink:
         self.accent = hexrgb(accent); self.white = (245, 243, 238); self.dim = (150, 150, 150)
         self.big = F('Anton-Regular.ttf', 400); self.cap = F('Inter-Bold.ttf', 46); self.ital = F('InstrumentSerif-Italic.ttf', 112)
         self.small = F('Inter-Bold.ttf', 30); self.label = F('Inter-Bold.ttf', 26); self.body = F('Inter-Bold.ttf', 40)
-        self.serif = F('InstrumentSerif-Regular.ttf', 64); self.num = F('Anton-Regular.ttf', 150)
+        self.serif = F('InstrumentSerif-Regular.ttf', 58); self.num = F('Anton-Regular.ttf', 210)
+        self.serif_i = F('InstrumentSerif-Italic.ttf', 58); self.capital = F('InstrumentSerif-Italic.ttf', 74)
+        self.numsm = F('Anton-Regular.ttf', 64); self.quote = F('InstrumentSerif-Regular.ttf', 200); self.label = F('Inter-Bold.ttf', 22)
         self._big_cache = {}
 
 
@@ -356,83 +422,136 @@ def text_w(f, s):
     return f.getlength(s)
 
 
+def tracked(d, xy, s, f, fill, track=0.14):
+    """Small caps label with letter tracking (PIL has none)."""
+    x, y = xy; sp = f.size * track
+    for ch in s:
+        d.text((x, y), ch, font=f, fill=fill); x += f.getlength(ch) + sp
+    return x
+
+
+def wrap_lines(f, text, maxw):
+    lines = []; cur = ''
+    for w_ in text.split():
+        if cur and f.getlength(cur + ' ' + w_) > maxw: lines.append(cur); cur = w_
+        else: cur = (cur + ' ' + w_).strip()
+    if cur: lines.append(cur)
+    return lines
+
+
 def draw_caption(canvas, ink, words, groups, t, emph, y):
-    g = next((g for g in groups if words[g[0]]['s'] - 0.08 <= t <= words[g[-1]]['e'] + 0.25), None)
-    if g is None: return
+    """One caption line (two if long): plain words in Inter caps, emphasised words inline in serif italic.
+    A group stays up through short pauses so the screen never blinks empty between phrases."""
+    gi = None
+    for k, g in enumerate(groups):
+        start = words[g[0]]['s'] - 0.08
+        nxt = words[groups[k + 1][0]]['s'] - 0.08 if k + 1 < len(groups) else 1e9
+        end = min(max(words[g[-1]]['e'] + 0.25, nxt if nxt - words[g[-1]]['e'] < 0.8 else 0), nxt)
+        if start <= t < end: gi = g; break
+    if gi is None: return
     d = ImageDraw.Draw(canvas)
-    plain = [i for i in g if not any(clean(words[i]['w']).startswith(e) for e in emph)]
-    em = [i for i in g if i not in plain]
-    line = ' '.join(re.sub(r'[.,]$', '', words[i]['w']).upper() for i in plain)
-    if line:
-        x = W / 2 - text_w(ink.cap, line) / 2; cx = x
-        for i in plain:
-            s = re.sub(r'[.,]$', '', words[i]['w']).upper() + ' '
-            on = words[i]['s'] - 0.04 <= t
-            d.text((cx, y), s, font=ink.cap, fill=ink.white if on else (130, 130, 130), stroke_width=2, stroke_fill=(0, 0, 0))
-            cx += text_w(ink.cap, s)
-    if em:
-        s = ' '.join(re.sub(r'[^\w’\'-]', '', words[i]['w']).lower() for i in em)
-        k = spring(t - words[em[0]]['s'] + 0.05, 20)
-        if k > 0:
-            f = ink.ital; wpx = text_w(f, s); yy = y + 54 + int((1 - k) * 30)
-            d.text((W / 2 - wpx / 2, yy), s, font=f, fill=ink.accent + (int(255 * min(1, k * 1.3)),), stroke_width=1, stroke_fill=(0, 0, 0))
+    toks = []
+    for i in gi:
+        raw = re.sub(r'^[^\w’\'"]+|[^\w’\'%?!]+$', '', words[i]['w'])
+        is_em = any(clean(words[i]['w']).startswith(e) for e in emph)
+        f = ink.capital if is_em else ink.cap
+        s = raw.lower() if is_em else raw.upper()
+        toks.append((s, f, is_em, words[i]['s'] - 0.04 <= t))
+    space = ink.cap.getlength(' '); pad = 16  # italic glyphs overhang: give emphasised words room
+    rows = [[]]; wsum = 0
+    for tk in toks:
+        tw = tk[1].getlength(tk[0]) + (2 * pad if tk[2] else 0)
+        if rows[-1] and wsum + space + tw > 840: rows.append([]); wsum = 0
+        rows[-1].append(tk); wsum += (space if wsum else 0) + tw
+    for r, row in enumerate(rows):
+        rw = sum(tk[1].getlength(tk[0]) + (2 * pad if tk[2] else 0) for tk in row) + space * (len(row) - 1)
+        x = W / 2 - rw / 2; base = y + r * 70 + 50  # shared baseline
+        for s, f, is_em, on in row:
+            asc = f.getmetrics()[0]
+            col = (ink.accent if is_em else ink.white) if on else (120, 120, 120)
+            xx = x + (pad if is_em else 0)
+            d.text((xx, base - asc), s, font=f, fill=col, stroke_width=2 if not is_em else 1, stroke_fill=(0, 0, 0))
+            x += f.getlength(s) + (2 * pad if is_em else 0) + space
 
 
-# ---- concept cards. Each draws into a 920x330 panel at progress p (seconds since it began) ----
-def panel(ink, alpha=1.0):
-    im = Image.new('RGBA', (920, 330), (0, 0, 0, 0)); d = ImageDraw.Draw(im)
-    d.rounded_rectangle([0, 0, 919, 329], 34, fill=(14, 14, 16, int(215 * alpha)), outline=(255, 255, 255, int(40 * alpha)), width=2)
-    return im, d
+# ---- concept cards: editorial type drawn straight on the frame (no panels), 920x380, at progress p ----
+CW, CH = 920, 380
+
+
+def layer():
+    im = Image.new('RGBA', (CW, CH), (0, 0, 0, 0)); return im, ImageDraw.Draw(im)
+
+
+def header(d, ink, title):
+    if not title: return 0
+    d.rectangle([0, 18, 36, 21], fill=ink.accent)
+    tracked(d, (52, 6), title.upper(), ink.label, ink.accent)
+    return 56
 
 
 def card_slider(ink, c, p):
-    im, d = panel(ink); k = spring(p - 0.2, 10)
-    d.text((48, 40), c.get('title', 'WHERE IT SITS').upper(), font=ink.label, fill=ink.dim)
-    y = 175; x0, x1 = 70, 850
-    d.line([x0, y, x1, y], fill=(90, 90, 90), width=6)
-    for j in range(11): xx = x0 + (x1 - x0) * j / 10; d.line([xx, y - 12, xx, y + 12], fill=(90, 90, 90), width=3)
+    im, d = layer(); top = header(d, ink, c.get('title', '')); k = spring(p - 0.15, 9)
+    y = top + 150; x0, x1 = 30, 890
+    d.line([x0, y, x1, y], fill=(255, 255, 255, 110), width=3)
+    for j in range(11):
+        xx = x0 + (x1 - x0) * j / 10; h_ = 14 if j % 5 == 0 else 7
+        d.line([xx, y - h_, xx, y + h_], fill=(255, 255, 255, 110), width=2)
     v = 0.5 + (c.get('value', 0.85) - 0.5) * k; xk = x0 + (x1 - x0) * v
-    d.line([x0, y, xk, y], fill=ink.accent, width=6)
-    d.ellipse([xk - 22, y - 22, xk + 22, y + 22], fill=ink.accent)
-    d.text((x0, y + 40), c['a'], font=ink.small, fill=ink.white); d.text((x1 - text_w(ink.small, c['b']), y + 40), c['b'], font=ink.small, fill=ink.accent if v > 0.5 else ink.white)
+    d.line([x0 + (x1 - x0) * 0.5, y, xk, y], fill=ink.accent, width=5)
+    d.ellipse([xk - 26, y - 26, xk + 26, y + 26], outline=ink.accent + (110,), width=3)
+    d.ellipse([xk - 13, y - 13, xk + 13, y + 13], fill=ink.accent)
+    for s, x, right, on in ((c['a'], x0, False, v < 0.5), (c['b'], x1, True, v >= 0.5)):
+        f = ink.serif_i; w_ = f.getlength(s)
+        d.text((x - w_ if right else x, y + 40), s, font=f, fill=ink.accent if on else (170, 170, 170))
     return im
 
 
 def card_compare(ink, c, p):
-    im, d = panel(ink)
-    d.text((48, 36), c.get('title', 'NOT THE SAME').upper(), font=ink.label, fill=ink.dim)
+    im, d = layer(); top = header(d, ink, c.get('title', ''))
+    f = ink.serif; colw = 400
+    d.line([460, top + 20, 460, top + 20 + 250 * spring(p, 12)], fill=(255, 255, 255, 90), width=2)
+    vs = 'vs'; d.text((460 - ink.serif_i.getlength(vs) / 2, top + 100), vs, font=ink.serif_i, fill=(150, 150, 150))
     for j, key in enumerate(('a', 'b')):
-        k = spring(p - 0.15 - j * 0.35, 14); x = 40 + j * 430; y = 100 + (1 - k) * 40
-        win = c.get('winner') == key; col = ink.accent if win else (80, 80, 80)
-        d.rounded_rectangle([x, y, x + 410, y + 180], 24, fill=(col[0], col[1], col[2], int(60 * k) if win else int(30 * k)), outline=col + (int(255 * k),), width=4)
-        words = c[key].split(); lines = []; cur = ''
-        for w_ in words:
-            if text_w(ink.body, (cur + ' ' + w_).strip()) > 360: lines.append(cur); cur = w_
-            else: cur = (cur + ' ' + w_).strip()
-        lines.append(cur)
-        for li, s in enumerate(lines[:3]): d.text((x + 26, y + 28 + li * 48), s, font=ink.body, fill=(255, 255, 255, int(255 * k)))
-        if c.get('winner') and not win and p > 1.0:  # the loser is struck through
-            kk = ease_out((p - 1.0) / 0.3); d.line([x + 20, y + 90, x + 20 + 370 * kk, y + 90], fill=(255, 80, 80), width=6)
+        k = spring(p - 0.1 - j * 0.35, 14)
+        if k <= 0.01: continue
+        x = 0 if j == 0 else 500; y = top + 24 + (1 - k) * 30
+        win = c.get('winner') == key; lose = c.get('winner') and not win
+        col = (255, 255, 255, int(255 * k)) if not lose else (140, 140, 140, int(255 * k))
+        lines = wrap_lines(f, c[key], colw)[:4]
+        for li, s in enumerate(lines): d.text((x, y + li * 64), s, font=f, fill=col)
+        if win and p > 0.8:
+            kk = ease_out((p - 0.8) / 0.4); w_ = f.getlength(lines[-1])
+            d.line([x, y + len(lines) * 64 + 6, x + w_ * kk, y + len(lines) * 64 + 6], fill=ink.accent, width=4)
+        if lose and p > 1.0:
+            kk = ease_out((p - 1.0) / 0.3)
+            for li, s in enumerate(lines):
+                yy = y + li * 64 + 36; d.line([x, yy, x + f.getlength(s) * kk, yy], fill=(232, 92, 80), width=4)
     return im
 
 
 def card_list(ink, c, p):
-    im, d = panel(ink); items = c['items']; step = c.get('dur', 3) / max(1, len(items)) * 0.8
-    d.text((48, 32), c.get('title', '').upper(), font=ink.label, fill=ink.dim)
+    im, d = layer(); top = header(d, ink, c.get('title', '')); items = c['items']
+    step = c.get('dur', 3) / max(1, len(items)) * 0.75
     for j, it in enumerate(items[:4]):
         k = spring(p - j * step, 16)
-        if k <= 0: continue
-        y = 80 + j * 62; x = 48 + (1 - k) * 40
-        d.rounded_rectangle([x, y, x + 34, y + 34], 8, fill=ink.accent if k > 0.6 else (60, 60, 60))
-        d.text((x + 56, y - 4), it, font=ink.body, fill=(255, 255, 255, int(255 * k)))
+        if k <= 0.01: continue
+        y = top + 8 + j * 92; x = (1 - k) * 30
+        d.text((x, y), f'{j + 1:02d}', font=ink.numsm, fill=ink.accent + (int(255 * k),))
+        d.text((x + 100, y + 14), it, font=ink.body, fill=(255, 255, 255, int(255 * k)))
+        d.line([x + 100, y + 78, 900, y + 78], fill=(255, 255, 255, int(45 * k)), width=1)
     return im
 
 
 def card_stat(ink, c, p):
-    im, d = panel(ink); k = ease_out(p / 0.9); v = c['value']; f0 = float(c.get('from', 0))
-    m = re.match(r'([\d.]+)(.*)', str(v))
-    s = (f"{f0 + (float(m.group(1)) - f0) * k:.{max(0, len(m.group(1).split('.')[1]) if '.' in m.group(1) else 0)}f}{m.group(2)}" if m else str(v))
-    d.text((48, 40), s, font=ink.num, fill=ink.accent); d.text((52, 250), c.get('label', '').upper(), font=ink.label, fill=ink.white)
+    im, d = layer(); top = header(d, ink, c.get('title', '')); k = ease_out(p / 0.9); v = c['value']; f0 = float(c.get('from', 0))
+    m = re.match(r'([\d.,]+)(.*)', str(v).replace(',', '') if ',' in str(v) else str(v))
+    if m:
+        num = m.group(1); dec = len(num.split('.')[1]) if '.' in num else 0; val = f0 + (float(num) - f0) * k
+        s = c.get('pre', '') + (f'{val:,.{dec}f}' if ',' in str(v) else f'{val:.{dec}f}') + m.group(2)
+    else:
+        s = str(v)
+    d.text((0, top - 20), s, font=ink.num, fill=ink.accent)
+    d.text((4, top + 200), c.get('label', ''), font=ink.serif_i, fill=ink.white)  # under the number: never runs off the frame
     return im
 
 
@@ -448,96 +567,87 @@ CURVES = {
 
 
 def card_curve(ink, c, p):
-    im, d = panel(ink); fn = CURVES[c.get('shape', 'exponential')]
-    x0, y0, x1, y1 = 70, 280, 860, 50
-    d.line([x0, y0, x1, y0], fill=(110, 110, 110), width=3); d.line([x0, y0, x0, y1], fill=(110, 110, 110), width=3)
-    d.text((x1 - text_w(ink.label, c.get('x', 'TIME')), y0 + 8), c.get('x', 'TIME'), font=ink.label, fill=ink.dim)
-    d.text((x0 + 12, y1 - 6), c.get('y', ''), font=ink.label, fill=ink.dim)
-    draw = ease_out(p / 1.4); N = 120; pts = []
-    for j in range(int(N * draw) + 1):
-        x = j / N; pts.append((x0 + (x1 - x0) * x, y0 - (y0 - y1) * max(0, min(1, fn(x)))))
-    if c.get('falloff') and draw > 0:  # most people leave the curve early and go flat
-        k = ease_out((p - 1.2) / 0.8); bx = 0.32
-        fx0 = x0 + (x1 - x0) * bx; fy = y0 - (y0 - y1) * fn(bx)
-        d.line([fx0, fy, fx0 + (x1 - fx0) * k, fy], fill=(150, 150, 150), width=5)
-        if k > 0.9: d.text((x1 - 260, fy - 44), c.get('flat_label', 'most people'), font=ink.label, fill=ink.dim)
-    if len(pts) > 1: d.line(pts, fill=ink.accent, width=7, joint='curve')
-    if pts: x, y = pts[-1]; d.ellipse([x - 13, y - 13, x + 13, y + 13], fill=ink.accent)
+    im, d = layer(); top = header(d, ink, c.get('title', '')); fn = CURVES[c.get('shape', 'exponential')]
+    x0, y0, x1, y1 = 20, CH - 40, 900, top + 30
+    d.line([x0, y0, x1, y0], fill=(255, 255, 255, 90), width=2); d.line([x0, y0, x0, y1], fill=(255, 255, 255, 90), width=2)
+    tracked(d, (x1 - 120, y0 + 10), c.get('x', 'TIME'), ink.label, (160, 160, 160))
+    tracked(d, (x0 + 16, y1 - 4), c.get('y', ''), ink.label, (160, 160, 160))
+    draw = ease_out(p / 1.4); N = 120
+    pts = [(x0 + (x1 - x0) * (j / N), y0 - (y0 - y1) * max(0, min(1, fn(j / N)))) for j in range(int(N * draw) + 1)]
+    if c.get('falloff') and draw > 0:
+        k = ease_out((p - 1.2) / 0.8); bx = 0.32; fx0 = x0 + (x1 - x0) * bx; fy = y0 - (y0 - y1) * fn(bx)
+        for xx in range(int(fx0), int(fx0 + (x1 - fx0) * k), 22): d.line([xx, fy, xx + 12, fy], fill=(170, 170, 170), width=4)
+        if k > 0.9: d.text((x1 - ink.serif_i.getlength(c.get('flat_label', 'most people')), fy - 64), c.get('flat_label', 'most people'), font=ink.serif_i, fill=(190, 190, 190))
+    if len(pts) > 1: d.line(pts, fill=ink.accent, width=6, joint='curve')
+    if pts: x, y = pts[-1]; d.ellipse([x - 11, y - 11, x + 11, y + 11], fill=ink.accent)
     return im
 
 
 def card_loop(ink, c, p):
-    im, d = panel(ink); nodes = c['nodes']; n = len(nodes); cx, cy, r = 460, 175, 115
+    im, d = layer(); top = header(d, ink, c.get('title', '')); nodes = c['nodes']; n = len(nodes); cx, cy, r = 460, top + 160, 130
     lit = int(p / 0.55) % n
-    d.ellipse([cx - r, cy - r, cx + r, cy + r], outline=(90, 90, 90), width=4)
+    d.ellipse([cx - r, cy - r, cx + r, cy + r], outline=(255, 255, 255, 80), width=2)
     for j, s in enumerate(nodes):
-        a = -math.pi / 2 + j * 2 * math.pi / n; x, y = cx + r * math.cos(a), cy + r * math.sin(a)
-        on = j == lit; tw = text_w(ink.small, s.upper()) + 36
-        d.rounded_rectangle([x - tw / 2, y - 26, x + tw / 2, y + 26], 26, fill=ink.accent if on else (40, 40, 44))
-        d.text((x - tw / 2 + 18, y - 18), s.upper(), font=ink.small, fill=(10, 10, 10) if on else ink.white)
+        a = -math.pi / 2 + j * 2 * math.pi / n; x, y = cx + r * math.cos(a), cy + r * math.sin(a); on = j == lit
+        d.ellipse([x - (12 if on else 7), y - (12 if on else 7), x + (12 if on else 7), y + (12 if on else 7)], fill=ink.accent if on else (200, 200, 200))
+        f = ink.serif_i; w_ = f.getlength(s); tx = x + 24 if math.cos(a) >= -0.1 else x - 24 - w_
+        d.text((tx, y - 40), s, font=f, fill=ink.accent if on else ink.white)
     return im
 
 
 def card_venn(ink, c, p):
-    im = Image.new('RGBA', (920, 330), (0, 0, 0, 0)); k = spring(p, 12); off = 130 * k; r = 130
+    im, d = layer(); top = header(d, ink, c.get('title', '')); k = spring(p, 12); r = 140; cy = top + 160
     for j, (sx, key) in enumerate(((-1, 'a'), (1, 'b'))):
-        lay = Image.new('RGBA', im.size, (0, 0, 0, 0)); dd = ImageDraw.Draw(lay); x = 460 + sx * (off - 20)
-        col = ink.accent if j else (255, 255, 255)
-        dd.ellipse([x - r, 165 - r, x + r, 165 + r], fill=col + (60,), outline=col + (220,), width=4)
-        dd.text((x + sx * 30 - text_w(ink.small, c[key].upper()) / 2, 150), c[key].upper(), font=ink.small, fill=(255, 255, 255))
-        im.alpha_composite(lay)
+        x = 460 + sx * (100 * k + 10); col = ink.accent if j else (255, 255, 255)
+        d.ellipse([x - r, cy - r, x + r, cy + r], fill=col + (28,), outline=col + (200,), width=3)
+        s = c[key]; w_ = ink.serif_i.getlength(s); d.text((x + sx * 70 - w_ / 2, cy - 40), s, font=ink.serif_i, fill=(255, 255, 255))
     if k > 0.8 and c.get('mid'):
-        d = ImageDraw.Draw(im); d.text((460 - text_w(ink.label, c['mid'].upper()) / 2, 300), c['mid'].upper(), font=ink.label, fill=ink.accent)
+        tracked(d, (460 - ink.label.getlength(c['mid'].upper()) * 0.57, cy + r + 4), c['mid'].upper(), ink.label, ink.accent)
     return im
 
 
 def card_chips(ink, c, p):
-    im = Image.new('RGBA', (920, 330), (0, 0, 0, 0)); d = ImageDraw.Draw(im); x = 0; rows = [[]]
+    """Words that land one by one in serif italic, separated by accent dots."""
+    im, d = layer(); top = header(d, ink, c.get('title', '')); f = ink.serif_i
+    step = c.get('dur', 3) / max(1, len(c['words'])) * 0.6
+    rows = [[]]; wsum = 0
     for s in c['words']:
-        w_ = text_w(ink.body, s) + 60
-        if sum(text_w(ink.body, q) + 76 for q in rows[-1]) + w_ > 900: rows.append([])
-        rows[-1].append(s)
-    step = c.get('dur', 3) / max(1, len(c['words'])) * 0.6; idx = 0
+        w_ = f.getlength(s) + 70
+        if rows[-1] and wsum + w_ > 900: rows.append([]); wsum = 0
+        rows[-1].append(s); wsum += w_
+    idx = 0
     for ri, row in enumerate(rows):
-        tw = sum(text_w(ink.body, q) + 76 for q in row) - 16; x = 460 - tw / 2
-        for s in row:
-            k = spring(p - idx * step, 20); idx += 1
-            if k > 0:
-                w_ = text_w(ink.body, s) + 60; y = 60 + ri * 100 + (1 - k) * 30
-                d.rounded_rectangle([x, y, x + w_, y + 76], 38, fill=ink.accent + (int(255 * k),))
-                d.text((x + 30, y + 14), s, font=ink.body, fill=(12, 12, 12, int(255 * k)))
-            x += text_w(ink.body, s) + 76
+        tw = sum(f.getlength(s) + 70 for s in row) - 70; x = 460 - tw / 2
+        for j, s in enumerate(row):
+            k = spring(p - idx * step, 18); idx += 1
+            if k > 0.01:
+                y = top + 20 + ri * 96 + (1 - k) * 24
+                d.text((x, y), s, font=f, fill=(255, 255, 255, int(255 * k)))
+                if j < len(row) - 1: d.ellipse([x + f.getlength(s) + 28, y + 44, x + f.getlength(s) + 40, y + 56], fill=ink.accent + (int(255 * k),))
+            x += f.getlength(s) + 70
     return im
 
 
 def card_quote(ink, c, p):
-    im, d = panel(ink); k = ease_out(p / 0.6); words = c['text'].split(); lines = []; cur = ''
-    for w_ in words:
-        if text_w(ink.serif, (cur + ' ' + w_).strip()) > 800: lines.append(cur); cur = w_
-        else: cur = (cur + ' ' + w_).strip()
-    lines.append(cur)
-    for li, s in enumerate(lines[:3]): d.text((60, 50 + li * 78), s, font=ink.serif, fill=(255, 255, 255, int(255 * k)))
+    im, d = layer(); k = ease_out(p / 0.6); f = ink.serif_i
+    d.text((0, -40), '“', font=ink.quote, fill=ink.accent + (int(255 * k),))
+    for li, s in enumerate(wrap_lines(f, c['text'], 800)[:4]): d.text((90, 40 + li * 70), s, font=f, fill=(255, 255, 255, int(255 * k)))
     return im
 
 
 def card_prospect(ink, c, p):
     """Prospect theory's value function: a loss hurts more than the same gain pleases."""
-    im, d = panel(ink); cx, cy = 460, 165; sx, sy = 380, 135
-    d.line([cx - sx, cy, cx + sx, cy], fill=(110, 110, 110), width=3); d.line([cx, cy - sy, cx, cy + sy], fill=(110, 110, 110), width=3)
-    d.text((cx + sx - text_w(ink.label, 'GAINS'), cy + 10), 'GAINS', font=ink.label, fill=ink.dim); d.text((cx - sx, cy + 10), 'LOSSES', font=ink.label, fill=ink.dim)
-    draw = ease_out(p / 1.4); gain, loss = [], []
-    for j in range(61):
-        x = j / 60 * draw
-        gain.append((cx + sx * x, cy - sy * 0.55 * (x ** 0.55)))
-        loss.append((cx - sx * x, cy + sy * min(1.0, 1.25 * (x ** 0.55))))
-    d.line(gain, fill=ink.white, width=6); d.line(loss, fill=ink.accent, width=7)
+    im, d = layer(); top = header(d, ink, c.get('title', '')); cx, cy, sx, sy = 460, top + 160, 420, 140
+    d.line([cx - sx, cy, cx + sx, cy], fill=(255, 255, 255, 90), width=2); d.line([cx, cy - sy, cx, cy + sy], fill=(255, 255, 255, 90), width=2)
+    tracked(d, (cx + sx - 110, cy + 10), 'GAINS', ink.label, (160, 160, 160)); tracked(d, (cx - sx, cy + 10), 'LOSSES', ink.label, (160, 160, 160))
+    draw = ease_out(p / 1.4)
+    gain = [(cx + sx * (j / 60 * draw), cy - sy * 0.55 * ((j / 60 * draw) ** 0.55)) for j in range(61)]
+    loss = [(cx - sx * (j / 60 * draw), cy + sy * min(1.0, 1.25 * ((j / 60 * draw) ** 0.55))) for j in range(61)]
+    d.line(gain, fill=ink.white, width=5); d.line(loss, fill=ink.accent, width=6)
     if p > 1.3:
-        k = ease_out((p - 1.3) / 0.4); x = 0.6
-        g = cy - sy * 0.55 * x ** 0.55; l = cy + sy * min(1, 1.25 * x ** 0.55)
-        d.line([cx + sx * x, cy, cx + sx * x, g], fill=(255, 255, 255, int(200 * k)), width=3)
-        d.line([cx - sx * x, cy, cx - sx * x, l], fill=ink.accent + (int(255 * k),), width=3)
-        d.text((cx + sx * x + 10, g - 10), c.get('gain', '+$100'), font=ink.small, fill=(255, 255, 255, int(255 * k)))
-        d.text((cx - sx * x - 150, l - 30), c.get('loss', '-$100'), font=ink.small, fill=ink.accent + (int(255 * k),))
+        k = ease_out((p - 1.3) / 0.4); x = 0.6; g = cy - sy * 0.55 * x ** 0.55; l = cy + sy * min(1, 1.25 * x ** 0.55)
+        d.text((cx + sx * x + 12, g - 60), c.get('gain', 'a gain'), font=ink.serif_i, fill=(255, 255, 255, int(255 * k)))
+        d.text((cx - sx * x - ink.serif_i.getlength(c.get('loss', 'a loss')) - 12, l - 20), c.get('loss', 'a loss'), font=ink.serif_i, fill=ink.accent + (int(255 * k),))
     return im
 
 
@@ -555,6 +665,9 @@ def plan_cards(words, edit):
         else:
             t = float(c['at'])
         out.append(dict(c, t=t, end=t + c.get('dur', 3.0)))
+    out.sort(key=lambda c: c['t'])
+    for a, b in zip(out, out[1:]):  # never two cards at once: the earlier one leaves before the next lands
+        if a['end'] > b['t'] - 0.3: a['end'] = max(a['t'] + 0.8, b['t'] - 0.3)
     return out
 
 
@@ -565,7 +678,7 @@ def draw_cards(canvas, ink, cards, t, y):
         k = spring(p, 16) * (1 - ease_out((t - c['end']) / 0.25) if t > c['end'] else 1)
         if k <= 0.01: continue
         a = np.array(im); a[..., 3] = (a[..., 3] * min(1, k)).astype(np.uint8); im = Image.fromarray(a)
-        canvas.alpha_composite(im, (80, int(y + (1 - k) * 40)))
+        canvas.alpha_composite(im, (80, int(y + (1 - k) * 30)))
         return True
     return False
 
@@ -577,10 +690,12 @@ def compose(spec, work, base, am, track, words, edit, stills=None):
     behind = plan_behind(words, spec, edit); cards = plan_cards(words, edit); groups = caption_groups(words)
     cx, top = smooth_track(track)
     # a 720p source cannot take a 1.6x push without going soft: frame it looser, more room for the word
-    src_h = int(subprocess.run(['ffprobe', '-v', 'error', '-select_streams', 'v:0', '-show_entries', 'stream=height', '-of', 'csv=p=0', spec['src']], capture_output=True, text=True).stdout.strip() or 1080)
-    PLATE_H = int(edit.get('plate_h', 1700 if src_h >= 1080 else 1380)); PLATE_Y = H - PLATE_H
+    sw, sh, _ = src_info(spec['src']); BW, BH = dims(base); portrait = BH > BW
+    PLATE_H = int(edit.get('plate_h', 1700 if min(sw, sh) >= 1080 else 1380)); PLATE_Y = H - PLATE_H
     cut_b = int(edit.get('src_crop_bottom', 0))  # burned-in subtitles in the source: crop them away
-    SH = 1080 - cut_b; S = PLATE_H / SH; cw = int(round(W / S))  # source pixels that fill the frame width
+    # a wide shot (speaker small on a stage) is framed through a window that follows the head
+    WH = int(edit.get('window_h', 880 if portrait else BH - cut_b)); S = PLATE_H / WH; cw = int(round(W / S))
+    wy = max(0.0, float(top[0]) - 0.2 * WH) if len(top) else 0.0
     grade_dark = 0.58
     name = spec['name']; pic = os.path.join(work, 'layercut_picture.mp4')
     wr = None
@@ -589,15 +704,26 @@ def compose(spec, work, base, am, track, words, edit, stills=None):
                                '-framerate', '30', '-i', '-', '-c:v', 'libx264', '-crf', '14', '-preset', 'medium',
                                '-pix_fmt', 'yuv420p', pic], stdin=subprocess.PIPE)
     want = set(int(round(s * FPS)) for s in (stills or []))
-    for i, (f, a) in enumerate(zip(frames(base, 1920, 1080), frames(am, 1920, 1080, 'gray'))):
+    for i, (f, a) in enumerate(zip(frames(base, BW, BH), frames(am, BW, BH, 'gray'))):
         if stills and i not in want:
             if i > max(want): break
             continue
         t = i / FPS
-        x0 = int(min(1920 - cw, max(0, cx[min(i, len(cx) - 1)] - cw / 2)))
-        crop = Image.fromarray(f[:SH, x0:x0 + cw]).resize((W, PLATE_H), Image.LANCZOS)
-        al = Image.fromarray(a[:SH, x0:x0 + cw]).resize((W, PLATE_H), Image.BILINEAR)
-        head_y = PLATE_Y + top[min(i, len(top) - 1)] * S
+        if portrait:  # a speaker at the very edge of a wide shot: pad with black so they stay centred
+            pw = cw // 2; fe = 140; ramp = np.ones(BW, np.float32); ramp[:fe] = np.linspace(0, 1, fe); ramp[-fe:] = np.linspace(1, 0, fe)
+            f = np.pad((f * ramp[None, :, None]).astype(np.uint8), ((0, 0), (pw, pw), (0, 0))); a = np.pad(a, ((0, 0), (pw, pw)))  # feathered edge
+            x0 = int(min(BW + 2 * pw - cw, max(0, cx[min(i, len(cx) - 1)] + pw - cw / 2)))
+        else:
+            x0 = int(min(BW - cw, max(0, cx[min(i, len(cx) - 1)] - cw / 2)))
+        ht = top[min(i, len(top) - 1)]
+        if WH < BH - cut_b:  # window: keep the head about a fifth of the way down, move gently
+            target = min(BH - cut_b - WH, max(0, ht - 0.2 * WH)); wy = target if stills else wy + (target - wy) * 0.1
+        else:
+            wy = 0
+        y0 = int(wy)
+        crop = Image.fromarray(f[y0:y0 + WH, x0:x0 + cw]).resize((W, PLATE_H), Image.LANCZOS)
+        al = Image.fromarray(a[y0:y0 + WH, x0:x0 + cw]).resize((W, PLATE_H), Image.BILINEAR)
+        head_y = PLATE_Y + (ht - y0) * S
         canvas = Image.new('RGBA', (W, H), (11, 11, 12, 255))
         plate = np.asarray(crop).astype(np.float32)
         lum = plate.mean(axis=2, keepdims=True); room = float(lum.mean())
@@ -610,10 +736,14 @@ def compose(spec, work, base, am, track, words, edit, stills=None):
         draw_behind(canvas, ink, behind, t, head_y, i)
         person = crop.convert('RGBA'); person.putalpha(al)
         canvas.alpha_composite(person, (0, PLATE_Y))
-        shade = Image.new('RGBA', (W, 520), (0, 0, 0, 0)); sd = np.zeros((520, W, 4), np.uint8); sd[..., 3] = (np.linspace(0, 1, 520) ** 1.4 * 200)[:, None]
-        canvas.alpha_composite(Image.fromarray(sd), (0, H - 520))  # keep captions readable over the chest
-        has_card = draw_cards(canvas, ink, cards, t, 1170)
-        draw_caption(canvas, ink, words, groups, t, emph, 1040 if has_card else 1230)
+        card_up = any(c['t'] <= t <= c['end'] + 0.25 for c in cards)
+        # the dark backing starts above the type, so captions and cards read even on a white shirt
+        y0 = 940 if card_up else 1110; ys = np.arange(H - y0)
+        ramp = np.clip(ys / 170.0, 0, 1) * (225 if card_up else 195)
+        sd = np.zeros((H - y0, W, 4), np.uint8); sd[..., 3] = ramp[:, None].astype(np.uint8)
+        canvas.alpha_composite(Image.fromarray(sd), (0, y0))
+        has_card = draw_cards(canvas, ink, cards, t, 1160)
+        draw_caption(canvas, ink, words, groups, t, emph, 1000 if has_card else 1230)
         out = canvas.convert('RGB')
         if stills:
             p = os.path.join(work, f'layercut_still_{t:05.2f}.jpg'); out.save(p, quality=88); print('still', p)
@@ -648,7 +778,8 @@ def main():
     spec, work, ranges, words = load(spec_path)
     edit = spec.get('edit', {})
     base = base_cut(spec, work, ranges)
-    if words is None: words = transcribe(base, work, spec)
+    if spec.get('lines'): words = words_from_lines(spec, ranges)  # translated clips: English lines, not whisper
+    elif words is None: words = transcribe(base, work, spec)
     am = matte(base, work)
     trk = track(base, am)
     pic = compose(spec, work, base, am, trk, words, edit, stills)

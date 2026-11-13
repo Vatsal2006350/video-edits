@@ -46,6 +46,25 @@ a note costs one JSON change and ~90 s of render, not a new program.
 | the line itself | `quote` | text |
 Anchor every card to the word that says it: `"on": "compounding", "nth": 2`.
 
+
+## v2 rules (2026-11-13, after Vatsal's notes: "gaps, overlaps, cards look AI-generated")
+- **No panels.** Cards are type drawn straight on the frame over a dark backing that starts *above*
+  the type (y 940 with a card, 1110 without): serif italic, thin rules, `01 02 03` Anton numbers,
+  a small tracked accent label with a short rule. Never a rounded box with a grey title.
+- **Emphasis is inline.** The emphasised word sits in the caption line in serif italic (accent), padded
+  16 px each side so italic overhang never touches the next word. No second line under the caption.
+- **No blinking.** A caption stays up through pauses under 0.8 s, until the next phrase starts.
+- **One card at a time.** An earlier card leaves 0.3 s before the next lands.
+- **Anchors fail loudly.** An `on:` word not in the transcript is skipped with a warning (it used to land
+  at 0 s). `on:word#2` = the second time it is said. Numbers with commas: anchor on the digits
+  (`"on": "20"` for 20,000) and give `value: "20,000"`; the counter keeps the comma and a `pre` (£, $).
+- **Translated clips** (Hindi/Punjabi) use the spec's English `lines`: they are mapped into edit time in
+  story order, duplicates dropped, lines the cut truncates dropped, and each line is one caption group.
+- **Wide/vertical sources** (stage keynotes): the base keeps the source shape, HLG is tonemapped to
+  Rec.709, and a window (`window_h`, default 880 px) follows the head; a speaker at the frame edge is
+  padded with a feathered black edge so they stay centred. The tracker prefers a figure whose feet reach
+  low in the frame, so people on a projector screen are not picked.
+
 ## Rules
 - Behind words: one per sentence, a noun or the stake ("COMPOUNDING", "FALL OFF"), never a pronoun or filler.
   Write them in `edit.behind` for anything that will be posted; `auto` is a fallback.

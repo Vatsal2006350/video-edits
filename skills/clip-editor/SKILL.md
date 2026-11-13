@@ -36,6 +36,10 @@ The base cut, the matte, the person track and the words are cached per clip; a c
 re-composites (~90 s for 40 s). Do not write new drawing code for one clip. If an idea needs a card that
 does not exist, add it once to `CARDS` in `bin/clip-edit.py` and to the table in the format note.
 
+## Card taste (non-negotiable)
+Type on the frame, no boxes; emphasis inline; one card at a time; every card says only what is said.
+See "v2 rules" in the format note.
+
 ## Checks before sending
 - Look at a sheet of the render (every 2.5 s): nobody half out of frame, a word on frame 1, cards readable.
 - `bin/export-ig.sh` for the upload copy (-14 LUFS, true peak <= -1.9).
