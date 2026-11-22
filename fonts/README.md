@@ -14,6 +14,11 @@ Titan One · Bungee · Bowlby One · Alfa Slab One · Righteous
 Playfair Display Italic · Instrument Serif (+Italic) · DM Serif Display (+Italic)
 Abril Fatface · Bodoni Moda Bold · Lora Italic
 
+## EPIC / LUXURY — mythology, premium experiences (`bash bin/fetch-epic-fonts.sh`)
+Cinzel SemiBold/Regular (engraved Roman caps, gold titles) · Cinzel Decorative Bold ·
+Cormorant Garamond Medium Italic/Italic/Medium (whispered serif lines, has ₹) ·
+Tenor Sans (wide-tracked kickers) · Italiana (thin fashion display)
+
 ## CAPTION SANS — body / subtitles
 Poppins SemiBold + Bold · Inter SemiBold + Bold · Figtree Bold · Plus Jakarta Bold
 Sora SemiBold · Outfit SemiBold · Manrope Bold · Space Grotesk Bold

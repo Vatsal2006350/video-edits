@@ -1,0 +1,151 @@
+{
+ "name": "ramayana-pod",
+ "out_root": "~/Downloads/reel-batch/cinema-flex",
+ "grade": "imax-gold",
+ "grain": 6,
+ "bloom": 0.3,
+ "shots": [
+  {
+   "src": "~/Downloads/REPLACE.MOV",
+   "in": 0.0,
+   "dur": 2.8,
+   "push": 1.05,
+   "fade_in": 0.35,
+   "role": "hook: walking into the hall / pod exterior, moody"
+  },
+  {
+   "src": "~/Downloads/REPLACE.MOV",
+   "in": 0.0,
+   "dur": 2.0,
+   "push": 1.04,
+   "role": "turn: settling into the pod, blanket"
+  },
+  {
+   "src": "~/Downloads/REPLACE.MOV",
+   "in": 0.0,
+   "dur": 2.2,
+   "push": 1.04,
+   "role": "escalation: reveal of the room from the pod"
+  },
+  {
+   "src": "~/Downloads/REPLACE.MOV",
+   "in": 0.0,
+   "dur": 3.4,
+   "push": 1.07,
+   "role": "PAYOFF on drop: widest wow shot of pods + IMAX screen"
+  },
+  {
+   "src": "~/Downloads/REPLACE.MOV",
+   "in": 0.0,
+   "dur": 1.1,
+   "push": 1.03,
+   "role": "glam cut: food / drink arriving"
+  },
+  {
+   "src": "~/Downloads/REPLACE.MOV",
+   "in": 0.0,
+   "dur": 1.1,
+   "push": 1.03,
+   "role": "glam cut: detail (recliner, lights, ticket)"
+  },
+  {
+   "src": "~/Downloads/REPLACE.MOV",
+   "in": 0.0,
+   "dur": 3.0,
+   "push": 1.05,
+   "fade_out": 0.6,
+   "role": "CTA hold: calm wide or lounge, fades out"
+  }
+ ],
+ "text": [
+  {
+   "at": 0.25,
+   "dur": 2.5,
+   "style": "whisper",
+   "cy": 760,
+   "lines": [
+    "I was worried Ramayana",
+    "wouldn’t make back its",
+    "₹4,000 crore budget"
+   ]
+  },
+  {
+   "at": 2.9,
+   "dur": 1.85,
+   "style": "whisper",
+   "cy": 760,
+   "lines": [
+    "so I went to watch it again"
+   ]
+  },
+  {
+   "at": 4.9,
+   "dur": 2.05,
+   "style": "whisper",
+   "cy": 760,
+   "lines": [
+    "in the most expensive seat",
+    "in the city"
+   ]
+  },
+  {
+   "at": 7.05,
+   "dur": 3.3,
+   "style": "title",
+   "cy": 800,
+   "lines": [
+    "THE POD"
+   ]
+  },
+  {
+   "at": 7.35,
+   "dur": 3.0,
+   "style": "rule",
+   "cy": 905,
+   "width": 320
+  },
+  {
+   "at": 7.6,
+   "dur": 2.75,
+   "style": "kicker",
+   "cy": 975,
+   "lines": [
+    "ONLY SEVEN IN THE WHOLE IMAX"
+   ]
+  },
+  {
+   "at": 10.55,
+   "dur": 2.05,
+   "style": "whisper",
+   "cy": 1180,
+   "lines": [
+    "doing my part for the box office"
+   ]
+  },
+  {
+   "at": 12.75,
+   "dur": 2.85,
+   "style": "rule",
+   "cy": 640,
+   "width": 260
+  },
+  {
+   "at": 12.85,
+   "dur": 2.75,
+   "style": "cta",
+   "cy": 800,
+   "fade_out": 0.6,
+   "lines": [
+    "COMMENT “POD”",
+    "and I’ll send you where this is"
+   ]
+  }
+ ],
+ "_note": "Fill shots[].src/in from the contact sheet of the AirDropped clips (~/Downloads). Payoff shot = index 3, must land on the drop at 7.05s.",
+ "audio": {
+  "src": "~/Downloads/music-good/mangal-rang.mp3",
+  "ss": 0.0,
+  "gain": 1.0,
+  "burn": false
+ }
+}

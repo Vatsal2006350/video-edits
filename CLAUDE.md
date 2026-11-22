@@ -61,6 +61,7 @@ Then pick the look with `bin/reel-pick suggest "<brief>"`. Effects:
 | Word-by-word typed DM Serif hook on talking head | `typed-hook.py` via `build-story-reel.sh` | `formats/typed-serif-hook.md` |
 | Glow/bloom text | `glow-text.py` | `formats/reel-font-repo.md` |
 | Receipt / glow-up / diptych / card / travel-story | `receipt-reel.sh glowup-reel.sh diptych-reel.sh card-reel.sh travel-story-reel.sh` | `formats/*.md`, `VIRAL-FORMAT.md` |
+| Luxury night-out flex: Cormorant italic joke hook, engraved gold Cinzel title + hairline rule on the drop, Tenor kicker, gold grade + halation, COMMENT-keyword CTA | `cinema-flex-reel.py` (+ `fetch-epic-fonts.sh`) | `formats/cinema-flex-reel.md` |
 | Daily-routine bounce: typing open, then guitar/keyboard hard cuts, one italic caption | `bounce-reel.sh` | `formats/daily-routine-bounce.md` |
 
 ## Workflow for "make me a reel like <reference>"
