@@ -317,7 +317,7 @@ def main():
         frames_only = [float(x) for x in sys.argv[sys.argv.index('--frames') + 1].split(',')]
     spec = json.load(open(spec_path))
     base = os.path.dirname(os.path.abspath(spec_path))
-    root = os.path.expanduser(spec.get('out_root', os.path.join(base, 'out')))
+    root = os.path.abspath(os.path.join(base, os.path.expanduser(spec.get('out_root', 'out'))))
     out = os.path.join(root, spec['name'])
     work = os.path.join(out, '.work')
     os.makedirs(work, exist_ok=True)
@@ -383,8 +383,9 @@ def main():
 
     post = []
     if spec.get('bloom', 0.32):
-        post.append(f"split[a][b];[b]curves=all='0/0 0.72/0 1/1',gblur=sigma=22[g];"
-                    f"[a][g]blend=all_mode=screen:all_opacity={spec.get('bloom', 0.32)}")
+        # blend MUST run in RGB: a screen blend on YUV chroma planes turns everything magenta
+        post.append(f"format=gbrp,split[a][b];[b]curves=all='0/0 0.72/0 1/1',gblur=sigma=22[g];"
+                    f"[a][g]blend=all_mode=screen:all_opacity={spec.get('bloom', 0.32)},format=yuv420p")
     post_v = ",".join(post) if post else "null"
     grain = spec.get('grain', 6)
 
