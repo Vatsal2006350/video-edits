@@ -1,0 +1,137 @@
+{
+ "name": "ramayana-pod-standin",
+ "out_root": "../../.work/out",
+ "grade": "imax-gold",
+ "grain": 6,
+ "bloom": 0.3,
+ "shots": [
+  {
+   "src": "../../.work/standin/plate0.mp4",
+   "in": 0.0,
+   "dur": 2.8,
+   "push": 1.05,
+   "fade_in": 0.35
+  },
+  {
+   "src": "../../.work/standin/plate1.mp4",
+   "in": 0.5,
+   "dur": 2.0,
+   "push": 1.04
+  },
+  {
+   "src": "../../.work/standin/plate2.mp4",
+   "in": 1.0,
+   "dur": 2.2,
+   "push": 1.04
+  },
+  {
+   "src": "../../.work/standin/plate3.mp4",
+   "in": 0.0,
+   "dur": 3.4,
+   "push": 1.07
+  },
+  {
+   "src": "../../.work/standin/plate0.mp4",
+   "in": 2.0,
+   "dur": 1.1,
+   "push": 1.03
+  },
+  {
+   "src": "../../.work/standin/plate2.mp4",
+   "in": 3.0,
+   "dur": 1.1,
+   "push": 1.03
+  },
+  {
+   "src": "../../.work/standin/plate1.mp4",
+   "in": 3.0,
+   "dur": 3.0,
+   "push": 1.05,
+   "fade_out": 0.6
+  }
+ ],
+ "text": [
+  {
+   "at": 0.25,
+   "dur": 2.5,
+   "style": "whisper",
+   "cy": 760,
+   "lines": [
+    "I was worried Ramayana",
+    "wouldn’t make back its",
+    "₹4,000 crore budget"
+   ]
+  },
+  {
+   "at": 2.9,
+   "dur": 1.85,
+   "style": "whisper",
+   "cy": 760,
+   "lines": [
+    "so I went to watch it again"
+   ]
+  },
+  {
+   "at": 4.9,
+   "dur": 2.05,
+   "style": "whisper",
+   "cy": 760,
+   "lines": [
+    "in the most expensive seat",
+    "in the city"
+   ]
+  },
+  {
+   "at": 7.05,
+   "dur": 3.3,
+   "style": "title",
+   "cy": 800,
+   "lines": [
+    "THE POD"
+   ]
+  },
+  {
+   "at": 7.35,
+   "dur": 3.0,
+   "style": "rule",
+   "cy": 905,
+   "width": 320
+  },
+  {
+   "at": 7.6,
+   "dur": 2.75,
+   "style": "kicker",
+   "cy": 975,
+   "lines": [
+    "ONLY SEVEN IN THE WHOLE IMAX"
+   ]
+  },
+  {
+   "at": 10.55,
+   "dur": 2.05,
+   "style": "whisper",
+   "cy": 1180,
+   "lines": [
+    "doing my part for the box office"
+   ]
+  },
+  {
+   "at": 12.75,
+   "dur": 2.85,
+   "style": "rule",
+   "cy": 640,
+   "width": 260
+  },
+  {
+   "at": 12.85,
+   "dur": 2.75,
+   "style": "cta",
+   "cy": 800,
+   "fade_out": 0.6,
+   "lines": [
+    "COMMENT “POD”",
+    "and I’ll send you where this is"
+   ]
+  }
+ ]
+}
